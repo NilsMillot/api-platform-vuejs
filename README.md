@@ -1,8 +1,14 @@
 # MAIN COMMANDS FOR DEV:
 
-`docker compose build --pull --no-cache` then `docker compose up` (add -d for daemon and if you want to see logs then `docker compose logs -f`)
+- Onboarding: `docker compose build --pull --no-cache` then `docker compose up` (add -d for daemon and if you want to see logs then `docker compose logs -f`)
 
-<h1 align="center"><a href="https://api-platform.com"><img src="https://api-platform.com/logo-250x250.png" alt="API Platform"></a></h1>
+# ADDITIONNAL PROJECT INFOS:
+
+- Our vuejs app is in my-app/
+- vuejs client was created with [create-client api-platform](https://api-platform.com/docs/create-client/vuejs/)
+- A main util for us can be to create CRUD instantly in vuejs check the theird command intitulated [generate all the code you need for a given resource](https://api-platform.com/docs/create-client/vuejs/)
+
+# OFFICIAL DOC:
 
 API Platform is a next-generation web framework designed to easily create API-first projects without compromising extensibility
 and flexibility:
