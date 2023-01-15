@@ -2,6 +2,8 @@
 
 - Onboarding: `docker compose build --pull --no-cache` then `docker compose up` (add -d for daemon and if you want to see logs then `docker compose logs -f`)
 
+- Start client: `cd my-app/ && npm install && npm run dev`
+
 # ADDITIONNAL PROJECT INFOS:
 
 - Our vuejs app is in my-app/
