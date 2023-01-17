@@ -10,7 +10,7 @@
 
                         <label for="inputEmail">Email</label>
                         <input type="email" name="email" id="inputEmail" class="form-control" v-model="email" autocomplete="email" required autofocus>
-                        <label for="inputPassword">Password</label>
+                        <label for="inputPassword">Mot de Passe</label>
                         <input type="password" name="password" id="inputPassword" class="form-control" v-model="password" autocomplete="current-password" required>
 
                         <div class="d-flex justify-content-center">
