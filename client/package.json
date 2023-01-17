@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@types/qs": "^6.9.7",
+    "bootstrap": "^5.2.3",
+    "bootstrap-vue": "^2.23.1",
     "dayjs": "^1.11.7",
     "pinia": "^2.0.28",
     "qs": "^6.11.0",
