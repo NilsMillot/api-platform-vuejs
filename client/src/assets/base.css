@@ -21,13 +21,13 @@
 
 @font-face {
   font-family: "Gotham";
-  src: url('/fonts/Gotham/GothamMedium.ttf');
+  src: url('./fonts/Gotham/GothamMedium.ttf');
 }
 
 body {
   min-height: 100vh;
   color: var(--color-black);
   line-height: 1.6;
-  font-family: "Gotham";
+  font-family: "Gotham" !important;
   font-size: 15px;
 }
