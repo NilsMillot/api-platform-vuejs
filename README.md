@@ -2,11 +2,11 @@
 
 - Onboarding: `docker compose build --pull --no-cache` then `docker compose up` (add -d for daemon and if you want to see logs then `docker compose logs -f`)
 
-- Start client: `cd my-app/ && npm install && npm run dev`
+- Start client: `cd client/ && npm install && npm run dev`
 
 # ADDITIONNAL PROJECT INFOS:
 
-- Our vuejs app is in my-app/
+- Our vuejs app is in client/
 - vuejs client was created with [create-client api-platform](https://api-platform.com/docs/create-client/vuejs/)
 - A main util for us can be to create CRUD instantly in vuejs check the theird command intitulated [generate all the code you need for a given resource](https://api-platform.com/docs/create-client/vuejs/)
 
