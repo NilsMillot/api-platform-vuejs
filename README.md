@@ -6,6 +6,18 @@
 
 ## Commands for Backend
 
+### Create or Update Entity
+
+```
+docker compose exec php bin/console make:entity
+```
+
+### Update composer dependencies
+
+```
+docker compose exec composer install
+```
+
 ### Generate JWT Certificates
 
 ```
@@ -21,7 +33,7 @@ docker compose exec php sh -c '
 ### Load Fixtures
 
 ```
-docker compose exec php app/console doctrine:fixtures:load
+docker compose exec php bin/console doctrine:fixtures:load
 ```
 
 ### Migration

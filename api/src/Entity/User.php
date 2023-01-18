@@ -32,6 +32,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $adress = null;
+
+    #[ORM\Column]
+    private ?int $totalCredits = null;
+
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]
     private Collection $movieScreenings;
 
@@ -108,6 +114,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(string $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getTotalCredits(): ?int
+    {
+        return $this->totalCredits;
+    }
+
+    public function setTotalCredits(int $totalCredits): self
+    {
+        $this->totalCredits = $totalCredits;
+
+        return $this;
     }
 
     /**
