@@ -1,8 +1,7 @@
-<script setup lang="ts">
+<script setup>
 </script>
 
 <template>
   <main>
-    Welcome to CINEMAX !
   </main>
 </template>
