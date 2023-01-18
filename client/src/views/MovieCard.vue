@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // TODO: Movie will be a prop passed from the home view and not a call like this
 const data = await fetch(
   `https://api.themoviedb.org/3/movie/550?api_key=${
