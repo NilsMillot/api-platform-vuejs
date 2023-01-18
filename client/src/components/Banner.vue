@@ -10,13 +10,12 @@
 
 <script setup>
 import { reactive } from "vue";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted } from "vue";
 
 const result = reactive({value: []});
 
 onMounted( async () => {
     await fetchMovies();
-    console.log(result.value)
 })
 
 
