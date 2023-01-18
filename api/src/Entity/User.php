@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,6 +31,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]
+    private Collection $movieScreenings;
+
+    public function __construct()
+    {
+        $this->movieScreenings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +108,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, MovieScreening>
+     */
+    public function getMovieScreenings(): Collection
+    {
+        return $this->movieScreenings;
+    }
+
+    public function addMovieScreening(MovieScreening $movieScreening): self
+    {
+        if (!$this->movieScreenings->contains($movieScreening)) {
+            $this->movieScreenings->add($movieScreening);
+            $movieScreening->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieScreening(MovieScreening $movieScreening): self
+    {
+        if ($this->movieScreenings->removeElement($movieScreening)) {
+            // set the owning side to null (unless already changed)
+            if ($movieScreening->getCreator() === $this) {
+                $movieScreening->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }
