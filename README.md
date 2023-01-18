@@ -4,6 +4,45 @@
 
 - Start client: `cd client/ && npm install && npm run dev`
 
+## Commands for Backend
+
+### Create or Update Entity
+
+```
+docker compose exec php bin/console make:entity
+```
+
+### Update composer dependencies
+
+```
+docker compose exec composer install
+```
+
+### Generate JWT Certificates
+
+```
+docker compose exec php sh -c '
+  set -e
+  apk add openssl
+  php bin/console lexik:jwt:generate-keypair
+  setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+  setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+'
+```
+
+### Load Fixtures
+
+```
+docker compose exec php bin/console doctrine:fixtures:load
+```
+
+### Migration
+
+```
+docker compose exec php bin/console make:migration
+docker compose exec php bin/console doctrine:migrations:migrate
+```
+
 # ADDITIONNAL PROJECT INFOS:
 
 - Our vuejs app is in client/
