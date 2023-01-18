@@ -1,8 +1,8 @@
 <template>
-    <div class="">
+    <div>
             <div class="card card-login shadow-sm">
                 <div class="text-center">
-                    <h3 class="pt-3" >S'identifier</h3>
+                    <h3 class="pt-3">S'identifier</h3>
                 </div>
                 <div class="card-body">
                     <form class="d-flex flex-column justify-content-center">
