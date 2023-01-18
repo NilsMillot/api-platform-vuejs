@@ -16,8 +16,6 @@ console.log(movie);
 
 <template>
   <div class="card" style="width: 18rem">
-    <!-- <img class="card-img-top" src="..." alt="Card image cap" /> -->
-    <!-- Pass the movie data to img -->
     <img v-bind:alt="title" v-bind:src="poster_path" class="card-img-top" />
   </div>
 </template>
