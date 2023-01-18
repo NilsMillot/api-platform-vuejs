@@ -7,19 +7,19 @@
                 <div class="card-body">
                     <form class="d-flex flex-column justify-content-center">
                         <div class="form-group">
-                            <label for="inputEmail">Email</label>
-                            <input type="email" placeholder="Votre email" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                            <input type="email" placeholder="E-mail" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
                         </div>
                         <div class="form-group">
-                            <label for="inputPassword">Mot de Passe</label>
-                            <input type="password" name="password" id="inputPassword" class="form-control" v-model="password" autocomplete="current-password" required>
+                            <input type="password" placeholder="Mot de passe" name="password" id="inputPassword" class="form-control" v-model="password" autocomplete="current-password" required>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button class="btn mt-4 btn-cinemax" type="submit"><span>S'identifier</span></button>
                         </div>
                         <a href="#" id="forgetPassword">Mot de passe oublié ?</a>
-                        <p>Première visite sur cinemax?</p><a href="/register" id="register">Inscrivez-vous</a>
-                        <div class="d-flex justify-content-center">
-                            <button class="btn mt-4 btn-cinemax" type="submit">S'identifier</button>
+                        <div class="link-register">
+                            <p id="register-text">Première visite sur CINEMAX ?</p>
+                            <a href="/register" id="register">Inscrivez-vous</a> 
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 
 <style >
         .card-login {
-            width: 400px;
+            width: 450px;
             margin: 0 auto;
             margin-top: 150px;
             padding: 20px;
@@ -47,31 +47,47 @@
             background-color: var(--color-red);
             color:var(--color-white);
             text-align: center;
+            width: 100%;
         }
         .btn-cinemax:hover{
             background-color: var(--color-darkred);
             color: var(--color-white)
         }
        #inputEmail{
-            background-color: var(--color-grey);
+            background-color: #ffffff30;
             color: var(--color-white);
             border: none;
        }
        #inputPassword{
-            background-color: var(--color-grey);
+            background-color: #ffffff30;
             color: var(--color-white);
             border: none;
        }
        #forgetPassword {
-            font-size: 10px;
-            padding-left: 20px;
+            font-size: 12px;
+            margin-top: 20px;
+            color: #ffffff95;
        }
        body{
             background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),url("../../assets/films-montage.jpeg") !important;
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-
+       }
+       .link-register{
+            margin-top: 50px;
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+       }
+       #register-text{
+            font-size: 14px;
+            color: #ffffff72;
+       }
+       #register{
+            font-size: 13px;
+            color: var(--color-white);
+            padding-left: 5px;
        }
 </style>
 
