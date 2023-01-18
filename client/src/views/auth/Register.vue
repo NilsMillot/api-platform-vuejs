@@ -7,6 +7,9 @@
                 <div class="card-body">
                     <form class="d-flex flex-column justify-content-center">
                         <div class="form-group">
+                            <input type="name" placeholder="Nom" name="email" id="inputEmail" class="form-control" v-model="name" autocomplete="email" required autofocus>
+                        </div>
+                        <div class="form-group">
                             <input type="email" placeholder="E-mail" name="email" id="inputEmail" class="form-control" v-model="email" autocomplete="email" required autofocus>
                         </div>
                         <div class="form-group">

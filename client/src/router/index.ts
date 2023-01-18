@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/auth/Login.vue'
 import RegisterView from '../views/auth/Register.vue'
-import ForgetPasswordView from '../views/auth/forgetPassword.vue'
+import ForgetPasswordView from '../views/auth/ForgetPassword.vue'
+import UserAccountView from '../views/auth/UserAccount.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/forget-password',
       name: 'forget-password',
       component: ForgetPasswordView
+    },
+    {
+      path: '/user-account',
+      name: 'user-account',
+      component: UserAccountView
     },
   ]
 })
