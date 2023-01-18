@@ -43,7 +43,6 @@ const fetchMovies = ( async () => {
 h2{
     font-size:16px;
     color: var(--color-white);
-
 }
 
 .list{
@@ -51,8 +50,6 @@ h2{
     display: flex;
     overflow-x: scroll;
     padding: 20px;
-
-
 }
 
 .listElements{
@@ -63,14 +60,11 @@ h2{
     border-radius: 4px;
     transition: all 1s;
 
-
 }
 
 
 .listElements:hover{
     transform: scale(1.05);
-
-
 }
 
 .block {
@@ -79,11 +73,9 @@ h2{
     max-height: 100px;
     margin-right: 10px;
     position: relative;
-
 }
 
 .list::-webkit-scrollbar{
-
     display: none;
 }
 
