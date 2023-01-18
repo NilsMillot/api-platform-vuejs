@@ -15,7 +15,7 @@
                         <div class="d-flex justify-content-center">
                             <button class="btn mt-4 btn-cinemax" type="submit"><span>S'identifier</span></button>
                         </div>
-                        <a href="#" id="forgetPassword">Mot de passe oublié ?</a>
+                        <a href="/forget-password" id="forgetPassword">Mot de passe oublié ?</a>
                         <div class="link-register">
                             <p id="register-text">Première visite sur CINEMAX ?</p>
                             <a href="/register" id="register">Inscrivez-vous</a> 
