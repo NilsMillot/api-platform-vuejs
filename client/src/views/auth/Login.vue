@@ -32,7 +32,7 @@
 
 </script>
 
-<style >
+<style>
         .card-login {
             width: 450px;
             margin: 0 auto;
