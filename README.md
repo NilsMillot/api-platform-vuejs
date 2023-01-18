@@ -46,10 +46,11 @@ docker compose exec php bin/console doctrine:migrations:migrate
 # ADDITIONNAL PROJECT INFOS:
 
 - Our vuejs app is in client/
+- We use TMDB API for having real films datas, check the [offical TMDB Doc](https://developers.themoviedb.org/3/getting-started/introduction)
 - vuejs client was created with [create-client api-platform](https://api-platform.com/docs/create-client/vuejs/)
 - A main util for us can be to create CRUD instantly in vuejs check the theird command intitulated [generate all the code you need for a given resource](https://api-platform.com/docs/create-client/vuejs/)
 
-# OFFICIAL DOC:
+# OFFICIAL API PLATFORM DOC:
 
 API Platform is a next-generation web framework designed to easily create API-first projects without compromising extensibility
 and flexibility:
