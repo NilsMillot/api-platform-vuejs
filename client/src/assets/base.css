@@ -8,9 +8,9 @@
 :root {
 
   --color-red: #db0000;
-  --color-black: #000000;
+  --color-black: #141414;
   --color-white: #ffffff;
-  --color-grey: #564d4d;
+  --color-grey: rgb(20 20 20);
   --color-darkred: #831010;
   
 }
@@ -24,8 +24,15 @@
   font-weight: normal;
 }
 
+
+@font-face {
+  font-family: "Gotham";
+  src: url('./fonts/Gotham/GothamBook.ttf');
+}
+
 body {
   min-height: 100vh;
+  background-color:var(--color-black) !important;
   color: var(--color-black);
   line-height: 1.6;
   /* font-family: "Gotham" !important; */

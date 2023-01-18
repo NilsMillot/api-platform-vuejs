@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,6 +31,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adress = null;
+
+    #[ORM\Column]
+    private ?int $totalCredits = null;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]
+    private Collection $movieScreenings;
+
+    public function __construct()
+    {
+        $this->movieScreenings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +114,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(string $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getTotalCredits(): ?int
+    {
+        return $this->totalCredits;
+    }
+
+    public function setTotalCredits(int $totalCredits): self
+    {
+        $this->totalCredits = $totalCredits;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieScreening>
+     */
+    public function getMovieScreenings(): Collection
+    {
+        return $this->movieScreenings;
+    }
+
+    public function addMovieScreening(MovieScreening $movieScreening): self
+    {
+        if (!$this->movieScreenings->contains($movieScreening)) {
+            $this->movieScreenings->add($movieScreening);
+            $movieScreening->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieScreening(MovieScreening $movieScreening): self
+    {
+        if ($this->movieScreenings->removeElement($movieScreening)) {
+            // set the owning side to null (unless already changed)
+            if ($movieScreening->getCreator() === $this) {
+                $movieScreening->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }

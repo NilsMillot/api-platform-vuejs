@@ -4,13 +4,53 @@
 
 - Start client: `cd client/ && npm install && npm run dev`
 
+## Commands for Backend
+
+### Create or Update Entity
+
+```
+docker compose exec php bin/console make:entity
+```
+
+### Update composer dependencies
+
+```
+docker compose exec composer install
+```
+
+### Generate JWT Certificates
+
+```
+docker compose exec php sh -c '
+  set -e
+  apk add openssl
+  php bin/console lexik:jwt:generate-keypair
+  setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+  setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+'
+```
+
+### Load Fixtures
+
+```
+docker compose exec php bin/console doctrine:fixtures:load
+```
+
+### Migration
+
+```
+docker compose exec php bin/console make:migration
+docker compose exec php bin/console doctrine:migrations:migrate
+```
+
 # ADDITIONNAL PROJECT INFOS:
 
 - Our vuejs app is in client/
+- We use TMDB API for having real films datas, check the [offical TMDB Doc](https://developers.themoviedb.org/3/getting-started/introduction)
 - vuejs client was created with [create-client api-platform](https://api-platform.com/docs/create-client/vuejs/)
 - A main util for us can be to create CRUD instantly in vuejs check the theird command intitulated [generate all the code you need for a given resource](https://api-platform.com/docs/create-client/vuejs/)
 
-# OFFICIAL DOC:
+# OFFICIAL API PLATFORM DOC:
 
 API Platform is a next-generation web framework designed to easily create API-first projects without compromising extensibility
 and flexibility:
