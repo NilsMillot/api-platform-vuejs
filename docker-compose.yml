@@ -1,6 +1,12 @@
 version: "3.4"
 
 services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
   php:
     build:
       context: ./api
@@ -61,7 +67,7 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-14}-alpine
     environment:
@@ -83,7 +89,7 @@ volumes:
   php_socket:
   caddy_data:
   caddy_config:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   db_data:
 ###< doctrine/doctrine-bundle ###
 ###> symfony/mercure-bundle ###
