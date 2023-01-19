@@ -14,8 +14,8 @@ export function getUrlDiscoverTVWithNetwork(networkId) {
   }&with_networks=${networkId}&language=fr`;
 }
 
-export function getUrlTrendingAllWeek() {
-  return `https://api.themoviedb.org/3/trending/all/week?api_key=${
+export function getUrlMovieBestRatedMovie() {
+  return `https://api.themoviedb.org/3/movie/top_rated?api_key=${
     import.meta.env.VITE_TMDB_API_KEY
   }`;
 }

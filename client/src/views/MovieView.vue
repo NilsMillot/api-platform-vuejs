@@ -28,7 +28,7 @@ onMounted(async () => {
       class="movie-view__background-image"
       :style="{
         'background-image':
-          'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%), url(' +
+          'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%), url(' +
           movie.value.background +
           ')',
       }"

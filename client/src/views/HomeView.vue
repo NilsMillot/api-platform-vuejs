@@ -5,9 +5,8 @@ import List from "../components/List.vue";
 
 import {
   getUrlDiscoverMovieFromGenre,
-  getUrlDiscoverTVWithNetwork,
-  getUrlTrendingAllWeek,
   getImageFromSrc,
+  getUrlMovieBestRatedMovie,
 } from "../utils/tmdbCalls";
 
 const search = ref("");
@@ -42,11 +41,7 @@ watch(search, async (newSearch) => {
     </div>
 
     <div v-if="!search">
-      <List title="Tendances actuelles" :url="`${getUrlTrendingAllWeek()}`" />
-      <List
-        title="Programmes originaux"
-        :url="`${getUrlDiscoverTVWithNetwork(213)}`"
-      />
+      <List title="Les mieux notés" :url="`${getUrlMovieBestRatedMovie()}`" />
       <List
         title="Films d'action"
         :url="`${getUrlDiscoverMovieFromGenre(28)}`"
