@@ -28,7 +28,7 @@ onMounted(async () => {
       class="movie-view__background-image"
       :style="{
         'background-image':
-          'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%), url(' +
+          'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%), url(' +
           movie.value.background +
           ')',
       }"
@@ -59,6 +59,7 @@ onMounted(async () => {
 .movie-view {
   position: relative;
   height: 95vh;
+  display: flex;
 }
 
 .movie-view__background-image {
@@ -76,14 +77,17 @@ onMounted(async () => {
   z-index: 1;
   padding: 16px;
   display: flex;
+  margin: auto;
 }
 
 .movie-view__poster-image {
   min-width: 280px;
   max-width: 720px;
+  border-radius: 14px;
 }
 
 .movie-view__text-content {
+  max-width: 600px;
   padding-left: 16px;
   color: var(--color-grey-white);
 }
