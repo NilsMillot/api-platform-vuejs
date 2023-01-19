@@ -68,12 +68,12 @@
             margin-top: 20px;
             color: #ffffff95;
        }
-       body{
+       /* body{
             background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),url("../../assets/films-montage.jpeg") !important;
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-       }
+       } */
        .link-register{
             margin-top: 50px;
             display: flex;
