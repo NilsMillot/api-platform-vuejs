@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MovieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,9 +21,6 @@ class Movie
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $author = null;
-
     #[ORM\Column(type: Types::ARRAY)]
     private array $genre = [];
 
@@ -31,35 +30,46 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $backdrop_path = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $video = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $vote_average = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $vote_count = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $runtime = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $release_date = null;
 
-    #[ORM\Column]
-    private ?int $popularity = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $original_language = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $original_title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $overwiew = null;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: MovieInstance::class, orphanRemoval: true)]
+    private Collection $movieInstances;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $popularity = null;
+
+    #[ORM\Column]
+    private ?int $quantity = 0;
+
+    public function __construct()
+    {
+        $this->movieInstances = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,18 +84,6 @@ class Movie
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
 
         return $this;
     }
@@ -198,18 +196,6 @@ class Movie
         return $this;
     }
 
-    public function getPopularity(): ?int
-    {
-        return $this->popularity;
-    }
-
-    public function setPopularity(int $popularity): self
-    {
-        $this->popularity = $popularity;
-
-        return $this;
-    }
-
     public function getOriginalLanguage(): ?string
     {
         return $this->original_language;
@@ -245,4 +231,47 @@ class Movie
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, MovieInstance>
+     */
+    public function getMovieInstances(): Collection
+    {
+        return $this->movieInstances;
+    }
+
+    public function addMovieInstance(MovieInstance $movieInstance): self
+    {
+        if (!$this->movieInstances->contains($movieInstance)) {
+            $this->movieInstances[] = $movieInstance;
+            $movieInstance->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function getPopularity(): ?float
+    {
+        return $this->popularity;
+    }
+
+    public function setPopularity(?float $popularity): self
+    {
+        $this->popularity = $popularity;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
 }
