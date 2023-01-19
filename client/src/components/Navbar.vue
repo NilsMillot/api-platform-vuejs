@@ -11,7 +11,7 @@
                     <a class="nav-link" href="#">Découvrir</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/seance">Cinéma</a>
+                    <a class="nav-link" href="/session">Cinéma</a>
                 </li>
 
                 <li class="nav-item">

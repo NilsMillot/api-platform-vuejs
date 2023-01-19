@@ -1,6 +1,6 @@
 <script setup>
-import Seance from '../../components/Seance.vue';
-import SeanceBanner from '../../components/SeanceBanner.vue';
+import Session from '../../components/Session.vue';
+import SessionsBanner from '../../components/SessionsBanner.vue';
 import {onUpdated, reactive, ref} from 'vue'
 const result = reactive({value:[]})
 onUpdated( async () => {
@@ -19,13 +19,14 @@ const fetchMovies = async () => {
 <template>
   <main>
     <div class="container mt-2">
-      <div class="d-flex title">
+      <div class="d-flex title mt-4 mb-3">
           <h1 class="flex-shrink-0">Séances</h1>
-          <p class="flex-grow-1 ms-2 m-auto fs-5">- Toutes nos séances</p>
+          <p class="flex-grow-1 ms-2 m-auto fs-6">- Toutes nos séances</p>
       </div>
-      <SeanceBanner/>
-      <Seance/>
-      </div>
+      <hr>
+      <SessionsBanner/>
+      <Session/>
+    </div>
   </main>
 </template>
 
@@ -34,5 +35,9 @@ const fetchMovies = async () => {
 
 .title {
   color: var(--color-white);
+}
+
+.title h1 {
+  font-size: 30px;
 }
 </style>

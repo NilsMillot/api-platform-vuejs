@@ -1,6 +1,6 @@
 <template>
     <div class="banner">
-        <div class="bannerContent" v-bind:style="{ backgroundImage : `url(./assets/cinema.jpeg)`, backgroundSize: 'cover',backgroundPosition:'center'}" >
+        <div class="bannerContent">
             <h1>Prochaine séance</h1>
             <h2>date et heure</h2>
             <h3>film</h3>
@@ -29,6 +29,9 @@
     align-items: flex-start;
     padding-left: 30px;
     height: 100%;
+    background-image: url("../assets/cinema.jpeg");
+    background-position: center;
+    background-size: cover;
 }
 
 .bannerContent h1 {
