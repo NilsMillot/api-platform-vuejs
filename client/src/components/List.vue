@@ -29,7 +29,9 @@ const fetchMovies = async () => {
           <div class="block">
             <img
               class="listElements"
-              :src="`${getImageFromSrc(item.backdrop_path)}`"
+              :src="`${getImageFromSrc(
+                item.backdrop_path || item.poster_path
+              )}`"
             />
           </div>
         </div>
