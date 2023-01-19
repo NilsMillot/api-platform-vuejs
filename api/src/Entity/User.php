@@ -41,9 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]
     private Collection $movieScreenings;
 
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: MovieInstance::class)]
+    private Collection $movieInstances;
+
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
+        $this->movieInstances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +168,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($movieScreening->getCreator() === $this) {
                 $movieScreening->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieInstance>
+     */
+    public function getMovieInstances(): Collection
+    {
+        return $this->movieInstances;
+    }
+
+    public function addMovieInstance(MovieInstance $movieInstance): self
+    {
+        if (!$this->movieInstances->contains($movieInstance)) {
+            $this->movieInstances->add($movieInstance);
+            $movieInstance->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieInstance(MovieInstance $movieInstance): self
+    {
+        if ($this->movieInstances->removeElement($movieInstance)) {
+            // set the owning side to null (unless already changed)
+            if ($movieInstance->getBuyer() === $this) {
+                $movieInstance->setBuyer(null);
             }
         }
 
