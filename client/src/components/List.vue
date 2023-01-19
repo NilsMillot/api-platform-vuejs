@@ -5,7 +5,7 @@
             <div class="list">
             <div v-for="(item, index) in result.value" :key=index >
                 <div class="block">
-                    <img class="listElements" :src="`https://image.tmdb.org/t/p/original${item.backdrop_path}`" >
+                    <img class="listElements" :src="`https://image.tmdb.org/t/p/original${item.poster_path}`" >
                 </div>
             </div>
             </div>
@@ -28,7 +28,6 @@ onMounted( async () => {
     await fetchMovies();
 
 })
-
 const fetchMovies = ( async () => {
     return fetch(props.url)
     .then(response => response.json())
