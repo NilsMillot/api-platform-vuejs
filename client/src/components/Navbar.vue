@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark px-5">
-        <a class="navbar-brand logo" href="#">CINEMAX</a>
+        <a class="navbar-brand logo" href="/">CINEMAX</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,7 +11,7 @@
                     <a class="nav-link" href="#">Découvrir</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cinéma</a>
+                    <a class="nav-link" href="/seance">Cinéma</a>
                 </li>
 
                 <li class="nav-item">
