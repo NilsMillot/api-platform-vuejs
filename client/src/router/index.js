@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import MovieView from "../views/MovieView.vue";
 import HomeView from "../views/HomeView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 
@@ -14,6 +15,11 @@ const router = createRouter({
       path: "/session",
       name: "session",
       component: SessionView,
+    },
+    {
+      path: "/movie",
+      name: "movie",
+      component: MovieView,
     },
   ],
 });
