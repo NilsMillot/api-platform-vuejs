@@ -16,10 +16,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">Découvrir</a>
+          <a class="nav-link" href="/">Découvrir</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Cinéma</a>
+          <a class="nav-link" href="/session">Cinéma</a>
         </li>
 
         <li class="nav-item">
