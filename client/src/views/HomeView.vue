@@ -23,7 +23,7 @@ watch(search, async (newSearch) => {
     .then(
       (data) =>
         (result.value = data.results.filter(
-          (item) => item.backdrop_path || item.poster_path
+          (item) => item.backdrop_path && item.poster_path
         ))
     );
 });

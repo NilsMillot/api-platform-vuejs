@@ -26,14 +26,14 @@ const fetchMovies = async () => {
       <h2 class="mx-3">{{ props.title }}</h2>
       <div class="list">
         <div v-for="(item, index) in result.value" :key="index">
-          <div class="block">
+          <a :href="`/movie?id=${item.id}`" class="block">
             <img
               class="listElements"
               :src="`${getImageFromSrc(
                 item.backdrop_path || item.poster_path
               )}`"
             />
-          </div>
+          </a>
         </div>
       </div>
     </div>

@@ -31,7 +31,10 @@ const fetchMovies = async () => {
     <div
       class="bannerContent"
       v-bind:style="{
-        backgroundImage: `url(${imageBackdropPath})`,
+        'background-image':
+          'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%), url(' +
+          imageBackdropPath +
+          ')',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }"
