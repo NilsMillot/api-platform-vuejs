@@ -4,6 +4,7 @@
   --color-red: #db0000;
   --color-black: #141414;
   --color-white: #ffffff;
+  --color-grey-white: #f5f5f5;
   --color-grey: rgb(20 20 20);
   --color-darkred: #831010;
   
@@ -29,6 +30,6 @@ body {
   background-color:var(--color-black) !important;
   color: var(--color-black);
   line-height: 1.6;
-  font-family: "Gotham" !important;
+  /* font-family: "Gotham" !important; */
   font-size: 15px;
 }
