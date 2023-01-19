@@ -8,19 +8,19 @@
                 <div class="card-body">
                         <div class="form-group">
                             <label for="name">Mon nom :</label>
-                            <input type="name" placeholder="E-mail" name="email" class="form-control" autocomplete="email" required autofocus>
+                            <input disabled type="name" name="email" class="form-control" autocomplete="email" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="address">Mon adresse :</label>
-                            <input type="email" placeholder="E-mail" name="email" class="form-control" autocomplete="email" required autofocus>
+                            <input disabled type="email" v-model="user.value.adress" name="email" class="form-control" autocomplete="email" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="email">Mon adresse e-mail : </label>
-                            <input type="email" placeholder="E-mail" name="email" class="form-control" autocomplete="email" required autofocus>
+                            <input disabled type="email" v-model="user.value.email" name="email" class="form-control" autocomplete="email" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="password">Mon mot de passe :</label>
-                            <input type="email" placeholder="E-mail" name="email" class="form-control" autocomplete="email" required autofocus>
+                            <input disabled type="email" name="email" class="form-control" autocomplete="email" required autofocus>
                         </div>
                         <div class="d-flex justify-content-center">
                             <button class="btn mt-4 btn-cinemax" type="submit"><span>Modifier</span></button>
@@ -31,18 +31,24 @@
 </template>
 
 <script setup>
+import { onMounted, reactive} from 'vue';
 
-import { onMounted } from 'vue';    
+const user = reactive({value: {}})
+
 onMounted(async () => {
         await fetchUser()
+        console.log(user.value.id)
+
     })
     const fetchUser = async () => {
         return fetch('https://localhost/users/1')
             .then(response => response.json())
             .then(data => {
-                console.log(data)
+                user.value = data
+                console.log(user.value)
             })
     }
+
 </script>
 
 <style scoped>
