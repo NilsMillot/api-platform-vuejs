@@ -29,6 +29,6 @@ body {
   background-color:var(--color-black) !important;
   color: var(--color-black);
   line-height: 1.6;
-  font-family: "Gotham" !important;
+  /* font-family: "Gotham" !important; */
   font-size: 15px;
 }
