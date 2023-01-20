@@ -15,42 +15,42 @@
                     </div>
                     
                     <div class="session mt-4">
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
                                 <p>VF</p>
                             </div>
                         </a>
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
                                 <p>VF</p>
                             </div>
                         </a>
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
                                 <p>VF</p>
                             </div>
                         </a>
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
                                 <p>VF</p>
                             </div>
                         </a>
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
                                 <p>VF</p>
                             </div>
                         </a>
-                        <a href="/reservation" class="card-link">
+                        <a href="/booking" class="card-link">
                             <div class="card card-datetime">
                                 <h5>date</h5>
                                 <h6>heure</h6>
