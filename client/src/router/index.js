@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import MovieView from "../views/MovieView.vue";
 import HomeView from "../views/HomeView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
+import SessionCinema from "../views/SessionCinema.vue";
+import SessionsCinema from "../views/SessionsCinema.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +22,17 @@ const router = createRouter({
       path: "/movie",
       name: "movie",
       component: MovieView,
+    },
+    {
+      path: "/cinema/session/new",
+      name: "new-session",
+      component: SessionCinema,
+    },
+
+    {
+      path: "/cinema/sessions",
+      name: "all-sessions",
+      component: SessionsCinema,
     },
   ],
 });
