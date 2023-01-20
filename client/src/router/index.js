@@ -1,6 +1,10 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/auth/Login.vue'
+import RegisterView from '../views/auth/Register.vue'
+import ForgetPasswordView from '../views/auth/ForgetPassword.vue'
+import UserAccountView from '../views/auth/UserAccount.vue'
 import MovieView from "../views/MovieView.vue";
-import HomeView from "../views/HomeView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 
 const router = createRouter({
@@ -10,6 +14,26 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/forget-password',
+      name: 'forget-password',
+      component: ForgetPasswordView
+    },
+    {
+      path: '/user-account',
+      name: 'user-account',
+      component: UserAccountView
     },
     {
       path: "/session",
