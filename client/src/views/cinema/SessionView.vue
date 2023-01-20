@@ -2,17 +2,20 @@
 import Session from '../../components/Session.vue';
 import SessionsBanner from '../../components/SessionsBanner.vue';
 import {onUpdated, reactive, ref} from 'vue'
-const result = reactive({value:[]})
-onUpdated( async () => {
-  await fetchMovies();
+
+const sessions = ref([])
+
+const fetchSessions = async () => {
+  const response = await fetch('http://localhost:3000/session')
+  const data = await response.json()
+  sessions.value = data
+}
+
+onUpdated(() => {
+  fetchSessions()
 })
 
-
-const fetchMovies = async () => {
-    return fetch(`https://api.themoviedb.org/3/search/movie?api_key=4d3df75e4b4f46885d6f1504e09d1808&query=${search.value}`)
-    .then(response => response.json())
-    .then(data => result.value = data.results);
-};
+fetchSessions()
 
 </script>
 
