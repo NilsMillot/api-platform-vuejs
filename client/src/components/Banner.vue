@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import {
   getImageFromSrc,
   getUrlDiscoverTVWithNetwork,
@@ -12,6 +12,32 @@ onMounted(async () => {
   await fetchMovies();
   if (result.value.backdrop_path) {
     imageBackdropPath.value = getImageFromSrc(result.value.backdrop_path);
+  }
+});
+
+watch(result, async (newResult) => {
+  if (newResult.value) {
+    await fetch(
+      `https://api.themoviedb.org/3/tv/${newResult.value.id}/videos?api_key=${
+        import.meta.env.VITE_TMDB_API_KEY
+      }&language=fr`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.results.length > 0) {
+          const trailer = data.results.find(
+            (item) =>
+              (item.type === "Trailer" ||
+                item.type === "Teaser" ||
+                item.type === "Clip" ||
+                item.type === "Featurette") &&
+              item.site === "YouTube"
+          );
+          if (trailer) {
+            newResult.value.trailer = trailer.key;
+          }
+        }
+      });
   }
 });
 
@@ -41,6 +67,13 @@ const fetchMovies = async () => {
     >
       <h1>{{ result.value.name }}</h1>
       <h2>{{ result.value.overview }}</h2>
+      <a
+        class="btn btn-primary"
+        v-if="result.value.trailer"
+        target="_blank"
+        :href="`https://youtube.com/watch?v=${result.value.trailer}`"
+        >A découvrir</a
+      >
     </div>
   </div>
 </template>
