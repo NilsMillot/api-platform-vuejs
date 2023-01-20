@@ -6,9 +6,7 @@ import {onUpdated, reactive, ref} from 'vue'
 
 <template>
     <div class="container mt-2">
-      <div class="d-flex title text-center mt-4 mb-3">
-          <h1 class="flex-shrink-0">Sélectionnez vos places</h1>
-      </div>
+      
       <hr>
       <Booking/>
     </div>
