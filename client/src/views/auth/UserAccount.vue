@@ -55,42 +55,21 @@ onMounted(async () => {
 .card-account {
             width: 80%;
             margin: 0 auto;
-            margin-top: 100px;
+            margin-top: 80px;
             padding: 20px;
             background-color: #f3f3f3;
             color: var(--color-black);
             box-shadow: 20px;
             
         }
+        .btn-cinemax{
+            background-color: var(--color-red);
+            color:var(--color-white);
+            text-align: center;
+            width: 100%;
+        }
         .btn-cinemax:hover{
             background-color: var(--color-darkred);
             color: var(--color-white)
         }
-      
-       #forgetPassword {
-            font-size: 12px;
-            margin-top: 20px;
-            color: #ffffff95;
-       }
-       body{
-            background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),url("../../assets/films-montage.jpeg") !important;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-       }
-       .link-register{
-            margin-top: 50px;
-            display: flex;
-            flex-direction: row;
-            align-items: baseline;
-       }
-       #register-text{
-            font-size: 14px;
-            color: #ffffff72;
-       }
-       #register{
-            font-size: 13px;
-            color: var(--color-white);
-            padding-left: 5px;
-       }
 </style>

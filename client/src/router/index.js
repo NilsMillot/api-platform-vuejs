@@ -4,6 +4,8 @@ import LoginView from '../views/auth/Login.vue'
 import RegisterView from '../views/auth/Register.vue'
 import ForgetPasswordView from '../views/auth/ForgetPassword.vue'
 import UserAccountView from '../views/auth/UserAccount.vue'
+import MovieView from "../views/MovieView.vue";
+import SessionView from "../views/cinema/SessionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +35,17 @@ const router = createRouter({
       name: 'user-account',
       component: UserAccountView
     },
-  ]
-})
+    {
+      path: "/session",
+      name: "session",
+      component: SessionView,
+    },
+    {
+      path: "/movie",
+      name: "movie",
+      component: MovieView,
+    },
+  ],
+});
 
 export default router;
