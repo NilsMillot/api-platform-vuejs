@@ -1,10 +1,12 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 
 const formInputs = reactive({
   email: "",
   password: "",
 });
+
+const errorMessage = ref(null);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
@@ -17,19 +19,21 @@ const handleSubmitForm = async (e) => {
     body: JSON.stringify(formInputs),
   });
   const data = await response.json();
-  console.log(data);
+
   if (data.token) {
+    errorMessage.value = null;
     localStorage.setItem("token", data.token);
-    alert("Vous êtes connecté !");
     location.href = "/";
+  } else if (data.message) {
+    errorMessage.value = data.message;
   } else if (data.error) {
-    alert(data.error);
+    errorMessage.value = data.error;
   }
 };
 </script>
 
 <template>
-  <div>
+  <div class="login-vue_background">
     <div class="card card-login shadow-sm">
       <div class="text-center">
         <h3 class="pt-3">S'identifier</h3>
@@ -65,6 +69,7 @@ const handleSubmitForm = async (e) => {
               v-model="formInputs.password"
             />
           </div>
+          <span>{{ errorMessage }}</span>
           <div class="d-flex justify-content-center">
             <button class="btn mt-4 btn-cinemax" type="submit">
               <span>S'identifier</span>
@@ -86,12 +91,11 @@ const handleSubmitForm = async (e) => {
 <style scoped>
 .card-login {
   width: 450px;
-  margin: 0 auto;
-  margin-top: 150px;
+  margin: 150px auto auto;
   padding: 20px;
   background-color: var(--color-black);
   color: var(--color-white);
-  box-shadow: 20px;
+  border-radius: 10px;
 }
 .btn-cinemax {
   background-color: var(--color-red);
@@ -118,12 +122,15 @@ const handleSubmitForm = async (e) => {
   margin-top: 20px;
   color: #ffffff95;
 }
-/* body{
-    background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),url("../../assets/films-montage.jpeg") !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-} */
+.login-vue_background {
+  display: flex;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),
+    url("https://wallpaper.dog/large/20493433.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 96vh;
+}
 .link-register {
   margin-top: 50px;
   display: flex;
