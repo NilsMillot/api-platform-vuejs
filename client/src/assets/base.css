@@ -1,4 +1,10 @@
 /* color palette from <https://github.com/vuejs/theme> */
+
+@font-face {
+  font-family: "Gotham";
+  src: url('./fonts/Gotham/GothamBook.ttf');
+}
+
 :root {
   --color-red: #db0000;
   --color-black: #141414;
@@ -33,4 +39,22 @@ body {
   color: var(--color-black);
   line-height: 1.6;
   font-size: 15px;
+}
+
+span, p, h1, h2, h3, h4, h5, h6 {
+  font-family: "Gotham";
+}
+
+.btn-cinemax-primary {
+  background-color: var(--color-red) !important;
+  color: var(--color-white) !important;
+}
+
+.btn-cinemax-primary:hover {
+  background-color: var(--color-darkred) !important;
+}
+
+.btn-cinemax-primary:focus {
+  /* background-color: var(--color-darkred) !important; */
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .5);
 }

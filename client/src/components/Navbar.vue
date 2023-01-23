@@ -14,33 +14,34 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Découvrir</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/session">Cinéma</a>
-        </li>
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+            <a class="nav-link" href="/">Découvrir</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/session">Cinéma</a>
+            </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Quizz</a>
-        </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">Quizz</a>
+            </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-      </ul>
+            <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+            </li>
+        </ul>
 
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Inscription</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Connexion</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/register">Inscription</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Connexion</a>
+            </li>
+        </ul>
+            
+        </div>
+    </nav>
 </template>
 
 <style scoped>
