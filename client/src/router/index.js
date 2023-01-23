@@ -7,6 +7,7 @@ import UserAccountView from '../views/auth/UserAccount.vue'
 import MovieView from "../views/MovieView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 import BookingView from "../views/cinema/BookingView.vue";
+import ContactView from "../views/ContactView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+    },
+    {
+      path: "/contact",
+      name: "contact",
+      component: ContactView,
     },
   ],
 });
