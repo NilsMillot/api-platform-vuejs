@@ -14,8 +14,8 @@ const search = ref("");
 const result = reactive({ value: [] });
 
 const updateSearch = (e) => {
-    search.value = e.target.value
-}
+  search.value = e.target.value;
+};
 
 watch(search, async (newSearch) => {
   await fetch(
@@ -36,12 +36,12 @@ watch(search, async (newSearch) => {
   <main>
     <Banner />
 
-    <div class="container input-group mb-3 mt-5 w-50">
-  
-    </div>
+    <div class="container input-group mb-3 mt-5 w-50"></div>
 
-
-     <SearchBar @customEvent="updateSearch" placeholder="Choisissez un film..."/>
+    <SearchBar
+      @customEvent="updateSearch"
+      placeholder="Recherchez un film..."
+    />
 
     <div v-if="!search">
       <List title="Les mieux notés" :url="`${getUrlMovieBestRatedMovie()}`" />

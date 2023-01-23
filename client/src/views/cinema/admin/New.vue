@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="d-flex justify-content-end p-5">
-        <button class="btn btn-dark">Mes séances</button>
+        <button class="btn btn-cinemax-dark">Mes séances</button>
       </div>
 
       <div class="col-md-6">
@@ -71,8 +71,10 @@
         </div>
       </div>
       <div class="col-md-6">
-        
-        <SearchBar @customEvent="updateSearch" placeholder="Choisissez un film..."/>
+        <SearchBar
+          @customEvent="updateSearch"
+          placeholder="Choisissez un film..."
+        />
 
         <div>
           <div class="row mt-5">
@@ -98,9 +100,8 @@
 <script setup>
 import { watch, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { getImageFromSrc } from "../utils/tmdbCalls";
-import SearchBar from '../components/SearchBar.vue'
-
+import { getImageFromSrc } from "../../../utils/tmdbCalls";
+import SearchBar from "../../../components/SearchBar.vue";
 
 const router = useRouter();
 const search = ref("");
@@ -111,28 +112,27 @@ const room = ref(1);
 const result = reactive({ value: [] });
 const resultSearch = reactive({ id: "", title: "" });
 
-
 const updateSearch = (e) => {
-    search.value = e.target.value
-}
+  search.value = e.target.value;
+};
 
 const handleSubmit = () => {
-
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      sessionDatetime: new Date(new Date(date.value.toString() + " " +  time.value)),
+      sessionDatetime: new Date(
+        new Date(date.value.toString() + " " + time.value)
+      ),
       price: price.value,
-      room:room.value,
+      room: room.value,
       movieId: resultSearch.id,
-      movieTitle: resultSearch.title
+      movieTitle: resultSearch.title,
     }),
   };
   fetch("https://localhost/movie_screenings", requestOptions).then((response) =>
     console.log(response.json())
   );
-
 };
 
 const handleChange = (item) => {
