@@ -2,6 +2,7 @@
 import { reactive, ref, watch } from "vue";
 import Banner from "../components/Banner.vue";
 import List from "../components/List.vue";
+import SearchBar from "../components/SearchBar.vue";
 
 import {
   getUrlDiscoverMovieFromGenre,
@@ -12,6 +13,10 @@ import {
 const search = ref("");
 const result = reactive({ value: [] });
 
+const updateSearch = (e) => {
+    search.value = e.target.value
+}
+
 watch(search, async (newSearch) => {
   await fetch(
     `https://api.themoviedb.org/3/search/movie?api_key=${
@@ -21,7 +26,7 @@ watch(search, async (newSearch) => {
     .then((response) => response.json())
     .then(
       (data) =>
-        (result.value = data.results.filter(
+        (result.value = data.results?.filter(
           (item) => item.backdrop_path && item.poster_path
         ))
     );
@@ -32,13 +37,11 @@ watch(search, async (newSearch) => {
     <Banner />
 
     <div class="container input-group mb-3 mt-5 w-50">
-      <input
-        type="text"
-        v-model="search"
-        class="form-control"
-        placeholder="Recherchez un film..."
-      />
+  
     </div>
+
+
+     <SearchBar @customEvent="updateSearch" placeholder="Choisissez un film..."/>
 
     <div v-if="!search">
       <List title="Les mieux notés" :url="`${getUrlMovieBestRatedMovie()}`" />

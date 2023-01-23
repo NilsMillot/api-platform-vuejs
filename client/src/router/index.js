@@ -30,8 +30,8 @@ const router = createRouter({
     },
 
     {
-      path: "/cinema/sessions",
-      name: "all-sessions",
+      path: "/cinema/session",
+      name: "cinema-session",
       component: SessionsCinema,
     },
   ],

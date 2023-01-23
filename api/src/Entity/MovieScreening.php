@@ -29,6 +29,12 @@ class MovieScreening
     #[ORM\Column]
     private ?int $room = null;
 
+    #[ORM\Column]
+    private ?int $movie_id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $movie_title = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -78,6 +84,30 @@ class MovieScreening
     public function setRoom(int $room): self
     {
         $this->room = $room;
+
+        return $this;
+    }
+
+    public function getMovieId(): ?int
+    {
+        return $this->movie_id;
+    }
+
+    public function setMovieId(int $movie_id): self
+    {
+        $this->movie_id = $movie_id;
+
+        return $this;
+    }
+
+    public function getMovieTitle(): ?string
+    {
+        return $this->movie_title;
+    }
+
+    public function setMovieTitle(string $movie_title): self
+    {
+        $this->movie_title = $movie_title;
 
         return $this;
     }

@@ -1,103 +1,144 @@
 <template>
-     <div class="container">
-        <div class="row">
-            <div class="d-flex justify-content-end p-5">
-                <button class="btn btn-dark ">Mes séances</button>
+  <div class="container">
+    <div class="row">
+      <div class="d-flex justify-content-end p-5">
+        <button class="btn btn-dark">Mes séances</button>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card card-session shadow-sm">
+          <div>
+            <h3 class="pt-3">Séance</h3>
+            <hr />
+          </div>
+          <div class="card-body">
+            <div class="form-group mt-3">
+              <input
+                type="text"
+                class="form-control"
+                :value="resultSearch.title"
+                required
+                autofocus
+                disabled
+              />
+            </div>
+            <div class="form-group mt-3">
+              <input
+                type="date"
+                class="form-control"
+                v-model="date"
+                required
+                autofocus
+              />
+            </div>
+            <div class="form-group mt-3">
+              <input
+                type="time"
+                class="form-control"
+                v-model="time"
+                required
+                autofocus
+              />
+            </div>
+            <div class="form-group mt-3">
+              <input
+                type="number"
+                placeholder="12,30 €"
+                v-model="price"
+                class="form-control"
+                required
+                autofocus
+              />
             </div>
 
-            <div class="col-md-6">
-                <div class="card card-session shadow-sm">
-                    <div>
-                        <h3 class="pt-3">Séance</h3>
-                        <hr>
-                    </div>
-                    <div class="card-body">
-
-                            <div class="form-group mt-3">
-                                <input type="text" class="form-control" :value="resultSearch.title" required autofocus disabled>
-                            </div>
-                            <div class="form-group mt-3">
-                                <input type="date" class="form-control" v-model="date" required autofocus>
-                            </div>
-                            <div class="form-group mt-3">
-                                <input type="time" class="form-control" v-model="time"  required autofocus>
-                            </div>
-                            <div class="form-group mt-3">
-                                <input type="number" placeholder="12,30 €" v-model="price" class="form-control" required autofocus>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <button class="btn btn-danger mt-4" type="submit" @click.prevent="handleSubmit"><span>Enregistrer</span></button>
-                            </div>  
-                    </div>
-                </div>
+            <div class="form-group mt-3">
+              <select v-model="room" class="form-select">
+                <option value="1">Salle 1</option>
+                <option value="2">Salle 2</option>
+                <option value="2">Salle 3</option>
+              </select>
             </div>
-            <div class="col-md-6">
-                <div class="container input-group mb-3 ">
-                    <input
-                        type="text"
-                        v-model="search"
-                        class="form-control input-search"
-                        placeholder="Recherchez un film..."
-                    />
-                </div>
-
-                <div>
-                    <div class="row mt-5">
-                    <div class="list">
-                        <div v-for="(item, index) in result.value" :key="index">
-                            <div @click="handleChange(item)" class="block">
-                                <img
-                                class="listElements"
-                                :src="`${getImageFromSrc(
-                                    item.backdrop_path || item.poster_path
-                                )}`"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-center">
+              <button
+                class="btn btn-danger mt-4"
+                type="submit"
+                @click.prevent="handleSubmit"
+              >
+                <span>Enregistrer</span>
+              </button>
             </div>
+          </div>
         </div>
+      </div>
+      <div class="col-md-6">
+        
+        <SearchBar @customEvent="updateSearch" placeholder="Choisissez un film..."/>
+
+        <div>
+          <div class="row mt-5">
+            <div class="list">
+              <div v-for="(item, index) in result.value" :key="index">
+                <div @click="handleChange(item)" class="block">
+                  <img
+                    class="listElements"
+                    :src="`${getImageFromSrc(
+                      item.backdrop_path || item.poster_path
+                    )}`"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
 import { watch, reactive, ref } from "vue";
-import {
-  getImageFromSrc,
-} from "../utils/tmdbCalls";
+import { useRouter } from "vue-router";
+import { getImageFromSrc } from "../utils/tmdbCalls";
+import SearchBar from '../components/SearchBar.vue'
 
 
-let search = ref('');
+const router = useRouter();
+const search = ref("");
+const date = ref();
+const time = ref();
+const price = ref();
+const room = ref(1);
+const result = reactive({ value: [] });
+const resultSearch = reactive({ id: "", title: "" });
 
 
-let date = ref();
-let time = ref();
-let price = ref();
-
-let res = ref(null);
-
-let result = reactive({value: []});
-let resultSearch = reactive({id:'',title:''});
+const updateSearch = (e) => {
+    search.value = e.target.value
+}
 
 const handleSubmit = () => {
 
-    const requestOptions = {
+  const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionDatetime: new Date(date.value.toString()), price:price.value})
+    body: JSON.stringify({
+      sessionDatetime: new Date(new Date(date.value.toString() + " " +  time.value)),
+      price: price.value,
+      room:room.value,
+      movieId: resultSearch.id,
+      movieTitle: resultSearch.title
+    }),
   };
-  fetch("https://localhost/movie_screenings", requestOptions)
-    .then(response => console.log(response.json()))
+  fetch("https://localhost/movie_screenings", requestOptions).then((response) =>
+    console.log(response.json())
+  );
 
-}
+};
 
 const handleChange = (item) => {
-    resultSearch.id = item.id;
-    resultSearch.title = item.title;
-}
-
+  resultSearch.id = item.id;
+  resultSearch.title = item.title;
+};
 
 watch(search, async (newSearch) => {
   await fetch(
@@ -113,24 +154,19 @@ watch(search, async (newSearch) => {
         ))
     );
 });
-
-
-
 </script>
 
 <style scoped>
-
-h3, hr{
-    color: var(--color-white);
+h3,
+hr {
+  color: var(--color-white);
 }
 .card-session {
-    padding: 20px;
-    background-color: #2f2f2f;
-    color: var(--color-black);
-    box-shadow: 20px;
-    
+  padding: 20px;
+  background-color: #2f2f2f;
+  color: var(--color-black);
+  box-shadow: 20px;
 }
-
 
 .list {
   display: flex;
@@ -167,5 +203,4 @@ h3, hr{
   padding-left: 2em;
   background-color: #ffffff30;
 }
-
 </style>
