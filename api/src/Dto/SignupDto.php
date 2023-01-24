@@ -17,6 +17,14 @@ class SignupDto
     #[Assert\NotBlank]
     public string $status;
 
+    #[Assert\NotNull]
+    public bool $isCinema;
+
+    #[Assert\Null]
+    public string $name;
+
+
+
     /**
      * @return string
      */
@@ -79,5 +87,38 @@ class SignupDto
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+     /**
+     * @return bool
+     */
+    public function getIsCinema(): bool
+    {
+        return $this->isCinema;
+    }
+
+    /**
+     * @param bool $isCinema
+     */
+    public function setIsCinema(string $isCinema): void
+    {
+        $this->isCinema = $isCinema;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }
