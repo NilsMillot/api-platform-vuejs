@@ -10,6 +10,10 @@ import New from "../views/cinema/admin/New.vue";
 import List from "../views/cinema/admin/List.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 
+import NewCinemaView from "../views/admin/cinema/New.vue";
+import NewUserView from "../views/admin/user/NewUser.vue";
+import NewSessionView from "../views/admin/session/NewSession.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -62,6 +66,23 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+    },
+    {
+      path: "/admin/cinema/new",
+      name: "admin-cinema-new",
+      component: NewCinemaView,
+    },
+
+    {
+      path: "/admin/user/new",
+      name: "admin-user-new",
+      component: NewUserView,
+    },
+
+    {
+      path: "/admin/session/new",
+      name: "admin-session-new",
+      component: NewSessionView,
     },
   ],
 });
