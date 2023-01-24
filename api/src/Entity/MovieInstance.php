@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
     new Post(
         uriTemplate: '/movie-instances',
         controller: CreateMovieInstancesController::class,
+        openapiContext: ['description' => 'Create multiple movie instances of a movie'],
         input: CreateMovieInstancesDto::class,
     ),
 ])]
