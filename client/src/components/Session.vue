@@ -1,90 +1,93 @@
 <template>
-
-    <div class="row mt-4">
-            <div class="card m-2 shadow-sm card-global">
-                <div class="card-body m-2">
-                    <div class="d-flex">
-                        <div><img class="movie-picture" :src="`https://image.tmdb.org/t/p/original${result.value.backdrop_path}`"></div> 
-                        <div>
-                            <div class="mx-4">
-                                <h4 class="card-title">{{result.value.title}}</h4>
-                                <h5 class="card-subtitle mb-2 text-muted">Le Grand Rex</h5>
-                                <!-- <p class="card-subtitle mb-2 text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo excepturi recusandae accusamus corporis tempore, similique voluptatibus dolorem aperiam, expedita aliquam ipsum, exercitationem modi quidem ipsa nihil sit vero harum cumque?</p> -->
+    <div>
+        <div class="row mt-4" v-for="(movie,i) in movies" :key="i">
+                <div class="card m-2 shadow-sm card-global">
+                    <div class="card-body m-2">
+                        <div class="d-flex">
+                            <div><img class="movie-picture" :src="getImageFromSrc(movie.details.backdrop_path)"></div> 
+                            <div>
+                                <div class="mx-4">
+                                    <h4 class="card-title">{{movie.details.title}}</h4>
+                                    <!-- <h5 class="card-subtitle mb-2 text-muted">Le Grand Rex</h5> -->
+                                    <p class="card-subtitle mb-2 text-muted">{{movie.details.overview}}</p>
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="session mt-4">
+                            <a :href="'/booking?id=' + session.id" class="card-link" v-for="(session,i) in movie.sessions" :key="i">
+                                <div class="card card-datetime">
+                                    <h6>{{session.sessionDatetime.split("T")[0]}}</h6>
+                                    <h6>{{session.sessionDatetime.split("T")[1].substr(0,5)}}</h6>
+                                    <h6>VF</h6>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="session mt-4">
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                        <a href="/booking" class="card-link">
-                            <div class="card card-datetime">
-                                <h5>date</h5>
-                                <h6>heure</h6>
-                                <p>VF</p>
-                            </div>
-                        </a>
-                    </div>  
                 </div>
-            </div>
 
+        </div>
     </div>
 </template>
 
 <script setup>
 import { onMounted } from "vue";
-import { reactive } from 'vue';
+import { reactive,ref } from 'vue';
+import {
+    getImageFromSrc,
+} from "../utils/tmdbCalls";
 
 const result = reactive({value : []})
+const movie = reactive({value : []})
+const movies = ref([])
 
-onMounted( async () => {
-    await fetchMovies();
+onMounted( async () =>{
+    await fetchSessions();
 
+    // Date supérieur > NOW
+    result.value = result.value.filter(i => new Date(i.sessionDatetime) > new Date());
+    // Remplacer
+    result.value = result.value.filter(i => i.creator == "/users/1");
+
+    // Tableau de film unique
+    let unique =  result.value.filter((item, index, self) => self.findIndex(t => t.movieId === item.movieId) === index);
+
+    for (let i = 0; i < unique.length; i++){
+        await fetchMovie(unique[i].movieId);
+        let sessions = result.value.filter( j => j.movieId == unique[i].movieId);
+        movies.value.push( {
+            "details" : movie.value,
+            "sessions" : sessions
+        });
+    }
+   
 })
 
-const fetchMovies = ( async () => {
-    return fetch(`https://api.themoviedb.org/3/movie/550?api_key=4d3df75e4b4f46885d6f1504e09d1808`)
-    .then(response => response.json())
-    .then(data => result.value = data);
-})
+const fetchMovie = async (id) => {
+    
+    return fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${
+      import.meta.env.VITE_TMDB_API_KEY
+    }&language=fr`)
+    .then((response) => response.json())
+    .then((data) => {movie.value = data});
+}
 
+const fetchSessions = async () => {
+    return fetch('https://localhost/movie_screenings')
+    .then((response) => response.json())
+    .then((data) => (result.value = data['hydra:member']));
+}
 </script>
 
 
 <style scoped>
+
+.input-search {
+  border-radius: 15px;
+  border: 1px solid var(--color-black);
+  padding-left: 2em;
+  background-color: #ffffff30;
+}
 .card-global{
     width: 100%;
     height: auto;

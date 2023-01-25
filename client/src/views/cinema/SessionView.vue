@@ -3,19 +3,8 @@ import Session from '../../components/Session.vue';
 import SessionsBanner from '../../components/SessionsBanner.vue';
 import {onUpdated, reactive, ref} from 'vue'
 
-const sessions = ref([])
 
-const fetchSessions = async () => {
-  const response = await fetch('http://localhost:3000/session')
-  const data = await response.json()
-  sessions.value = data
-}
 
-onUpdated(() => {
-  fetchSessions()
-})
-
-fetchSessions()
 
 </script>
 
