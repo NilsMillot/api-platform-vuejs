@@ -6,33 +6,41 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MovieScreeningRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieScreeningRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['session:read']],
+)]
 class MovieScreening
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $id = null;
 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['session:read'])]
     private ?\DateTimeInterface $session_datetime = null;
 
     #[ORM\Column]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]
+    #[Groups(['session:read'])]
     private ?User $creator = null;
 
     #[ORM\Column]
     private ?int $room = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $movie_id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['session:read'])]
     private ?string $movie_title = null;
 
     public function getId(): ?int

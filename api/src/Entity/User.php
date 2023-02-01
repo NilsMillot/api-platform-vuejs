@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
@@ -15,10 +17,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(operations: [
+    new Get(),
+    new GetCollection(),
     new Patch(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
@@ -36,6 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
