@@ -80,10 +80,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
         $this->movieInstances = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -284,6 +288,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setBuyerId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getBuyerId() === $this) {
+                $booking->setBuyerId(null);
+            }
+        }
 
         return $this;
     }

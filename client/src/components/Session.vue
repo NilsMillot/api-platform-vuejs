@@ -84,7 +84,10 @@ watch(search, async (newSearch) => {
   result.value = result.value.filter(
     (i) => new Date(i.session_datetime) > new Date()
   );
+
+  
   result.value = result.value.filter((i) => i.creator.id == newSearch);
+ 
   let unique = result.value.filter(
     (item, index, self) =>
       self.findIndex((t) => t.movie_id === item.movie_id) === index

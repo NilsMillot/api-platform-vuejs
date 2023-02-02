@@ -111,12 +111,31 @@ const price = ref();
 const room = ref(1);
 const result = reactive({ value: [] });
 const resultSearch = reactive({ id: "", title: "" });
-
+const session = ref(null);
 const updateSearch = (e) => {
   search.value = e.target.value;
 };
 
-const handleSubmit = () => {
+
+const generateSeat = async (id) => {
+  for (let i = 1; i <= 30; i++){
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status: 1,
+        seat: 1,
+        sessionId: "/movie_screenings/"+ id,
+        buyerId: null,
+      }),
+    };
+    await fetch("https://localhost/bookings", requestOptions).then((response) =>
+      console.log(response.json())
+    );
+  }
+}
+
+const handleSubmit = async () => {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -130,9 +149,14 @@ const handleSubmit = () => {
       movieTitle: resultSearch.title,
     }),
   };
-  fetch("https://localhost/movie_screenings", requestOptions).then((response) =>
-    console.log(response.json())
+  await fetch("https://localhost/movie_screenings", requestOptions)
+    .then((response) =>response.json()
+    .then((data) => console.log(data))
   );
+
+  await generateSeat(4);
+
+
 };
 
 const handleChange = (item) => {
