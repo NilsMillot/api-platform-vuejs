@@ -1,12 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/auth/Login.vue'
-import RegisterView from '../views/auth/Register.vue'
-import ForgetPasswordView from '../views/auth/ForgetPassword.vue'
-import UserAccountView from '../views/auth/UserAccount.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import LoginView from "../views/auth/Login.vue";
+import RegisterView from "../views/auth/Register.vue";
+import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
+import UserAccountView from "../views/auth/UserAccount.vue";
 import MovieView from "../views/MovieView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 import BookingView from "../views/cinema/BookingView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,24 +18,24 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
+      path: "/login",
+      name: "login",
+      component: LoginView,
     },
     {
-      path: '/register',
-      name: 'register',
-      component: RegisterView
+      path: "/register",
+      name: "register",
+      component: RegisterView,
     },
     {
-      path: '/forget-password',
-      name: 'forget-password',
-      component: ForgetPasswordView
+      path: "/forget-password",
+      name: "forget-password",
+      component: ForgetPasswordView,
     },
     {
-      path: '/user-account',
-      name: 'user-account',
-      component: UserAccountView
+      path: "/user-account",
+      name: "user-account",
+      component: UserAccountView,
     },
     {
       path: "/session",
@@ -50,6 +51,11 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+    },
+    {
+      path: "/:catchAll(.*)",
+      name: "Not Found",
+      component: NotFoundView,
     },
   ],
 });

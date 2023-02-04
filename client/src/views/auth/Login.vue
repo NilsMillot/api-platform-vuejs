@@ -10,8 +10,7 @@ const errorMessage = ref(null);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
-  // TODO: Pass the localhost to the env variable
-  const response = await fetch("https://localhost/auth", {
+  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +38,6 @@ const handleSubmitForm = async (e) => {
         <h3 class="pt-3">S'identifier</h3>
       </div>
       <div class="card-body">
-        <!-- Same with utilisation of reactive formInputs and the function handleSubmitForm -->
         <form
           class="d-flex flex-column justify-content-center"
           @submit="handleSubmitForm"
