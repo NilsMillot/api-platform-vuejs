@@ -14,11 +14,9 @@ use Symfony\Component\Security\Core\Security;
 #[AsController]
 class CurrentUserController extends AbstractController
 {
-    public function __invoke(UserRepository $userRepository, Request $request, Security $security): JsonResponse
+    public function __invoke(UserRepository $userRepository, Request $request): JsonResponse
     {
-      $user = $security->getUser();
-
-      var_dump($user);
+      $user = $this->getUser();
 
       if ($user instanceof User) {
           return $this->json($user);
@@ -26,6 +24,5 @@ class CurrentUserController extends AbstractController
 
       return $this->json(null, 404);
       
-      // return new JsonResponse($user, 200, [], true);
     }
 }
