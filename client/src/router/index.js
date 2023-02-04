@@ -6,6 +6,8 @@ import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import MovieView from "../views/MovieView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
+import New from "../views/cinema/admin/New.vue";
+import List from "../views/cinema/admin/List.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
@@ -46,6 +48,16 @@ const router = createRouter({
       path: "/movie",
       name: "movie",
       component: MovieView,
+    },
+    {
+      path: "/cinema/session/new",
+      name: "new-session",
+      component: New,
+    },
+    {
+      path: "/cinema/session",
+      name: "cinema-session",
+      component: List,
     },
     {
       path: "/booking",
