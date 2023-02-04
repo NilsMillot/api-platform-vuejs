@@ -53,15 +53,15 @@ h2 {
 }
 
 .listElements {
-  width: 11.5rem;
-  max-height: 100px;
+  width: 14rem;
   object-fit: cover;
   border-radius: 4px;
   transition: all 1s;
 }
 
 .listElements:hover {
-  transform: scale(1.05);
+  transform: scale(1.2);
+  z-index: 10;
 }
 
 .block {
