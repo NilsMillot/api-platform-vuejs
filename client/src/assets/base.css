@@ -1,13 +1,17 @@
 /* color palette from <https://github.com/vuejs/theme> */
-:root {
 
+@font-face {
+  font-family: "Gotham";
+  src: url('./fonts/Gotham/GothamBook.ttf');
+}
+
+:root {
   --color-red: #db0000;
   --color-black: #141414;
   --color-white: #ffffff;
   --color-grey-white: #f5f5f5;
   --color-grey: rgb(20 20 20);
   --color-darkred: #831010;
-  
 }
 
 *,
@@ -19,17 +23,38 @@
   font-weight: normal;
 }
 
-
 @font-face {
   font-family: "Gotham";
-  src: url('./fonts/Gotham/GothamBook.ttf');
+  src: url("./fonts/Gotham/GothamBook.ttf");
+}
+
+.btn-cinemax-dark {
+  background-color: #ffffff30 !important;
+  color: #ffffff !important;
 }
 
 body {
   min-height: 100vh;
-  background-color:var(--color-black) !important;
+  background-color: var(--color-black) !important;
   color: var(--color-black);
   line-height: 1.6;
-  /* font-family: "Gotham" !important; */
   font-size: 15px;
+}
+
+span, p, h1, h2, h3, h4, h5, h6 {
+  font-family: "Gotham";
+}
+
+.btn-cinemax-primary {
+  background-color: var(--color-red) !important;
+  color: var(--color-white) !important;
+}
+
+.btn-cinemax-primary:hover {
+  background-color: var(--color-darkred) !important;
+}
+
+.btn-cinemax-primary:focus {
+  /* background-color: var(--color-darkred) !important; */
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .5);
 }
