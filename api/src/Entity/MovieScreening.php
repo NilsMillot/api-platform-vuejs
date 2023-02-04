@@ -28,6 +28,7 @@ class MovieScreening
     private ?\DateTimeInterface $session_datetime = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]

@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use App\Controller\BookingController;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +15,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(
     // denormalizationContext: ['groups' => ['booking:write']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(),
+        new Post(
+            uriTemplate: '/booking/payment',
+            controller: BookingController::class,
+            openapiContext: ['description' => 'Payment seat cinema'],
+        ),
+    ]
 )]
 
 class Booking
