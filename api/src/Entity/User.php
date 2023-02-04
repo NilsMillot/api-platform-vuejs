@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\EnableAccountController;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
+use App\Controller\CurrentUserController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -29,6 +31,12 @@ use App\Controller\SignupController;
         controller: SignupController::class,
         openapiContext: ['description' => 'Register an account'],
         input: SignupDto::class
+    ),
+    new GetCollection(
+        // normalizationContext: ['groups' => ['user_get', 'user_read']],
+        uriTemplate: '/me',
+        controller: CurrentUserController::class,
+        openapiContext: ['description' => 'Get current user'],
     ),
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
