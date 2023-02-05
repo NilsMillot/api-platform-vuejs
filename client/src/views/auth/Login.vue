@@ -22,7 +22,7 @@ const handleSubmitForm = async (e) => {
   if (data.token) {
     errorMessage.value = null;
     localStorage.setItem("token", data.token);
-    location.href = "/";
+    // location.href = "/";
   } else if (data.message) {
     errorMessage.value = data.message;
   } else if (data.error) {

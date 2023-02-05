@@ -71,12 +71,14 @@ onMounted(async () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-  const currentUser = await response.json();
-  if (currentUser.roles) {
-    isCurrentUserLoggedIn.value = true;
+  if (localStorage.getItem("token")) {
+    const currentUser = await response.json();
+    if (currentUser.roles) {
+      isCurrentUserLoggedIn.value = true;
+    }
+    currentUserRoles.value = currentUser.roles;
+    currentUserEmail.value = currentUser.email;
   }
-  currentUserRoles.value = currentUser.roles;
-  currentUserEmail.value = currentUser.email;
 });
 
 const handleDisconnect = () => {
