@@ -15,7 +15,7 @@ docker compose exec php bin/console make:entity
 ### Update composer dependencies
 
 ```
-docker compose exec composer install
+docker compose exec php composer install
 ```
 
 ### Generate JWT Certificates

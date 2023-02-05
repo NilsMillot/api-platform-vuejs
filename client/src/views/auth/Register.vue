@@ -129,7 +129,7 @@ const handleSubmitForm = async (e) => {
 .register-vue_background {
   display: flex;
   background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),
-    url("https://wallpaper.dog/large/20493433.jpg");
+    url("../../assets/background.jpeg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

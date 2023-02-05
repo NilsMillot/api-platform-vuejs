@@ -43,7 +43,7 @@ watch(search, async (newSearch) => {
       placeholder="Recherchez un film..."
     />
 
-    <div v-if="!search">
+    <div v-if="!search" class="ListsPropositions">
       <List title="Les mieux notés" :url="`${getUrlMovieBestRatedMovie()}`" />
       <List
         title="Films d'action"
@@ -55,7 +55,7 @@ watch(search, async (newSearch) => {
       />
     </div>
 
-    <div v-else>
+    <div v-else class="ListsPropositions">
       <div>
         <div class="row mt-5">
           <h2 class="mx-3">{{ result.value?.length }} Résultat(s)</h2>
@@ -96,15 +96,15 @@ h2 {
 }
 
 .listElements {
-  width: 11.5rem;
-  max-height: 100px;
+  width: 14rem;
   object-fit: cover;
   border-radius: 4px;
   transition: all 1s;
 }
 
 .listElements:hover {
-  transform: scale(1.05);
+  transform: scale(1.2);
+  z-index: 10;
 }
 
 .block {
@@ -116,5 +116,9 @@ h2 {
 
 .list::-webkit-scrollbar {
   display: none;
+}
+
+.ListsPropositions {
+  width: 97vw;
 }
 </style>

@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
 use App\Controller\CurrentUserController;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -33,10 +34,9 @@ use App\Controller\CurrentUserController;
         input: SignupDto::class
     ),
     new GetCollection(
-        // normalizationContext: ['groups' => ['user_get', 'user_read']],
         uriTemplate: '/me',
         controller: CurrentUserController::class,
-        openapiContext: ['description' => 'Get current user'],
+        openapiContext: ['description' => 'Get current user']
     ),
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -46,9 +46,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups('user:read')]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+    #[Groups('user:read')]
     #[ORM\Column]
     private array $roles = [];
 
@@ -59,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $adress = null;
 
     #[ORM\Column]
@@ -80,6 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $name = null;
 
     public function __construct()
