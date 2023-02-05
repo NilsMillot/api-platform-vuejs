@@ -1,8 +1,9 @@
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const movie = reactive({ value: {} });
 const quantity = reactive({ value: 0 });
+const isCurrentUserAdmin = ref(false);
 
 onMounted(async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -19,8 +20,18 @@ onMounted(async () => {
   movie.value.background = `https://image.tmdb.org/t/p/w1280${movie.value.backdrop_path}`;
   movie.value.country = movie.value.production_countries[0].iso_3166_1;
   movie.value.movieDuration = Math.round(movie.value.runtime / 60);
-  // TODO: Remove this console.log
-  console.log(movie);
+
+  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  const currentUser = await response.json();
+  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
+    isCurrentUserAdmin.value = true;
+  }
 
   // TODO: fetch number of movies in stock like this ? -->
   //
@@ -76,6 +87,7 @@ const handleSubmitChangeStock = (quantityVal) => {
         </button>
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
         <form
+          v-if="isCurrentUserAdmin"
           @submit.prevent="handleSubmitChangeStock(quantity)"
           class="movie-view__form-quantity"
         >

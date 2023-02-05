@@ -33,7 +33,7 @@ use App\Controller\CurrentUserController;
         input: SignupDto::class
     ),
     new GetCollection(
-        // normalizationContext: ['groups' => ['user_get', 'user_read']],
+        normalizationContext: ['groups' => ['user:read']],
         uriTemplate: '/me',
         controller: CurrentUserController::class,
         openapiContext: ['description' => 'Get current user'],
@@ -50,6 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**
@@ -79,6 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
