@@ -10,6 +10,7 @@ import SessionView from "../views/cinema/SessionView.vue";
 import New from "../views/cinema/admin/New.vue";
 import List from "../views/cinema/admin/List.vue";
 import BookingView from "../views/cinema/BookingView.vue";
+import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
 const router = createRouter({
@@ -70,6 +71,11 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+    },
+    {
+      path: "/payment/success",
+      name: "payment",
+      component: SuccessView,
     },
     {
       path: "/:catchAll(.*)",

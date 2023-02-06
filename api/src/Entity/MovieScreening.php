@@ -4,36 +4,58 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MovieScreeningRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieScreeningRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['session:read']],
+)]
 class MovieScreening
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $id = null;
 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['session:read'])]
     private ?\DateTimeInterface $session_datetime = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
+    #[Assert\NotNull]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]
+    #[Groups(['session:read'])]
     private ?User $creator = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $room = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $movie_id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['session:read'])]
     private ?string $movie_title = null;
+
+    #[ORM\OneToMany(mappedBy: 'session_id', targetEntity: Booking::class)]
+    private Collection $bookings;
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -108,6 +130,36 @@ class MovieScreening
     public function setMovieTitle(string $movie_title): self
     {
         $this->movie_title = $movie_title;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setSessionId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getSessionId() === $this) {
+                $booking->setSessionId(null);
+            }
+        }
 
         return $this;
     }
