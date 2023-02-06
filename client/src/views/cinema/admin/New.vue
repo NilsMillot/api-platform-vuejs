@@ -116,24 +116,24 @@ const updateSearch = (e) => {
   search.value = e.target.value;
 };
 
-
 const generateSeat = async (id) => {
-  for (let i = 1; i <= 30; i++){
+  for (let i = 1; i <= 30; i++) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         status: 1,
-        seat: 1,
-        sessionId: "/movie_screenings/"+ id,
+        seat: i,
+        sessionId: "/movie_screenings/" + id,
         buyerId: null,
       }),
     };
-    await fetch("https://localhost/bookings", requestOptions).then((response) =>
-      console.log(response.json())
-    );
+    await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/bookings`,
+      requestOptions
+    ).then((response) => console.log(response.json()));
   }
-}
+};
 
 const handleSubmit = async () => {
   const requestOptions = {
@@ -149,14 +149,12 @@ const handleSubmit = async () => {
       movieTitle: resultSearch.title,
     }),
   };
-  await fetch("https://localhost/movie_screenings", requestOptions)
-    .then((response) =>response.json()
-    .then((data) => console.log(data))
-  );
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`,
+    requestOptions
+  ).then((response) => response.json().then((data) => (session.value = data)));
 
-  await generateSeat(4);
-
-
+  await generateSeat(session.value.id);
 };
 
 const handleChange = (item) => {

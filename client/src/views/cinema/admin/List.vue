@@ -17,7 +17,7 @@
             class="list-group-item list"
           >
             <h5>{{ session.movie_title }}</h5>
-            <p class="p-date">{{ session.sessionDatetime.split("T")[0] }}</p>
+            <p class="p-date">{{ session.session_datetime.split("T")[0] }}</p>
           </li>
         </ul>
       </div>
@@ -121,9 +121,9 @@ onMounted(async () => {
 const sessionSelected = (session) => {
   details.id = session.id;
   details.movie_title = session.movie_title;
-  details.date = session.sessionDatetime.split("T")[0];
+  details.date = session.session_datetime.split("T")[0];
   details.price = session.price;
-  details.time = session.sessionDatetime.split("T")[1].substr(0, 5);
+  details.time = session.session_datetime.split("T")[1].substr(0, 5);
   details.room = session.room;
   details.movie_id = session.movie_id;
 };
@@ -133,7 +133,7 @@ const handleDelete = () => {
     method: "DELETE",
   };
   fetch(
-    `https://localhost/movie_screenings/${details.id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${details.id}`,
     requestOptions
   ).then((response) => console.log(response));
 };
@@ -151,13 +151,13 @@ const handleSubmit = () => {
     }),
   };
   fetch(
-    `https://localhost/movie_screenings/${details.id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${details.id}`,
     requestOptions
   ).then((response) => console.log(response.json()));
 };
 
 const fetchSessions = async () => {
-  return fetch("https://localhost/movie_screenings")
+  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`)
     .then((response) => response.json())
     .then((data) => (results.value = data["hydra:member"]));
 };

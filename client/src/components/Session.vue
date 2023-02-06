@@ -65,7 +65,7 @@ const cinema = reactive({ value: [] });
 const search = ref("");
 
 const fetchCinema = async () => {
-  return fetch("https://localhost/users")
+  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users`)
     .then((response) => response.json())
     .then(
       (data) =>
@@ -85,9 +85,8 @@ watch(search, async (newSearch) => {
     (i) => new Date(i.session_datetime) > new Date()
   );
 
-  
   result.value = result.value.filter((i) => i.creator.id == newSearch);
- 
+
   let unique = result.value.filter(
     (item, index, self) =>
       self.findIndex((t) => t.movie_id === item.movie_id) === index
@@ -129,7 +128,7 @@ const fetchMovie = async (id) => {
 };
 
 const fetchSessions = async () => {
-  return fetch("https://localhost/movie_screenings")
+  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`)
     .then((response) => response.json())
     .then((data) => (result.value = data["hydra:member"]));
 };
