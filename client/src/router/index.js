@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/Login.vue";
 import RegisterView from "../views/auth/Register.vue";
+import RegisterCinemaView from "../views/auth/RegisterCinema.vue";
 import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import EnableAccountView from "../views/auth/EnableAccount.vue";
@@ -30,6 +31,11 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    {
+      path: "/register-cinema",
+      name: "register-cinema",
+      component: RegisterCinemaView,
     },
     {
       path: "/forget-password",
