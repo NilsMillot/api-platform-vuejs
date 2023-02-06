@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieScreeningRepository::class)]
 #[ApiResource(
@@ -29,6 +30,7 @@ class MovieScreening
 
     #[ORM\Column]
     #[Groups(['session:read'])]
+    #[Assert\NotNull]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]
@@ -36,6 +38,7 @@ class MovieScreening
     private ?User $creator = null;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
     private ?int $room = null;
 
     #[ORM\Column]
