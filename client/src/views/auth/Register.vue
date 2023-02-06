@@ -12,9 +12,26 @@ const errorMessage = ref(null);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
-  console.log(formInputs);
+  const requestData = {
+    name: formInputs.name,
+    email: formInputs.email,
+    password: formInputs.password,
+    adress: "Pas d'adresse",
+    isCinema: false,
+    status: 'Aucun'
+  };
 
-  // TODO: Call the API to register the user
+  fetch(`${import.meta.env.VITE_API_SERVER_URL}/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    });
 };
 </script>
 
@@ -129,7 +146,7 @@ const handleSubmitForm = async (e) => {
 .register-vue_background {
   display: flex;
   background-image: linear-gradient(rgba(0, 0, 0, 0.604), rgba(0, 0, 0, 0.649)),
-    url("https://wallpaper.dog/large/20493433.jpg");
+    url("../../assets/background.jpeg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

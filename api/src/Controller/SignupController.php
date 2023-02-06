@@ -12,19 +12,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 
 #[AsController]
 class SignupController extends AbstractController
 {
-    public function __invoke(ValidatorInterface $validator, SignupDto $signupDto, MailerInterface $mailer, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository): JsonResponse
+    public function __invoke(ValidatorInterface $validator, SignupDto $signupDto, MailerInterface $mailer, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $validator->validate($signupDto);
 
         $user = new User();
         $user->setEmail($signupDto->email);
-        $user->setPassword($signupDto->password);
+        $user->setPassword($passwordHasher->hashPassword($user, $signupDto->password));
         $user->setConfirmationToken(bin2hex(random_bytes(32)));
 
         if ($signupDto->isCinema){
@@ -36,7 +37,7 @@ class SignupController extends AbstractController
 
         $user = $userRepository->findOneBy(['email' => $signupDto->email]);
 
-        $enableAccountLink = $_ENV['CLIENT_BASE_URL'] . '/enable_account' .  '?token=' . $user->getConfirmationToken();
+        $enableAccountLink = $_ENV['CLIENT_BASE_URL'] . '/enable-account/' . $user->getId() . '?token=' . $user->getConfirmationToken();
         $emailBody = $this->createEmailBody($enableAccountLink);
 
         $email = (new Email())

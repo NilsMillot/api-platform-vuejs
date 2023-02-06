@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
@@ -17,16 +17,19 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
+use App\Controller\CurrentUserController;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(operations: [
     new Get(),
     new GetCollection(),
-    new Patch(
+    new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
+        openapiContext: ['description' => 'Enable an account'],
         input: EnableAccountDto::class
     ),
     new Post(
@@ -34,6 +37,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
         controller: SignupController::class,
         openapiContext: ['description' => 'Register an account'],
         input: SignupDto::class
+    ),
+    new GetCollection(
+        uriTemplate: '/me',
+        controller: CurrentUserController::class,
+        openapiContext: ['description' => 'Get current user']
     ),
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -44,19 +52,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['session:read'])]
     private ?int $id = null;
 
+    #[Groups('user:read')]
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
+    #[Groups('user:read')]
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $adress = null;
 
     #[ORM\Column]
@@ -78,6 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
