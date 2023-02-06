@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
@@ -18,13 +18,15 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(operations: [
-    new Patch(
+    new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
+        openapiContext: ['description' => 'Enable an account'],
         input: EnableAccountDto::class
     ),
     new Post(
@@ -48,16 +50,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups('user:read')]
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[Groups('user:read')]
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]

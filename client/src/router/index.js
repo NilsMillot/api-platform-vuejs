@@ -4,6 +4,7 @@ import LoginView from "../views/auth/Login.vue";
 import RegisterView from "../views/auth/Register.vue";
 import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
+import EnableAccountView from "../views/auth/EnableAccount.vue";
 import MovieView from "../views/MovieView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 import New from "../views/cinema/admin/New.vue";
@@ -38,6 +39,12 @@ const router = createRouter({
       path: "/user-account",
       name: "user-account",
       component: UserAccountView,
+    },
+    {
+      path: "/enable-account/:id",
+      name: "enable-account",
+      query: { token: String },
+      component: EnableAccountView,
     },
     {
       path: "/session",

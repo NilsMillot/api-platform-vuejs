@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
+import router from "@/router";
 
 const formInputs = reactive({
   email: "",
@@ -22,7 +23,7 @@ const handleSubmitForm = async (e) => {
   if (data.token) {
     errorMessage.value = null;
     localStorage.setItem("token", data.token);
-    // location.href = "/";
+    await router.push("/");
   } else if (data.message) {
     errorMessage.value = data.message;
   } else if (data.error) {
