@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource]
@@ -25,10 +26,12 @@ class Movie
     private array $genre = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $poster_path = null;
+    #[SerializedName('poster_path')]
+    private ?string $posterPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $backdrop_path = null;
+    #[SerializedName('backdrop_path')]
+    private ?string $backdropPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
@@ -37,25 +40,31 @@ class Movie
     private ?bool $video = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $vote_average = null;
+    #[SerializedName('vote_average')]
+    private ?float $voteAverage = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $vote_count = null;
+    #[SerializedName('vote_count')]
+    private ?int $voteCount = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $runtime = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $release_date = null;
+    #[SerializedName('release_date')]
+    private ?string $releaseDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $original_language = null;
+    #[SerializedName('original_language')]
+    private ?string $originalLanguage = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $original_title = null;
+    #[SerializedName('original_title')]
+    private ?string $originalTitle = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $overwiew = null;
+    #[ORM\Column(length: 10000, nullable: true)]
+    #[SerializedName('overview')]
+    private ?string $overview = null;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: MovieInstance::class, orphanRemoval: true)]
     private Collection $movieInstances;
@@ -102,24 +111,24 @@ class Movie
 
     public function getPosterPath(): ?string
     {
-        return $this->poster_path;
+        return $this->posterPath;
     }
 
-    public function setPosterPath(?string $poster_path): self
+    public function setPosterPath(?string $posterPath): self
     {
-        $this->poster_path = $poster_path;
+        $this->posterPath = $posterPath;
 
         return $this;
     }
 
     public function getBackdropPath(): ?string
     {
-        return $this->backdrop_path;
+        return $this->backdropPath;
     }
 
-    public function setBackdropPath(?string $backdrop_path): self
+    public function setBackdropPath(?string $backdropPath): self
     {
-        $this->backdrop_path = $backdrop_path;
+        $this->backdropPath = $backdropPath;
 
         return $this;
     }
@@ -148,26 +157,26 @@ class Movie
         return $this;
     }
 
-    public function getVoteAverage(): ?int
+    public function getVoteAverage(): ?float
     {
-        return $this->vote_average;
+        return $this->voteAverage;
     }
 
-    public function setVoteAverage(int $vote_average): self
+    public function setVoteAverage(float $voteAverage): self
     {
-        $this->vote_average = $vote_average;
+        $this->voteAverage = $voteAverage;
 
         return $this;
     }
 
     public function getVoteCount(): ?int
     {
-        return $this->vote_count;
+        return $this->voteCount;
     }
 
-    public function setVoteCount(int $vote_count): self
+    public function setVoteCount(int $voteCount): self
     {
-        $this->vote_count = $vote_count;
+        $this->voteCount = $voteCount;
 
         return $this;
     }
@@ -186,48 +195,48 @@ class Movie
 
     public function getReleaseDate(): ?string
     {
-        return $this->release_date;
+        return $this->releaseDate;
     }
 
-    public function setReleaseDate(string $release_date): self
+    public function setReleaseDate(string $releaseDate): self
     {
-        $this->release_date = $release_date;
+        $this->releaseDate = $releaseDate;
 
         return $this;
     }
 
     public function getOriginalLanguage(): ?string
     {
-        return $this->original_language;
+        return $this->originalLanguage;
     }
 
-    public function setOriginalLanguage(string $original_language): self
+    public function setOriginalLanguage(string $originalLanguage): self
     {
-        $this->original_language = $original_language;
+        $this->originalLanguage = $originalLanguage;
 
         return $this;
     }
 
     public function getOriginalTitle(): ?string
     {
-        return $this->original_title;
+        return $this->originalTitle;
     }
 
-    public function setOriginalTitle(string $original_title): self
+    public function setOriginalTitle(string $originalTitle): self
     {
-        $this->original_title = $original_title;
+        $this->originalTitle = $originalTitle;
 
         return $this;
     }
 
-    public function getOverwiew(): ?string
+    public function getOverview(): ?string
     {
-        return $this->overwiew;
+        return $this->overview;
     }
 
-    public function setOverwiew(?string $overwiew): self
+    public function setOverview(?string $overview): self
     {
-        $this->overwiew = $overwiew;
+        $this->overview = $overview;
 
         return $this;
     }
