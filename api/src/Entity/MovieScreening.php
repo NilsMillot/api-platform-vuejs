@@ -26,6 +26,7 @@ class MovieScreening
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['session:read'])]
+    #[Assert\GreaterThan("today", message:"La date doit être supérieure à la date d'aujourd'hui")]
     private ?\DateTimeInterface $session_datetime = null;
 
     #[ORM\Column]
