@@ -18,7 +18,7 @@ const handleSubmitForm = async (e) => {
     password: formInputs.password,
     adress: "Pas d'adresse",
     isCinema: false,
-    status: 'Aucun'
+    status: '1'
   };
 
   fetch(`${import.meta.env.VITE_API_SERVER_URL}/signup`, {
