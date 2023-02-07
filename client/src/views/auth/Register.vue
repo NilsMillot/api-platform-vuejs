@@ -38,7 +38,10 @@ const handleSubmitForm = async (e) => {
 
   if (response.status === 201) {
     violations.value = [];
-    await router.push("/login");
+    await router.push({
+      name: "login",
+      query: { message: "Votre compte a été créé, vérifiez votre boite mail pour activer votre compte" },
+    });
   }
 
   if (response.status === 422) {
