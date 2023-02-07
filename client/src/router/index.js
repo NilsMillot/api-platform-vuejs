@@ -13,6 +13,11 @@ import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
+
+import NewSessionAdmin from "../views/admin/session/New.vue";
+import ListSessionAdmin from "../views/admin/session/List.vue";
+import EditSessionAdmin from "../views/admin/session/Edit.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -77,6 +82,28 @@ const router = createRouter({
       name: "payment",
       component: SuccessView,
     },
+
+    {
+      path: "/admin/session/new",
+      name: "admin-session-new",
+      component: NewSessionAdmin,
+    },
+
+    {
+      path: "/admin/session/list",
+      name: "admin-session-list",
+      component: ListSessionAdmin,
+    },
+
+    {
+      path: "/admin/session/edit/:id",
+      name: "admin-session-edit",
+      query: {id:Number},
+      component: EditSessionAdmin,
+    },
+
+
+
     {
       path: "/:catchAll(.*)",
       name: "Not Found",
