@@ -2,11 +2,13 @@
 
 namespace App\Dto;
 
+use App\Validators\UniqueEmail;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class SignupDto
 {
     #[Assert\Email]
+    #[UniqueEmail]
     public string $email;
     #[Assert\NotBlank]
     #[Assert\Length(min: 8)]
