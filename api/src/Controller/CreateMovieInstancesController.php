@@ -29,13 +29,14 @@ class CreateMovieInstancesController extends AbstractController
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateMovieInstancesDto::class, 'json');
 
-        $tmdbMovieId = $dto->getTmdbMovieId();
+        $movieId = $dto->getMovieId();
         $quantityToCreate = $dto->getQuantity();
 
-        $movieFromTmdb = $this->getMovieFromTmdb($tmdbMovieId);
+        $movieFromTmdb = $this->getMovieFromTmdb($movieId);
         $movieFromDb = $this->movieRepository->findOneBy(['title' => $movieFromTmdb->getTitle()]);
 
         $movie = $movieFromDb ?? $movieFromTmdb;
+        $movie->setId($movieId);
         $movie->setQuantity($movie->getQuantity() + $quantityToCreate);
 
         for ($i = 0; $i < $quantityToCreate; $i++) {
@@ -49,13 +50,13 @@ class CreateMovieInstancesController extends AbstractController
         return $this->json(['success' => "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock"], 201);
     }
 
-    private function getMovieFromTmdb(int $tmdbMovieId): ?Movie
+    private function getMovieFromTmdb(int $movieId): ?Movie
     {
         $apiKey = $_ENV['TMDB_API_KEY'];
 
         $response = $this->httpClient->request(
             'GET',
-            'https://api.themoviedb.org/3/movie/' . $tmdbMovieId . '?api_key=' . $apiKey
+            'https://api.themoviedb.org/3/movie/' . $movieId . '?api_key=' . $apiKey
         );
 
         $movieJson = $response->getContent();

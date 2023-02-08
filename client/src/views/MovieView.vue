@@ -6,6 +6,23 @@ const quantity = reactive({ value: 0 });
 const isCurrentUserAdmin = ref(false);
 const violations = ref([]);
 const successMsg = ref("");
+const stock = ref(0);
+
+const updateStock = async () => {
+  const id = new URLSearchParams(location.search).get("id");
+  const movieInstancesRes = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/movie_instances?movie_id=${id}&available=true`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+  );
+  const movieInstances = await movieInstancesRes.json();
+  stock.value = movieInstances.length;
+};
 
 onMounted(async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -31,13 +48,7 @@ onMounted(async () => {
     isCurrentUserAdmin.value = true;
   }
 
-  // TODO: fetch number of movies in stock like this ? -->
-  //
-  // const dataStock = await fetch(
-  //   `http://localhost/move_instances?movie_id=${id}`
-  // );
-  // const stock = await dataStock.json();
-  // quantity.value = stock.length;
+  await updateStock();
 });
 
 // TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
@@ -47,12 +58,15 @@ const handleBuyMovie = () => {
 
 const handleSubmitChangeStock = async () => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie-instances`,
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_instances`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify({
-        tmdbMovieId: movie.value.id,
+        movieId: movie.value.id,
         quantity: quantity.value,
       }),
     }
@@ -60,6 +74,7 @@ const handleSubmitChangeStock = async () => {
   const data = await response.json();
 
   if (response.status === 201) {
+    updateStock();
     successMsg.value = data.success;
   }
 
@@ -107,7 +122,7 @@ const handleSubmitChangeStock = async () => {
           @submit.prevent="handleSubmitChangeStock()"
           class="movie-view__form-quantity"
         >
-          <label for="quantity">Quantité en stock :</label>
+          <label for="quantity">Ajouter au stock :</label>
           <input
             type="number"
             id="quantity"
@@ -119,6 +134,7 @@ const handleSubmitChangeStock = async () => {
           />
           <input type="submit" value="Ok" />
         </form>
+        <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
         <p v-if="successMsg" class="movie-view__message">
           {{ successMsg }}
         </p>
@@ -196,9 +212,8 @@ const handleSubmitChangeStock = async () => {
   display: flex;
   align-items: center;
   align-content: center;
-  justify-content: center;
   justify-items: center;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .movie-view__form-quantity label {

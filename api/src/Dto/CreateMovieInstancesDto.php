@@ -8,7 +8,7 @@ class CreateMovieInstancesDto
 {
     #[Assert\NotNull]
     #[Assert\GreaterThan(0)]
-    private int $tmdbMovieId;
+    private int $movieId;
 
     #[Assert\GreaterThan(0)]
     #[Assert\LessThan(1000)]
@@ -17,17 +17,17 @@ class CreateMovieInstancesDto
     /**
      * @return int
      */
-    public function getTmdbMovieId(): int
+    public function getMovieId(): int
     {
-        return $this->tmdbMovieId;
+        return $this->movieId;
     }
 
     /**
-     * @param int $tmdbMovieId
+     * @param int $movieId
      */
-    public function setTmdbMovieId(int $tmdbMovieId): void
+    public function setMovieId(int $movieId): void
     {
-        $this->tmdbMovieId = $tmdbMovieId;
+        $this->movieId = $movieId;
     }
 
     /**
