@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new Get(),
     new GetCollection(),
+    new Put(),
     new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
