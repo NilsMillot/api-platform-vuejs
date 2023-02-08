@@ -4,17 +4,15 @@ import { onMounted, reactive, ref } from "vue";
 const movie = reactive({ value: {} });
 const quantity = reactive({ value: 0 });
 const isCurrentUserAdmin = ref(false);
+const violations = ref([]);
+const successMsg = ref("");
 
 onMounted(async () => {
   const id = new URLSearchParams(location.search).get("id");
   if (!id) {
     location.href = "/";
   }
-  const data = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${
-      import.meta.env.VITE_TMDB_API_KEY
-    }&lang=fr`
-  );
+  const data = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&lang=fr`);
   movie.value = await data.json();
   movie.value.poster = `https://image.tmdb.org/t/p/w500${movie.value.poster_path}`;
   movie.value.background = `https://image.tmdb.org/t/p/w1280${movie.value.backdrop_path}`;
@@ -47,9 +45,27 @@ const handleBuyMovie = () => {
   console.log("buy movie with this id", movie.value.id);
 };
 
-// TODO: Change stock quantity (move_instances table in database without buyer_id)
-const handleSubmitChangeStock = (quantityVal) => {
-  console.log("Command this", movie.value.id, quantityVal);
+const handleSubmitChangeStock = async () => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie-instances`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tmdbMovieId: movie.value.id,
+        quantity: quantity.value,
+      }),
+    }
+  );
+  const data = await response.json();
+
+  if (response.status === 201) {
+    successMsg.value = data.success;
+  }
+
+  if (response.status === 422) {
+    violations.value = data.violations;
+  }
 };
 </script>
 
@@ -88,7 +104,7 @@ const handleSubmitChangeStock = (quantityVal) => {
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
         <form
           v-if="isCurrentUserAdmin"
-          @submit.prevent="handleSubmitChangeStock(quantity)"
+          @submit.prevent="handleSubmitChangeStock()"
           class="movie-view__form-quantity"
         >
           <label for="quantity">Quantité en stock :</label>
@@ -103,6 +119,18 @@ const handleSubmitChangeStock = (quantityVal) => {
           />
           <input type="submit" value="Ok" />
         </form>
+        <p v-if="successMsg" class="movie-view__message">
+          {{ successMsg }}
+        </p>
+        <ul v-if="violations.length > 0" class="movie-view__message">
+          <li
+            v-for="violation in violations"
+            :key="violation.propertyPath"
+            class="movie-view__violation"
+          >
+            {{ violation.propertyPath }} : {{ violation.message }}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -175,6 +203,12 @@ const handleSubmitChangeStock = (quantityVal) => {
 
 .movie-view__form-quantity label {
   margin: 0;
+}
+
+.movie-view__message {
+  margin-top: 20px;
+  color: var(--color-red);
+  font-weight: bold;
 }
 
 @media (max-width: 620px) {
