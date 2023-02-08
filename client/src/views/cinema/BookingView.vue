@@ -6,7 +6,6 @@ import {onUpdated, reactive, ref} from 'vue'
 
 <template>
     <div class="container mt-2">
-      
       <hr>
       <Booking/>
     </div>
