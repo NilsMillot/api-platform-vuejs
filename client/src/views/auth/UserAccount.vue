@@ -86,7 +86,6 @@ onMounted(async () => {
 });
 
 const handleSubmitForm = () => {
-
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -99,7 +98,10 @@ const handleSubmitForm = () => {
     `${import.meta.env.VITE_API_SERVER_URL}/users/${user.value.id}`,
     requestOptions
   ).then((response) => console.log(response.json()));
+};
 
+const updatePassword = () => {
+  
 };
 
 const fetchUser = async () => {

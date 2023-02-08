@@ -19,6 +19,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\CurrentUserController;
+use App\Controller\UpdatePasswordController;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -44,6 +46,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/me',
         controller: CurrentUserController::class,
         openapiContext: ['description' => 'Get current user']
+    ),
+    new Put(
+        uriTemplate: '/update_password',
+        controller: UpdatePasswordController::class,
+        openapiContext: ['description' => 'Update a password']
     ),
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
