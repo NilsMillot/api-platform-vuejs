@@ -13,6 +13,7 @@ import EditSessionCinema from "../views/cinema/admin/Edit.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
 
 
 import NewSessionAdmin from "../views/admin/session/New.vue";
@@ -90,28 +91,27 @@ const router = createRouter({
       name: "payment",
       component: SuccessView,
     },
-
     {
       path: "/admin/session/new",
       name: "admin-session-new",
       component: NewSessionAdmin,
     },
-
     {
       path: "/admin/session/list",
       name: "admin-session-list",
       component: ListSessionAdmin,
     },
-
     {
       path: "/admin/session/edit/:id",
       name: "admin-session-edit",
       query: {id:Number},
       component: EditSessionAdmin,
     },
-
-
-
+    {
+      path: "/admin/cinema/confirm",
+      name: "admin-cinema-confirm",
+      component: ConfirmCinemaAdmin,
+    },
     {
       path: "/:catchAll(.*)",
       name: "Not Found",
