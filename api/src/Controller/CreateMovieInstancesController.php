@@ -46,7 +46,7 @@ class CreateMovieInstancesController extends AbstractController
 
         $this->em->flush();
 
-        return $this->json(['success' => 'Movie instances created'], 201);
+        return $this->json(['success' => "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock"], 201);
     }
 
     private function getMovieFromTmdb(int $tmdbMovieId): ?Movie

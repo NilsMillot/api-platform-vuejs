@@ -2,9 +2,16 @@
 
 namespace App\Dto;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateMovieInstancesDto
 {
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(0)]
     private int $tmdbMovieId;
+
+    #[Assert\GreaterThan(0)]
+    #[Assert\LessThan(1000)]
     private int $quantity;
 
     /**

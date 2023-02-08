@@ -17,6 +17,7 @@ class AppFixtures extends Fixture
         $user->setRoles(['ROLE_USER']);
         $user->setAdress('1 rue de la paix');
         $user->setTotalCredits(0);
+        $user->setEnabled(true);
         
         $adminUser = new User();
         $adminUser->setEmail('admin@gmail.com');
@@ -25,6 +26,7 @@ class AppFixtures extends Fixture
         $adminUser->setRoles(['ROLE_ADMIN']);
         $adminUser->setAdress('123 rue de vaugirard');
         $adminUser->setTotalCredits(10000);
+        $adminUser->setEnabled(true);
         
         $cinemaUser = new User();
         $cinemaUser->setEmail('cinema@gmail.com');
@@ -33,6 +35,7 @@ class AppFixtures extends Fixture
         $cinemaUser->setRoles(['ROLE_CINEMA']);
         $cinemaUser->setAdress('Quai d\'ivry, 75013 Paris');
         $cinemaUser->setTotalCredits(0);
+        $cinemaUser->setEnabled(true);
 
 
         $manager->persist($user);
