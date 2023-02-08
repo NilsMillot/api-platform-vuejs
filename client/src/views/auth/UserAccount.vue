@@ -14,9 +14,6 @@
             v-model="user.value.name"
             name="name"
             class="form-control"
-            autocomplete="name"
-            required
-            autofocus
           />
         </div>
         <div class="form-group">
@@ -26,9 +23,6 @@
             v-model="user.value.adress"
             name="address"
             class="form-control"
-            autocomplete="address"
-            required
-            autofocus
           />
         </div>
         <div class="form-group">
@@ -39,13 +33,10 @@
             v-model="user.value.email"
             name="email"
             class="form-control"
-            autocomplete="email"
-            required
-            autofocus
           />
         </div>
         <div class="d-flex justify-content-center">
-          <button class="btn mt-4 btn-cinemax" type="submit" @click="HandleSubmitForm">
+          <button class="btn mt-4 btn-cinemax" type="submit" @click="handleSubmitForm()">
             <span>Modifier</span>
           </button>
         </div>
@@ -93,6 +84,24 @@ onMounted(async () => {
   await fetchUser();
   console.log(user.value.id);
 });
+
+const handleSubmitForm = () => {
+
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: user.value.name,
+      adress: user.value.adress,
+    }),
+  };
+  fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.value.id}`,
+    requestOptions
+  ).then((response) => console.log(response.json()));
+
+};
+
 const fetchUser = async () => {
   return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users/1`)
     .then((response) => response.json())
@@ -123,9 +132,5 @@ const fetchUser = async () => {
 .btn-cinemax:hover {
   background-color: var(--color-darkred);
   color: var(--color-white);
-}
-.form-control {
-    color: var(--color-white);
-    border: none; 
 }
 </style>
