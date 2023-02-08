@@ -12,6 +12,7 @@ import List from "../views/cinema/admin/List.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import TicketView from "../views/TicketView.vue";
 
 
 import NewSessionAdmin from "../views/admin/session/New.vue";
@@ -83,7 +84,11 @@ const router = createRouter({
       name: "payment",
       component: SuccessView,
     },
-
+    {
+      path: "/tickets",
+      name: "tickets",
+      component: TicketView,
+    },
     {
       path: "/admin/session/new",
       name: "admin-session-new",
