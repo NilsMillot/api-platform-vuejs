@@ -23,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+
 #[ApiResource(operations: [
     new Get(),
     new GetCollection(),
