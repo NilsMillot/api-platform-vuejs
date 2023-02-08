@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
+use App\Dto\SignupAdminDto;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +18,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
+use App\Controller\SignupAdminController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -37,6 +39,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: SignupController::class,
         openapiContext: ['description' => 'Register an account'],
         input: SignupDto::class
+    ),
+    new Post(
+        security: 'is_granted("ROLE_ADMIN")',
+        securityMessage: 'Only admins can access this route',
+        uriTemplate: '/signupadmin',
+        controller: SignupAdminController::class,
+        openapiContext: ['description' => 'Register an account when you are an admin'],
+        input: SignupAdminDto::class
     ),
     new GetCollection(
         uriTemplate: '/me',
