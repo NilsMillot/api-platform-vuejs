@@ -102,6 +102,10 @@ const handleSubmitForm = async (e) => {
               <span>S'inscrire</span>
             </button>
           </div>
+          <div class="link-register-cinema">
+            <p id="register-cinema-text">Vous êtes un cinéma ?</p>
+            <a href="/register-cinema" id="register-cinema">Inscrivez-vous ici.</a>
+          </div>
         </form>
       </div>
     </div>
@@ -142,6 +146,22 @@ const handleSubmitForm = async (e) => {
   font-size: 12px;
   margin-top: 20px;
   color: #ffffff95;
+}
+.link-register-cinema {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+}
+#register-cinema-text {
+  font-size: 16px;
+  color: #ffffff72;
+}
+#register-cinema {
+  font-size: 15px;
+  color: var(--color-white);
+  padding-left: 5px;
 }
 .register-vue_background {
   display: flex;
