@@ -53,6 +53,9 @@ class MovieScreening
     #[ORM\OneToMany(mappedBy: 'session_id', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\Column]
+    private ?int $status = null;
+
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
@@ -161,6 +164,18 @@ class MovieScreening
                 $booking->setSessionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
