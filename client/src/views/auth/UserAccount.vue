@@ -100,10 +100,6 @@ const handleSubmitForm = () => {
   ).then((response) => console.log(response.json()));
 };
 
-const updatePassword = () => {
-  
-};
-
 const fetchUser = async () => {
   return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users/1`)
     .then((response) => response.json())
