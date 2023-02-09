@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12" v-if="!shouldOfuscate">
         <h1>User</h1>
         <form @submit="handleSubmitUpdatedUser">
           <!-- <input type="hidden" v-model="user.id" /> -->
@@ -71,13 +71,18 @@
           >
         </form>
       </div>
+      <div class="col-md-12" v-else>
+        <h1>User</h1>
+        <p>Vous n'avez pas accès à cette page</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 const user = reactive({});
+const shouldOfuscate = ref(false);
 
 onMounted(async () => {
   const id = location.href.split("/").pop();
@@ -93,13 +98,18 @@ onMounted(async () => {
     }
   );
   const userFetched = await response.json();
-  user.id = userFetched.id;
-  user.adress = userFetched.adress;
-  user.status = userFetched.status;
-  user.name = userFetched.name;
-  user.roles = userFetched.roles;
-  user.totalCredits = userFetched.totalCredits;
-  user.enabled = userFetched.enabled;
+  if (response.status !== 200) {
+    shouldOfuscate.value = true;
+  } else {
+    shouldOfuscate.value = false;
+    user.id = userFetched.id;
+    user.adress = userFetched.adress;
+    user.status = userFetched.status;
+    user.name = userFetched.name;
+    user.roles = userFetched.roles;
+    user.totalCredits = userFetched.totalCredits;
+    user.enabled = userFetched.enabled;
+  }
 });
 
 const handleSubmitUpdatedUser = async (e) => {
@@ -112,11 +122,21 @@ const handleSubmitUpdatedUser = async (e) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify({
+        name: user.name,
+        adress: user.adress,
+        totalCredits: user.totalCredits,
+        status: user.status,
+        enabled: user.enabled,
+        roles: user.roles,
+      }),
     }
   );
-  const userUpdated = await response.json();
-  console.log(userUpdated);
+  if (response.status === 200) {
+    alert("User updated");
+  } else {
+    alert("Error when trying to update user");
+  }
 };
 </script>
 
