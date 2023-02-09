@@ -51,13 +51,7 @@
               />
             </div>
 
-            <div class="form-group mt-3">
-              <select v-model="room" class="form-select">
-                <option value="1">Salle 1</option>
-                <option value="2">Salle 2</option>
-                <option value="2">Salle 3</option>
-              </select>
-            </div>
+
             <div class="d-flex justify-content-center">
               <button
                 class="btn btn-danger mt-4"
@@ -108,7 +102,6 @@ const search = ref("");
 const date = ref();
 const time = ref();
 const price = ref();
-const room = ref(1);
 const result = reactive({ value: [] });
 const resultSearch = reactive({ id: "", title: "" });
 const session = ref(null);
@@ -144,7 +137,7 @@ const handleSubmit = async () => {
         new Date(date.value.toString() + " " + time.value)
       ),
       price: price.value,
-      room: room.value,
+      room: 1,
       movieId: resultSearch.id,
       movieTitle: resultSearch.title,
     }),

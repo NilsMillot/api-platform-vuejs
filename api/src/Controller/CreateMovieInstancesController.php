@@ -29,14 +29,21 @@ class CreateMovieInstancesController extends AbstractController
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateMovieInstancesDto::class, 'json');
 
-        $tmdbMovieId = $dto->getTmdbMovieId();
+        $movieId = $dto->getMovieId();
         $quantityToCreate = $dto->getQuantity();
+        $messages = [];
 
-        $movieFromTmdb = $this->getMovieFromTmdb($tmdbMovieId);
+        $movieFromTmdb = $this->getMovieFromTmdb($movieId);
         $movieFromDb = $this->movieRepository->findOneBy(['title' => $movieFromTmdb->getTitle()]);
 
         $movie = $movieFromDb ?? $movieFromTmdb;
+        $movie->setId($movieId);
         $movie->setQuantity($movie->getQuantity() + $quantityToCreate);
+
+        if ($movie->getPrice() !== $dto->getPrice()) {
+            $movie->setPrice($dto->getPrice());
+            $messages[] = "Le prix a été mis à jour à {$dto->getPrice()} €";
+        }
 
         for ($i = 0; $i < $quantityToCreate; $i++) {
             $movieInstance = new MovieInstance();
@@ -44,18 +51,22 @@ class CreateMovieInstancesController extends AbstractController
             $this->em->persist($movieInstance);
         }
 
+        if ($quantityToCreate > 0) {
+            $messages[] = "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock";
+        }
+
         $this->em->flush();
 
-        return $this->json(['success' => "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock"], 201);
+        return $this->json(['success' => $messages], 201);
     }
 
-    private function getMovieFromTmdb(int $tmdbMovieId): ?Movie
+    private function getMovieFromTmdb(int $movieId): ?Movie
     {
         $apiKey = $_ENV['TMDB_API_KEY'];
 
         $response = $this->httpClient->request(
             'GET',
-            'https://api.themoviedb.org/3/movie/' . $tmdbMovieId . '?api_key=' . $apiKey
+            'https://api.themoviedb.org/3/movie/' . $movieId . '?api_key=' . $apiKey
         );
 
         $movieJson = $response->getContent();

@@ -9,9 +9,11 @@ import MovieView from "../views/MovieView.vue";
 import SessionView from "../views/cinema/SessionView.vue";
 import New from "../views/cinema/admin/New.vue";
 import List from "../views/cinema/admin/List.vue";
+import EditSessionCinema from "../views/cinema/admin/Edit.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
 
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
@@ -71,9 +73,15 @@ const router = createRouter({
       component: New,
     },
     {
-      path: "/cinema/session",
-      name: "cinema-session",
+      path: "/cinema/session/list",
+      name: "cinema-session-list",
       component: List,
+    },
+    {
+      path: "/cinema/session/edit/:id",
+      name: "cinema-session-edit",
+      query: { id: Number },
+      component: EditSessionCinema,
     },
     {
       path: "/booking",
@@ -85,7 +93,6 @@ const router = createRouter({
       name: "payment",
       component: SuccessView,
     },
-
     {
       path: "/admin",
       name: "admin",
@@ -111,20 +118,22 @@ const router = createRouter({
       name: "admin-session-new",
       component: NewSessionAdmin,
     },
-
     {
       path: "/admin/session/list",
       name: "admin-session-list",
       component: ListSessionAdmin,
     },
-
     {
       path: "/admin/session/edit/:id",
       name: "admin-session-edit",
       query: { id: Number },
       component: EditSessionAdmin,
     },
-
+    {
+      path: "/admin/cinema/confirm",
+      name: "admin-cinema-confirm",
+      component: ConfirmCinemaAdmin,
+    },
     {
       path: "/:catchAll(.*)",
       name: "Not Found",

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -15,11 +16,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class Movie
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::ARRAY)]
@@ -73,7 +75,11 @@ class Movie
     private ?float $popularity = null;
 
     #[ORM\Column]
+    #[Groups(['movie:read'])]
     private ?int $quantity = 0;
+
+    #[ORM\Column]
+    private ?float $price = null;
 
     public function __construct()
     {
@@ -282,5 +288,26 @@ class Movie
 
         return $this;
     }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
 
 }

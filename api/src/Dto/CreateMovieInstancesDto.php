@@ -8,26 +8,30 @@ class CreateMovieInstancesDto
 {
     #[Assert\NotNull]
     #[Assert\GreaterThan(0)]
-    private int $tmdbMovieId;
+    private int $movieId;
 
     #[Assert\GreaterThan(0)]
     #[Assert\LessThan(1000)]
     private int $quantity;
 
+    #[Assert\GreaterThan(0)]
+    #[Assert\NotNull]
+    private float $price;
+
     /**
      * @return int
      */
-    public function getTmdbMovieId(): int
+    public function getMovieId(): int
     {
-        return $this->tmdbMovieId;
+        return $this->movieId;
     }
 
     /**
-     * @param int $tmdbMovieId
+     * @param int $movieId
      */
-    public function setTmdbMovieId(int $tmdbMovieId): void
+    public function setMovieId(int $movieId): void
     {
-        $this->tmdbMovieId = $tmdbMovieId;
+        $this->movieId = $movieId;
     }
 
     /**
@@ -44,5 +48,21 @@ class CreateMovieInstancesDto
     public function setQuantity(int $quantity): void
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float $price
+     */
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
     }
 }

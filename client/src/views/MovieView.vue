@@ -4,8 +4,41 @@ import { onMounted, reactive, ref } from "vue";
 const movie = reactive({ value: {} });
 const quantity = reactive({ value: 0 });
 const isCurrentUserAdmin = ref(false);
+const isCurrentUserUser = ref(false);
 const violations = ref([]);
-const successMsg = ref("");
+const successMsg = ref([]);
+const stock = ref(0);
+const price = ref(null);
+
+const getPrice = async () => {
+  const id = new URLSearchParams(location.search).get("id");
+  const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/movies/${id}`,
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  const movie = await response.json();
+  return movie.price;
+};
+
+const getStock = async () => {
+  const id = new URLSearchParams(location.search).get("id");
+  const movieInstancesRes = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/movie_instances?movie_id=${id}&available=true`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+  );
+  const movieInstances = await movieInstancesRes.json();
+  return movieInstances.length;
+};
 
 onMounted(async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -31,13 +64,12 @@ onMounted(async () => {
     isCurrentUserAdmin.value = true;
   }
 
-  // TODO: fetch number of movies in stock like this ? -->
-  //
-  // const dataStock = await fetch(
-  //   `http://localhost/move_instances?movie_id=${id}`
-  // );
-  // const stock = await dataStock.json();
-  // quantity.value = stock.length;
+  if (currentUser?.roles?.includes("ROLE_USER")) {
+    isCurrentUserUser.value = true;
+  }
+
+  stock.value = await getStock();
+  price.value = await getPrice();
 });
 
 // TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
@@ -47,19 +79,24 @@ const handleBuyMovie = () => {
 
 const handleSubmitChangeStock = async () => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie-instances`,
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_instances`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify({
-        tmdbMovieId: movie.value.id,
+        movieId: movie.value.id,
         quantity: quantity.value,
+        price: price.value
       }),
     }
   );
   const data = await response.json();
 
   if (response.status === 201) {
+    stock.value = await getStock();
     successMsg.value = data.success;
   }
 
@@ -97,31 +134,34 @@ const handleSubmitChangeStock = async () => {
             >{{ movie.value.movieDuration }}h</span
           >
         </p>
+        <p v-if="price !== null" class="movie-view__price">Prix : {{ price }} €</p>
+        <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
         <!-- TODO: Check if current user have user role to display this div -->
-        <button class="btn btn-cinemax-primary" @click="handleBuyMovie">
+        <button v-if="isCurrentUserUser && stock > 0" class="btn btn-cinemax-primary" @click="handleBuyMovie">
           Acheter le film / Précommander
         </button>
+        <div v-if="stock === 0" class="alert movie-view__alert-danger-dark" role="alert">
+          <span class="text-center">Rupture de stock</span>
+        </div>
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
         <form
           v-if="isCurrentUserAdmin"
           @submit.prevent="handleSubmitChangeStock()"
-          class="movie-view__form-quantity"
+          class="movie-view__form"
         >
-          <label for="quantity">Quantité en stock :</label>
-          <input
-            type="number"
-            id="quantity"
-            name="quantity"
-            min="1"
-            max="100"
-            class="movie-view__input-number"
-            v-model="quantity.value"
-          />
-          <input type="submit" value="Ok" />
+          <div class="form-group">
+            <label for="price">Fixer un prix</label>
+            <input type="number" class="form-control" step="0.01" id="price" v-model="price">
+          </div>
+          <div class="form-group">
+            <label for="quantity">Ajouter au stock :</label>
+            <input type="number" class="form-control" id="quantity" v-model="quantity.value">
+          </div>
+          <input type="submit" class="btn btn-cinemax-primary" value="Valider" />
         </form>
-        <p v-if="successMsg" class="movie-view__message">
-          {{ successMsg }}
-        </p>
+        <div v-for="msg in successMsg" :key="msg" v-if="successMsg" class="alert movie-view__alert-danger-dark">
+          <span>{{ msg }}</span>
+        </div>
         <ul v-if="violations.length > 0" class="movie-view__message">
           <li
             v-for="violation in violations"
@@ -192,23 +232,15 @@ const handleSubmitChangeStock = async () => {
   width: 55px;
 }
 
-.movie-view__form-quantity {
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  justify-items: center;
-  margin-top: 15px;
-}
-
-.movie-view__form-quantity label {
-  margin: 0;
-}
-
-.movie-view__message {
+.movie-view__form {
   margin-top: 20px;
-  color: var(--color-red);
-  font-weight: bold;
+}
+
+.movie-view__alert-danger-dark {
+  margin-top: 20px;
+  color: #ea868f !important;
+  background-color: #2c0b0e !important;
+  border-color: #842029 !important;
 }
 
 @media (max-width: 620px) {
