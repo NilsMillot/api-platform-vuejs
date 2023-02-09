@@ -30,7 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(operations: [
     new Get(),
-    new GetCollection(),
+    new GetCollection(
+        security: 'is_granted("ROLE_ADMIN")',
+        normalizationContext: ['groups' => ['getCollection:read']]
+    ),
     new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
@@ -64,6 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         openapiContext: ['description' => 'Update an account'],
         input: UpdateUserDto::class
     ),
+    // Call this route when you want to get the current user
     new GetCollection(
         uriTemplate: '/me',
         controller: CurrentUserController::class,
@@ -75,15 +79,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['session:read'])]
+    #[Groups(['session:read', 'getCollection:read'])]
     private ?int $id = null;
 
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
 
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column]
     private array $roles = ['ROLE_USER'];
 
@@ -96,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     private ?string $adress = null;
 
     #[ORM\Column]
@@ -118,7 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read','session:read'])]
+    #[Groups(['user:read','session:read', 'getCollection:read'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]

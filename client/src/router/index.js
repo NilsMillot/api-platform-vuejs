@@ -13,10 +13,12 @@ import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
-
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
+import AdminView from "../views/admin/AdminView.vue";
+import AdminUsersView from "../views/admin/users/UsersView.vue";
+import AdminUserView from "../views/admin/users/UserView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,6 +87,26 @@ const router = createRouter({
     },
 
     {
+      path: "/admin",
+      name: "admin",
+      component: AdminView,
+    },
+
+    {
+      path: "/admin/users",
+      name: "admin-users",
+      component: AdminUsersView,
+    },
+
+    // admin users with id
+    {
+      path: "/admin/users/:id",
+      name: "admin-users-id",
+      query: { id: Number },
+      component: AdminUserView,
+    },
+
+    {
       path: "/admin/session/new",
       name: "admin-session-new",
       component: NewSessionAdmin,
@@ -99,11 +121,9 @@ const router = createRouter({
     {
       path: "/admin/session/edit/:id",
       name: "admin-session-edit",
-      query: {id:Number},
+      query: { id: Number },
       component: EditSessionAdmin,
     },
-
-
 
     {
       path: "/:catchAll(.*)",
