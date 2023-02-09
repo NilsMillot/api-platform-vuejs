@@ -19,10 +19,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
 use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -30,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 
 #[ApiResource(operations: [
+    new Put(),
     new Get(),
     new GetCollection(
         security: 'is_granted("ROLE_ADMIN")',
