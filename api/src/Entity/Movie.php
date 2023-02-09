@@ -78,6 +78,9 @@ class Movie
     #[Groups(['movie:read'])]
     private ?int $quantity = 0;
 
+    #[ORM\Column]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->movieInstances = new ArrayCollection();
@@ -292,6 +295,18 @@ class Movie
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+
+        return $this;
     }
 
 

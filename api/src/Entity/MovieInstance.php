@@ -11,7 +11,6 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\CreateMovieInstancesController;
 use App\Controller\GetMovieInstancesController;
 use App\Dto\CreateMovieInstancesDto;
-use App\Dto\GetMovieInstancesDto;
 use App\Repository\MovieInstanceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,9 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieInstanceRepository::class)]
 #[ApiResource(operations: [
-    new Get(
-        security: 'is_granted("ROLE_ADMIN")'
-    ),
+    new Get(),
     new GetCollection(
         controller: GetMovieInstancesController::class,
         openapiContext: [
@@ -48,7 +45,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ],
         ],
-        security: 'is_granted("ROLE_ADMIN")'
     ),
     new Post(
         uriTemplate: '/movie_instances',

@@ -31,6 +31,7 @@ class CreateMovieInstancesController extends AbstractController
 
         $movieId = $dto->getMovieId();
         $quantityToCreate = $dto->getQuantity();
+        $messages = [];
 
         $movieFromTmdb = $this->getMovieFromTmdb($movieId);
         $movieFromDb = $this->movieRepository->findOneBy(['title' => $movieFromTmdb->getTitle()]);
@@ -39,15 +40,24 @@ class CreateMovieInstancesController extends AbstractController
         $movie->setId($movieId);
         $movie->setQuantity($movie->getQuantity() + $quantityToCreate);
 
+        if ($movie->getPrice() !== $dto->getPrice()) {
+            $movie->setPrice($dto->getPrice());
+            $messages[] = "Le prix a été mis à jour à {$dto->getPrice()} €";
+        }
+
         for ($i = 0; $i < $quantityToCreate; $i++) {
             $movieInstance = new MovieInstance();
             $movieInstance->setMovie($movie);
             $this->em->persist($movieInstance);
         }
 
+        if ($quantityToCreate > 0) {
+            $messages[] = "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock";
+        }
+
         $this->em->flush();
 
-        return $this->json(['success' => "x{$quantityToCreate} {$movie->getTitle()} ont été ajouté au stock"], 201);
+        return $this->json(['success' => $messages], 201);
     }
 
     private function getMovieFromTmdb(int $movieId): ?Movie

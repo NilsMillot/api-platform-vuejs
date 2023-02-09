@@ -14,6 +14,10 @@ class CreateMovieInstancesDto
     #[Assert\LessThan(1000)]
     private int $quantity;
 
+    #[Assert\GreaterThan(0)]
+    #[Assert\NotNull]
+    private float $price;
+
     /**
      * @return int
      */
@@ -44,5 +48,21 @@ class CreateMovieInstancesDto
     public function setQuantity(int $quantity): void
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float $price
+     */
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
     }
 }
