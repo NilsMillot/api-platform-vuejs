@@ -8,8 +8,10 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\BuyMovieInstancesController;
 use App\Controller\CreateMovieInstancesController;
 use App\Controller\GetMovieInstancesController;
+use App\Dto\BuyMovieInstancesDto;
 use App\Dto\CreateMovieInstancesDto;
 use App\Repository\MovieInstanceRepository;
 use Doctrine\DBAL\Types\Types;
@@ -53,6 +55,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         security: 'is_granted("ROLE_ADMIN")',
         input: CreateMovieInstancesDto::class
     ),
+    new Post(
+        uriTemplate: '/movie_instances/buy',
+        controller: BuyMovieInstancesController::class,
+        openapiContext: ['description' => 'Buy movie instances'],
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
+        input: BuyMovieInstancesDto::class
+    )
 ])]
 #[ApiFilter(SearchFilter::class, properties: ['movie' => 'exact'])]
 class MovieInstance

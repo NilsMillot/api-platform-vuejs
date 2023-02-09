@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Dto\CreateMovieInstancesDto;
 use App\Entity\Movie;
 use App\Entity\MovieInstance;
@@ -25,9 +26,10 @@ class CreateMovieInstancesController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateMovieInstancesDto::class, 'json');
+        $validator->validate($dto);
 
         $movieId = $dto->getMovieId();
         $quantityToCreate = $dto->getQuantity();
