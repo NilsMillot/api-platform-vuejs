@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
+use App\Dto\UpdateUserDto;
 use App\Dto\SignupAdminDto;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +21,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
+use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,6 +50,19 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: SignupAdminController::class,
         openapiContext: ['description' => 'Register an account when you are an admin'],
         input: SignupAdminDto::class
+    ),
+    new Delete(
+        security: 'is_granted("ROLE_ADMIN")',
+        securityMessage: 'Only admins can access this route',
+        uriTemplate: '/users/{id}',
+        openapiContext: ['description' => 'Delete an account']
+    ),
+    // Everyone can call this route but only admins can update roles and totalCredits for another user
+    new Put(
+        uriTemplate: '/users/{id}',
+        controller: UpdateUserController::class,
+        openapiContext: ['description' => 'Update an account'],
+        input: UpdateUserDto::class
     ),
     new GetCollection(
         uriTemplate: '/me',
