@@ -229,6 +229,7 @@ const setItems = () => {
 .movie-view__poster-image {
   min-width: 280px;
   max-width: 720px;
+  max-height: 100vh;
   border-radius: 14px;
 }
 
