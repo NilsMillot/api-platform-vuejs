@@ -106,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user:read', 'getCollection:read'])]
     private ?string $adress = null;
-
+    
     #[ORM\Column]
     private ?int $totalCredits = 0;
 
@@ -117,6 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $movieInstances;
 
     #[ORM\Column]
+    #[Groups(['user:read', 'getCollection:read'])]
     private ?bool $enabled = false;
 
     #[ORM\Column(length: 255, nullable: true)]

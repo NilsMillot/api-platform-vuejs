@@ -115,17 +115,24 @@ onMounted( async () => {
 })
 
 const fetchCinema = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users`)
-    .then((response) => response.json())
-    .then(
-      (data) =>
-        (cinema.value = data["hydra:member"].filter(
-          (x) =>
-            x.enabled == true &&
-            x.roles.includes("ROLE_CINEMA") &&
-            x.status == 1
-        ))
-    );
+  const requestOptions = {
+    method: "GET",
+    headers: { 
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/users`,
+    requestOptions
+  ).then((response) => response.json().then((data) =>
+
+  (cinema.value = data["hydra:member"].filter(
+    (x) =>
+      x.enabled == true &&
+      x.roles.includes("ROLE_CINEMA")
+  ))
+));
+
 };
 
 
@@ -158,12 +165,13 @@ watch(search, async (newSearch) => {
     );
 });
 
-
 const handleSubmit = async () => {
-
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: JSON.stringify({
       sessionDatetime: new Date(
         new Date(date.value.toString() + " " + time.value)
@@ -173,14 +181,15 @@ const handleSubmit = async () => {
       room: room.value,
       movieId: resultSearch.id,
       movieTitle: resultSearch.title,
+      cinema: selectedCinema.value,
     }),
   };
   await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`,
+    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
     requestOptions
   ).then((response) => response.json().then((data) => console.log(data)));
-
 };
+
 </script>
 
 
