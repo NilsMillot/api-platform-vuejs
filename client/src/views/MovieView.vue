@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import CardPayment from "@/components/CardPayment.vue";
+import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
 const movie = reactive({ value: {} });
 const quantity = reactive({ value: 0 });
@@ -8,7 +10,10 @@ const isCurrentUserUser = ref(false);
 const violations = ref([]);
 const successMsg = ref([]);
 const stock = ref(0);
-const price = ref(null);
+const itemCount = ref(0);
+const availableMovies = ref([]);
+const items = reactive({ value: [] });
+const price = reactive({ price: null });
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -24,7 +29,7 @@ const getPrice = async () => {
   return movie.price;
 };
 
-const getStock = async () => {
+const getMovieInstances = async () => {
   const id = new URLSearchParams(location.search).get("id");
   const movieInstancesRes = await fetch(
       `${import.meta.env.VITE_API_SERVER_URL}/movie_instances?movie_id=${id}&available=true`,
@@ -37,7 +42,7 @@ const getStock = async () => {
       }
   );
   const movieInstances = await movieInstancesRes.json();
-  return movieInstances.length;
+  return movieInstances;
 };
 
 onMounted(async () => {
@@ -68,7 +73,9 @@ onMounted(async () => {
     isCurrentUserUser.value = true;
   }
 
-  stock.value = await getStock();
+  const movieInstances = await getMovieInstances();
+  availableMovies.value = movieInstances;
+  stock.value = movieInstances.length;
   price.value = await getPrice();
 });
 
@@ -96,12 +103,24 @@ const handleSubmitChangeStock = async () => {
   const data = await response.json();
 
   if (response.status === 201) {
-    stock.value = await getStock();
+    const movieInstances = await getMovieInstances();
+    availableMovies.value = movieInstances;
+    stock.value = movieInstances.length;
     successMsg.value = data.success;
   }
 
   if (response.status === 422) {
     violations.value = data.violations;
+  }
+};
+
+const setItems = () => {
+  const quantity = itemCount.value;
+  while(items.value.length) {
+    items.value.pop();
+  }
+  for (let i = 0; i < quantity; i++) {
+    items.value.push(availableMovies.value[i]);
   }
 };
 </script>
@@ -134,15 +153,9 @@ const handleSubmitChangeStock = async () => {
             >{{ movie.value.movieDuration }}h</span
           >
         </p>
-        <p v-if="price !== null" class="movie-view__price">Prix : {{ price }} €</p>
+        <p v-if="price !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
         <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
         <!-- TODO: Check if current user have user role to display this div -->
-        <button v-if="isCurrentUserUser && stock > 0" class="btn btn-cinemax-primary" @click="handleBuyMovie">
-          Acheter le film / Précommander
-        </button>
-        <div v-if="stock === 0" class="alert movie-view__alert-danger-dark" role="alert">
-          <span class="text-center">Rupture de stock</span>
-        </div>
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
         <form
           v-if="isCurrentUserAdmin"
@@ -151,7 +164,7 @@ const handleSubmitChangeStock = async () => {
         >
           <div class="form-group">
             <label for="price">Fixer un prix</label>
-            <input type="number" class="form-control" step="0.01" id="price" v-model="price">
+            <input type="number" class="form-control" step="0.01" id="price" v-model="price.value">
           </div>
           <div class="form-group">
             <label for="quantity">Ajouter au stock :</label>
@@ -171,6 +184,18 @@ const handleSubmitChangeStock = async () => {
             {{ violation.propertyPath }} : {{ violation.message }}
           </li>
         </ul>
+        <div v-if="isCurrentUserUser && stock > 0">
+          <h3 class="text-center">Acheter</h3>
+          <div class="form-group">
+            <span>En stock : {{ stock }}</span><br>
+            <label for="item-count">Quantité à acheter</label>
+            <input @input="setItems" type="number" class="item-count ml-2" min="1" :max="stock" id="price" v-model="itemCount">
+          </div>
+          <CardPaymentMovie :items="items.value" :price="price" url="/movie_instances/buy" />
+        </div>
+        <div v-if="isCurrentUserUser && stock === 0" class="alert movie-view__alert-danger-dark" role="alert">
+          <span class="text-center">Rupture de stock</span>
+        </div>
       </div>
     </div>
   </div>

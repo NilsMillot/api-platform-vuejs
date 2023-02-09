@@ -15,6 +15,7 @@ watch(props.price, (newPrice) => {
 });
 
 watch(props.items, (newItems) => {
+  console.log(newItems)
   items.value = newItems;
 });
 
@@ -54,7 +55,7 @@ function handlePay() {
   modeLoading.value = true;
   error.value = null;
 
-  const requestBook = new Request(
+  const request = new Request(
     `${import.meta.env.VITE_API_SERVER_URL}` + props.url,
     {
       method: "POST",
@@ -64,22 +65,25 @@ function handlePay() {
         cardMonth: cardMonth.value,
         cardYear: cardYear.value,
         cardCvv: cardCvv.value,
-        price: price.value.value,
+        price: price.value.value * items.value.length,
         items: items.value,
       }),
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
       },
     }
   );
 
-  fetch(requestBook)
+  fetch(request)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       modeLoading.value = false;
       if (data.message === "success") {
         location.href = "/payment/success";
       } else {
+        console.log(data.message)
         error.value = data.message;
       }
     });
@@ -178,11 +182,12 @@ function handlePay() {
                 </p>
 
                 <button
-                  v-bind:disabled="modeLoading"
+                  v-bind:disabled="modeLoading || items.value.length === 0"
+                  v-bind:class="{ 'is-loading': modeLoading, 'disabled-button': items.value.length === 0 }"
                   class="card-form-button"
                   type="submit"
                 >
-                  Payer
+                  Acheter
                 </button>
               </div>
             </form>
@@ -344,5 +349,10 @@ function handlePay() {
 
 .error-message {
   color: var(--color-red) !important;
+}
+
+.disabled-button {
+  background-color: #ced6e0 !important;
+  cursor: not-allowed !important;
 }
 </style>

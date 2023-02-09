@@ -10,12 +10,10 @@ class CreateMovieInstancesDto
     #[Assert\GreaterThan(0)]
     private int $movieId;
 
-    #[Assert\GreaterThan(0)]
     #[Assert\LessThan(1000)]
     private int $quantity;
 
     #[Assert\GreaterThan(0)]
-    #[Assert\NotNull]
     private float $price;
 
     /**
