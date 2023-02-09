@@ -72,8 +72,7 @@ const fetchCinema = async () => {
         (cinema.value = data["hydra:member"].filter(
           (x) =>
             x.enabled == true &&
-            x.roles.includes("ROLE_CINEMA") &&
-            x.status == 1
+            x.roles.includes("ROLE_CINEMA")
         ))
     );
 };

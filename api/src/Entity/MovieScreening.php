@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Controller\CreateSessionController;
 use App\Controller\DeleteSessionController;
+use App\Controller\UpdateSessionController;
 
 #[ORM\Entity(repositoryClass: MovieScreeningRepository::class)]
 #[ApiResource(
@@ -26,6 +27,11 @@ use App\Controller\DeleteSessionController;
         new Get(),
         new Put(),
         new Post(),
+        new Put(
+            uriTemplate: '/session/edit/{id}',
+            controller: UpdateSessionController::class,
+            openapiContext: ['description' => 'Update new session'],
+        ),
         new Post(
             uriTemplate: '/session/new',
             controller: CreateSessionController::class,
