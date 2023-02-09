@@ -10,10 +10,33 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use App\Controller\CreateSessionController;
+use App\Controller\DeleteSessionController;
 
 #[ORM\Entity(repositoryClass: MovieScreeningRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['session:read']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Put(),
+        new Post(),
+        new Post(
+            uriTemplate: '/session/new',
+            controller: CreateSessionController::class,
+            openapiContext: ['description' => 'Register new session'],
+        ),
+        new Delete(
+            uriTemplate: '/session/delete/{id}',
+            controller: DeleteSessionController::class,
+            openapiContext: ['description' => 'Delete session'],
+        ),
+    ]
 )]
 class MovieScreening
 {
@@ -32,6 +55,7 @@ class MovieScreening
     #[ORM\Column]
     #[Groups(['session:read'])]
     #[Assert\NotNull]
+    #[Assert\Regex('/^(?!^0\.00$)(([1-9][\d]{0,6})|([0]))\.[\d]{2}$/')]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]
@@ -40,18 +64,25 @@ class MovieScreening
 
     #[ORM\Column]
     #[Groups(['session:read'])]
+    #[Assert\NotNull]
     private ?int $room = null;
 
     #[ORM\Column]
     #[Groups(['session:read'])]
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(0)]
     private ?int $movie_id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['session:read'])]
+    #[Assert\NotBlank]
     private ?string $movie_title = null;
 
     #[ORM\OneToMany(mappedBy: 'session_id', targetEntity: Booking::class)]
     private Collection $bookings;
+
+    #[ORM\Column]
+    private ?int $status = null;
 
     public function __construct()
     {
@@ -161,6 +192,18 @@ class MovieScreening
                 $booking->setSessionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

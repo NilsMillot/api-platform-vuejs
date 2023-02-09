@@ -131,7 +131,7 @@ const generateSeat = async (id) => {
 const handleSubmit = async () => {
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
     body: JSON.stringify({
       sessionDatetime: new Date(
         new Date(date.value.toString() + " " + time.value)
@@ -143,12 +143,12 @@ const handleSubmit = async () => {
     }),
   };
   await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`,
+    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
     requestOptions
-  ).then((response) => response.json().then((data) => (session.value = data)));
+  ).then((response) => response.json().then((data) => console.log(data)));
 
-  await generateSeat(session.value.id);
 };
+
 
 const handleChange = (item) => {
   resultSearch.id = item.id;
