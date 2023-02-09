@@ -34,16 +34,17 @@ import { onMounted, reactive, ref } from "@vue/runtime-core";
 
 const sessions = reactive({ value: [] });
 
-const handleDelete = (id) => {
-    // TO DO CREATE CUSTOM CONTROLLER  
+const handleDelete = (id) => { 
   const requestOptions = {
     method: "DELETE",
+    headers: {Authorization: `Bearer ${localStorage.getItem("token")}`},
   };
   fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/session/delete/${id}`,
     requestOptions
-  ).then((response) => console.log(response));
+  ).then((response) => response.json().then( (data) => console.log(data)));
 };
+
 
 onMounted(async () => {
   await fetchSessions();
