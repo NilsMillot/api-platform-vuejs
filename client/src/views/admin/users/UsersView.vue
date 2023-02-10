@@ -111,7 +111,7 @@ onMounted(async () => {
   const usersFetched = await response.json();
   const users2 = usersFetched["hydra:member"];
 
-  users2.forEach((user) => {
+  users2?.forEach((user) => {
     users.push(user);
   });
 });

@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 
 #[ApiResource(operations: [
-    new Put(),
     new Get(),
     new GetCollection(
         security: 'is_granted("ROLE_ADMIN")',
