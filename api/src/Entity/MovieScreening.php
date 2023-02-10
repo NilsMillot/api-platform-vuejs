@@ -88,6 +88,8 @@ class MovieScreening
     private Collection $bookings;
 
     #[ORM\Column]
+    #[Groups(['session:read'])]
+    #[Assert\NotNull]
     private ?int $status = null;
 
     public function __construct()

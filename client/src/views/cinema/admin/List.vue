@@ -32,6 +32,8 @@ import { onMounted, reactive, ref } from "@vue/runtime-core";
 
 const sessions = reactive({ value: [] });
 
+const email = ref(null)
+
 const handleDelete = (id) => { 
   const requestOptions = {
     method: "DELETE",
@@ -44,9 +46,25 @@ const handleDelete = (id) => {
 };
 
 onMounted(async () => {
+  await getUser();
   await fetchSessions();
 
 });
+
+const getUser = async () => {
+  const requestOptions = {
+    method: "GET",
+    headers: { 
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/me`,
+    requestOptions
+  ).then((response) => response.json()
+  .then((data) => email.value = data.email)
+  )
+};
 
 const fetchSessions = async () => {
   return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`)
@@ -54,8 +72,10 @@ const fetchSessions = async () => {
     .then(
       (data) =>
         (sessions.value = data["hydra:member"].filter(
-          (x) => new Date(x.session_datetime) > new Date()
+          (x) => new Date(x.session_datetime) > new Date() && x.creator.email == email.value
         ))
+
+      
     );
 };
 

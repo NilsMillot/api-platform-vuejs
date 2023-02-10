@@ -32,6 +32,18 @@ class DeleteSessionController extends AbstractController
             $user = $this->getUser();
             $session = $movieScreeningRepository->findById($id);
 
+            if (in_array("ROLE_CINEMA", $user->getRoles())){
+
+                $session = $movieScreeningRepository->findBy([
+                    "id" => $id,
+                    "creator" => $user->getId()
+                ]);
+
+                if (count($session) < 1){
+                    return $this->json(['message' => "Une erreur est survenue."], 400);
+                } 
+            }
+
             $bookings = $bookingRepository->findBy(
                 [
                     'buyer_id' => NULL,
