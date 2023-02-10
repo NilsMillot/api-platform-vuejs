@@ -69,6 +69,13 @@ class BuyMovieInstancesController extends AbstractController
                 return $this->json(['message' => 'Le code de sécurité de la carte est invalide'], 400);
             }
 
+            $firstMovieInstance = $this->movieInstanceRepository->find($parameters['items'][0]['id']);
+            $movie = $firstMovieInstance->getMovie();
+
+            if ($movie->getPrice() * count($parameters['items']) != $parameters['price']) {
+                return $this->json(['message' => 'Le prix ne correspond pas'], 400);
+            }
+
             Stripe::setApiKey($_ENV['STRIPE_PRIVATE_KEY']);
 
             $token = Token::create([

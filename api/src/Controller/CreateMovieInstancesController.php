@@ -41,6 +41,7 @@ class CreateMovieInstancesController extends AbstractController
         $movie = $movieFromDb ?? $movieFromTmdb;
         $movie->setId($movieId);
         $movie->setQuantity($movie->getQuantity() + $quantityToCreate);
+        $this->em->persist($movie);
 
         if ($movie->getPrice() !== $dto->getPrice()) {
             $movie->setPrice($dto->getPrice());

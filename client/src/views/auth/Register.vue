@@ -14,15 +14,11 @@ const violations = ref([]);
 const handleSubmitForm = async (e) => {
   e.preventDefault();
 
-  if (formInputs.password !== formInputs.passwordConfirm) {
-    violations.value = [{propertyPath: 'password', message: "Les mots de passe ne correspondent pas"}];
-    return;
-  }
-
   const requestData = {
     name: formInputs.name,
     email: formInputs.email,
     password: formInputs.password,
+    passwordConfirm: formInputs.passwordConfirm,
     adress: "Pas d'adresse",
     isCinema: false,
     status: 'Aucun'
