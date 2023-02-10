@@ -15,6 +15,11 @@ class SignupDto
     public string $password;
 
     #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
+    #[Assert\EqualTo(propertyPath: 'password', message: 'Les mots de passe ne correspondent pas')]
+    public string $passwordConfirm;
+
+    #[Assert\NotBlank]
     public string $adress;
     #[Assert\NotBlank]
     public string $status;
@@ -24,7 +29,6 @@ class SignupDto
 
     #[Assert\Null]
     public string $name;
-
 
 
     /**
@@ -122,5 +126,21 @@ class SignupDto
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordConfirm(): string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string $passwordConfirm
+     */
+    public function setPasswordConfirm(string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
     }
 }

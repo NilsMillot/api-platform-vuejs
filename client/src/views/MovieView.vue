@@ -153,7 +153,7 @@ const setItems = () => {
             >{{ movie.value.movieDuration }}h</span
           >
         </p>
-        <p v-if="price !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
+        <p v-if="price.value !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
         <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
         <!-- TODO: Check if current user have user role to display this div -->
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
