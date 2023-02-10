@@ -16,67 +16,37 @@ class Quizz
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $questions = [];
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $answers = [];
-
-    #[ORM\Column]
-    private ?int $number_of_credits_to_be_earned = null;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $deadline = null;
+    private ?\DateTimeInterface $endDate = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getQuestions(): array
+    public function getName(): ?string
     {
-        return $this->questions;
+        return $this->name;
     }
 
-    public function setQuestions(array $questions): self
+    public function setName(string $name): self
     {
-        $this->questions = $questions;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getAnswers(): array
+    public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->answers;
+        return $this->endDate;
     }
 
-    public function setAnswers(array $answers): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
-        $this->answers = $answers;
-
-        return $this;
-    }
-
-    public function getNumberOfCreditsToBeEarned(): ?int
-    {
-        return $this->number_of_credits_to_be_earned;
-    }
-
-    public function setNumberOfCreditsToBeEarned(int $number_of_credits_to_be_earned): self
-    {
-        $this->number_of_credits_to_be_earned = $number_of_credits_to_be_earned;
-
-        return $this;
-    }
-
-    public function getDeadline(): ?\DateTimeInterface
-    {
-        return $this->deadline;
-    }
-
-    public function setDeadline(\DateTimeInterface $deadline): self
-    {
-        $this->deadline = $deadline;
+        $this->endDate = $endDate;
 
         return $this;
     }
