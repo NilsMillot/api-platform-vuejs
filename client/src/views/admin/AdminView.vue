@@ -8,7 +8,7 @@
     </div>
     <div class="d-flex flex-wrap justify-content-center">
         <router-link class="btn mt-4 btn-cinemax" to="/admin/users">Utilisateurs</router-link>
-        <router-link class="btn mt-4 btn-cinemax" to="/admin/session/list">Seances</router-link>
+        <router-link class="btn mt-4 btn-cinemax" to="/admin/session/list">Séances</router-link>
         <router-link class="btn mt-4 btn-cinemax" to="/admin/quizz/new">Quiz</router-link>
     </div>
     
@@ -22,7 +22,7 @@
   height: 100%;
   margin: 50px;
   padding: 20px;
-  background-color: #ffffff30;
+  background-color: #2f2f2f;
   color: var(--color-white);
   box-shadow: 20px;
 }

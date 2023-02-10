@@ -1,16 +1,20 @@
 <template>
-  <div class="container">
-    <h1>Users</h1>
+  <div class="container m-5">
+    <div>
+        <h2 class="pt-2">Utilisateurs</h2>
+        <hr class="pb-5">
+    </div>
     <div class="row">
       <div class="col-md-12">
-        <table class="table table-striped" v-if="!shouldOfuscate">
+        <table class="table pt-10 tab" v-if="!shouldOfuscate">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
+              <th scope="col">ID</th>
+              <th scope="col">NOM</th>
+              <th scope="col">EMAIL</th>
+              <th scope="col">ROLE</th>
+              <th scope="col">ACTIONS</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -22,13 +26,14 @@
               <td>
                 <router-link
                   :to="'/admin/users/' + user.id"
-                  class="btn btn-primary"
-                  >Edit</router-link
+                  class="btn btn-sm me-2 btn-cinemax"
+                  >Modifier</router-link
                 >
-                <button class="btn btn-danger" @click="deleteUser(user.id)">
-                  Delete
+                <button class="btn btn-sm btn-cinemax" @click="deleteUser(user.id)">
+                  Supprimer
                 </button>
               </td>
+              <td></td>
             </tr>
             <tr>
               <td></td>
@@ -37,7 +42,7 @@
                   type="text"
                   class="form-control"
                   v-model="newUser.name"
-                  placeholder="Name"
+                  placeholder="Nom"
                 />
               </td>
               <td>
@@ -53,7 +58,7 @@
                   type="text"
                   class="form-control"
                   v-model="newUser.adress"
-                  placeholder="Adress"
+                  placeholder="Adresse"
                 />
               </td>
               <td>
@@ -62,13 +67,13 @@
                   v-model="newUser.isCinema"
                   placeholder="Is Cinema"
                 />
-                <label for="isCinema">Is Cinema</label>
+                <label for="isCinema">EST UN CINÉMA</label>
                 <br />
                 <input type="checkbox" v-model="newUser.isAdmin" />
-                <label for="isAdmin">Is Admin</label>
+                <label for="isAdmin">EST UN ADMIN</label>
               </td>
               <td>
-                <button class="btn btn-success" @click="addUser">Add</button>
+                <button class="btn mt-2 btn-cinemax" @click="addUser">Ajouter</button>
               </td>
             </tr>
           </tbody>
@@ -167,9 +172,28 @@ const deleteUser = async (userId) => {
 </script>
 
 <style scoped>
-h1,
-th,
-td {
-  color: white;
+
+.container{
+  color:white;
+}
+
+.tab{
+  background-color: #2f2f2f;
+  color:white;
+  padding:200px !important;
+}
+label{
+  padding-left: 5px;
+  font-size: 12px;
+}
+
+.btn-cinemax {
+background-color: var(--color-red);
+color: var(--color-white);
+text-align: center;
+}
+.btn-cinemax:hover {
+  background-color: var(--color-darkred);
+  color: var(--color-white);
 }
 </style>
