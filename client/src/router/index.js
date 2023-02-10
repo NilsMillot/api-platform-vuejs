@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/Login.vue";
 import RegisterView from "../views/auth/Register.vue";
 import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
+import NewPasswordView from "../views/auth/NewPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import EnableAccountView from "../views/auth/EnableAccount.vue";
 import MovieView from "../views/MovieView.vue";
@@ -45,6 +46,11 @@ const router = createRouter({
       path: "/forget-password",
       name: "forget-password",
       component: ForgetPasswordView,
+    },
+    {
+      path: "/new-password",
+      name: "new-password",
+      component: NewPasswordView,
     },
     {
       path: "/user-account",
