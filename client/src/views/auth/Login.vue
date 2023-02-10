@@ -1,6 +1,8 @@
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import { onMounted, reactive, ref, defineEmits } from "vue";
 import router from "@/router";
+
+const emit = defineEmits(["trigger-fetch-current-user"]);
 
 const formInputs = reactive({
   email: "",
@@ -23,6 +25,7 @@ const handleSubmitForm = async (e) => {
   if (data.token) {
     message.value = null;
     localStorage.setItem("token", data.token);
+    emit("trigger-fetch-current-user");
     await router.push("/");
   } else if (data.message) {
     message.value = data.message;

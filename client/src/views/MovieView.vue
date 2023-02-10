@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
@@ -14,6 +14,7 @@ const itemCount = ref(0);
 const availableMovies = ref([]);
 const items = reactive({ value: [] });
 const price = reactive({ price: null });
+const currentUserRoles = inject("currentUserRoles");
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -57,19 +58,11 @@ onMounted(async () => {
   movie.value.country = movie.value.production_countries[0].iso_3166_1;
   movie.value.movieDuration = Math.round(movie.value.runtime / 60);
 
-  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  const currentUser = await response.json();
-  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
+  if (currentUserRoles?.value?.includes("ROLE_ADMIN")) {
     isCurrentUserAdmin.value = true;
   }
 
-  if (currentUser?.roles?.includes("ROLE_USER")) {
+  if (currentUserRoles?.value?.includes("ROLE_USER")) {
     isCurrentUserUser.value = true;
   }
 
