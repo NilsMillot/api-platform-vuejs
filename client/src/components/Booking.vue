@@ -86,6 +86,7 @@
       :price="price"
       :items="seats.value"
       url="/booking/payment"
+      :session="session"
     />
   </div>
 </template>
