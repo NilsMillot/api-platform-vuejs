@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
+import router from "@/router";
 
 const formInputs = reactive({
   name: "",
@@ -8,13 +9,46 @@ const formInputs = reactive({
   passwordConfirm: "",
 });
 
-const errorMessage = ref(null);
+const violations = ref([]);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
-  console.log(formInputs);
 
-  // TODO: Call the API to register the user
+  if (formInputs.password !== formInputs.passwordConfirm) {
+    violations.value = [{propertyPath: 'password', message: "Les mots de passe ne correspondent pas"}];
+    return;
+  }
+
+  const requestData = {
+    name: formInputs.name,
+    email: formInputs.email,
+    password: formInputs.password,
+    adress: "Pas d'adresse",
+    isCinema: false,
+    status: 'Aucun'
+  };
+
+  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  })
+
+  if (response.status === 201) {
+    violations.value = [];
+    await router.push({
+      name: "login",
+      query: { message: "Votre compte a été créé, vérifiez votre boite mail pour activer votre compte" },
+    });
+  }
+
+  if (response.status === 422) {
+    const data = await response.json();
+    console.log(data.violations)
+    violations.value = data.violations;
+  }
 };
 </script>
 
@@ -79,7 +113,13 @@ const handleSubmitForm = async (e) => {
               required
             />
           </div>
-          <span>{{ errorMessage }}</span>
+          <div v-if="violations.length > 0">
+            <ul>
+              <li v-for="violation in violations" :key="violation">
+                {{ violation.propertyPath }} : {{ violation.message }}
+              </li>
+            </ul>
+          </div>
           <div class="d-flex justify-content-center">
             <button class="btn mt-4 btn-cinemax" type="submit">
               <span>S'inscrire</span>

@@ -5,62 +5,71 @@
         <h3 class="pt-3">Mon compte</h3>
         <hr />
       </div>
+      <div class="d-flex">
       <div class="card-body">
         <div class="form-group">
-          <label for="name">Mon nom :</label>
+          <label for="name">Nom :</label>
           <input
-            disabled
-            type="name"
-            name="email"
+            type="text"
+            v-model="user.value.name"
+            name="name"
             class="form-control"
-            autocomplete="email"
-            required
-            autofocus
           />
         </div>
         <div class="form-group">
-          <label for="address">Mon adresse :</label>
+          <label for="address">Adresse :</label>
           <input
-            disabled
-            type="email"
+            type="text"
             v-model="user.value.adress"
-            name="email"
+            name="address"
             class="form-control"
-            autocomplete="email"
-            required
-            autofocus
           />
         </div>
         <div class="form-group">
-          <label for="email">Mon adresse e-mail : </label>
+          <label for="email">E-mail : </label>
           <input
             disabled
             type="email"
             v-model="user.value.email"
             name="email"
             class="form-control"
-            autocomplete="email"
+          />
+        </div>
+        <div class="d-flex justify-content-center">
+          <button class="btn mt-4 btn-cinemax" type="submit" @click="handleSubmitForm()">
+            <span>Modifier</span>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="password">Mot de passe :</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            autocomplete="password"
             required
             autofocus
           />
         </div>
         <div class="form-group">
-          <label for="password">Mon mot de passe :</label>
+          <label for="password">Nouveau mot de passe :</label>
           <input
-            disabled
-            type="email"
-            name="email"
+            type="password"
+            name="password"
             class="form-control"
-            autocomplete="email"
+            autocomplete="password"
             required
             autofocus
           />
         </div>
         <div class="d-flex justify-content-center">
           <button class="btn mt-4 btn-cinemax" type="submit">
-            <span>Modifier</span>
+            <span>Changer mon mot de passe</span>
           </button>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -75,6 +84,22 @@ onMounted(async () => {
   await fetchUser();
   console.log(user.value.id);
 });
+
+const handleSubmitForm = () => {
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: user.value.name,
+      adress: user.value.adress,
+    }),
+  };
+  fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.value.id}`,
+    requestOptions
+  ).then((response) => console.log(response.json()));
+};
+
 const fetchUser = async () => {
   return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users/1`)
     .then((response) => response.json())
@@ -87,12 +112,13 @@ const fetchUser = async () => {
 
 <style scoped>
 .card-account {
-  width: 80%;
+  width: 90%;
+  height: 90%;
   margin: 0 auto;
   margin-top: 80px;
   padding: 20px;
-  background-color: #f3f3f3;
-  color: var(--color-black);
+  background-color: #ffffff30;
+  color: var(--color-white);
   box-shadow: 20px;
 }
 .btn-cinemax {

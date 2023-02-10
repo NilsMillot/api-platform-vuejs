@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Dto\EnableAccountDto;
 use App\Dto\SignupDto;
+use App\Dto\UpdateUserDto;
+use App\Dto\SignupAdminDto;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,16 +19,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
+use App\Controller\SignupAdminController;
+use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+
 #[ApiResource(operations: [
-    new Patch(
+    new Get(),
+    new GetCollection(
+        security: 'is_granted("ROLE_ADMIN")',
+        normalizationContext: ['groups' => ['getCollection:read']]
+    ),
+    new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
+        openapiContext: ['description' => 'Enable an account'],
         input: EnableAccountDto::class
     ),
     new Post(
@@ -33,6 +49,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
         openapiContext: ['description' => 'Register an account'],
         input: SignupDto::class
     ),
+    new Post(
+        security: 'is_granted("ROLE_ADMIN")',
+        securityMessage: 'Only admins can access this route',
+        uriTemplate: '/signupadmin',
+        controller: SignupAdminController::class,
+        openapiContext: ['description' => 'Register an account when you are an admin'],
+        input: SignupAdminDto::class
+    ),
+    new Delete(
+        security: 'is_granted("ROLE_ADMIN")',
+        securityMessage: 'Only admins can access this route',
+        uriTemplate: '/users/{id}',
+        openapiContext: ['description' => 'Delete an account']
+    ),
+    // Everyone can call this route but only admins can update roles and totalCredits for another user
+    new Put(
+        uriTemplate: '/users/{id}',
+        controller: UpdateUserController::class,
+        openapiContext: ['description' => 'Update an account'],
+        input: UpdateUserDto::class
+    ),
+    // Call this route when you want to get the current user
     new GetCollection(
         uriTemplate: '/me',
         controller: CurrentUserController::class,
@@ -44,26 +82,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['session:read', 'getCollection:read'])]
     private ?int $id = null;
 
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('user:read')]
+    #[Groups(['user:read', 'getCollection:read'])]
     private ?string $adress = null;
-
+    
     #[ORM\Column]
     private ?int $totalCredits = 0;
 
@@ -74,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $movieInstances;
 
     #[ORM\Column]
+    #[Groups(['user:read', 'getCollection:read'])]
     private ?bool $enabled = false;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -83,13 +126,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('user:read')]
+    #[Groups(['user:read','session:read', 'getCollection:read'])]
     private ?string $name = null;
+
+    #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
+    private Collection $bookings;
 
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
         $this->movieInstances = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -290,6 +337,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setBuyerId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getBuyerId() === $this) {
+                $booking->setBuyerId(null);
+            }
+        }
 
         return $this;
     }

@@ -1,14 +1,10 @@
 <template>
-  <div class="container">
+  <div class="container mt-5">
     <div class="row">
-      <div class="d-flex justify-content-end p-5">
-        <button class="btn btn-cinemax-dark">Mes séances</button>
-      </div>
-
       <div class="col-md-6">
         <div class="card card-session shadow-sm">
           <div>
-            <h3 class="pt-3">Séance</h3>
+            <h3 class="pt-3">Créer une séance</h3>
             <hr />
           </div>
           <div class="card-body">
@@ -18,40 +14,45 @@
                 class="form-control"
                 :value="resultSearch.title"
                 required
-                autofocus
                 disabled
               />
             </div>
             <div class="form-group mt-3">
+                <select class="form-select" @change="handleChangeCinema($event)">
+                    <option
+                    v-for="(cinema, index) in cinema.value"
+                    :key="index"
+                    :value="cinema.id"
+                    >
+                    {{ cinema.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group mt-3">
               <input
                 type="date"
-                class="form-control"
                 v-model="date"
+                class="form-control"
                 required
-                autofocus
               />
             </div>
             <div class="form-group mt-3">
               <input
                 type="time"
                 class="form-control"
-                v-model="time"
                 required
-                autofocus
+                v-model="time"
               />
             </div>
             <div class="form-group mt-3">
               <input
                 type="number"
                 placeholder="12,30 €"
-                v-model="price"
                 class="form-control"
                 required
-                autofocus
+                v-model="price"
               />
             </div>
-
-
             <div class="d-flex justify-content-center">
               <button
                 class="btn btn-danger mt-4"
@@ -92,60 +93,45 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+
+import { watch, reactive, ref, onMounted } from "vue";
 import { getImageFromSrc } from "../../../utils/tmdbCalls";
 import SearchBar from "../../../components/SearchBar.vue";
 
-const router = useRouter();
+
 const search = ref("");
-const date = ref();
-const time = ref();
-const price = ref();
 const result = reactive({ value: [] });
 const resultSearch = reactive({ id: "", title: "" });
-const session = ref(null);
-const updateSearch = (e) => {
-  search.value = e.target.value;
-};
+const cinema = reactive({value:[]})
+const selectedCinema = ref();
+const date = ref("");
+const time = ref();
+const price = ref();
+const room = ref(1);
 
-const generateSeat = async (id) => {
-  for (let i = 1; i <= 30; i++) {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: 1,
-        seat: i,
-        sessionId: "/movie_screenings/" + id,
-        buyerId: null,
-      }),
-    };
-    await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/bookings`,
-      requestOptions
-    ).then((response) => console.log(response.json()));
-  }
-};
+onMounted( async () => {
+    await fetchCinema();
+    selectedCinema.value = cinema.value[0].id
+})
 
-const handleSubmit = async () => {
+const fetchCinema = async () => {
   const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
-    body: JSON.stringify({
-      sessionDatetime: new Date(
-        new Date(date.value.toString() + " " + time.value)
-      ),
-      price: price.value,
-      room: 1,
-      movieId: resultSearch.id,
-      movieTitle: resultSearch.title,
-    }),
+    method: "GET",
+    headers: { 
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
   };
   await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
+    `${import.meta.env.VITE_API_SERVER_URL}/users`,
     requestOptions
-  ).then((response) => response.json().then((data) => console.log(data)));
+  ).then((response) => response.json().then((data) =>
+
+  (cinema.value = data["hydra:member"].filter(
+    (x) =>
+      x.enabled == true &&
+      x.roles.includes("ROLE_CINEMA")
+  ))
+));
 
 };
 
@@ -154,6 +140,15 @@ const handleChange = (item) => {
   resultSearch.id = item.id;
   resultSearch.title = item.title;
 };
+
+const handleChangeCinema = (e) => {
+  selectedCinema.value = e.target.value;
+};
+
+const updateSearch = (e) => {
+  search.value = e.target.value;
+};
+
 
 watch(search, async (newSearch) => {
   await fetch(
@@ -169,7 +164,34 @@ watch(search, async (newSearch) => {
         ))
     );
 });
+
+const handleSubmit = async () => {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      sessionDatetime: new Date(
+        new Date(date.value.toString() + " " + time.value)
+      ),
+      price: price.value,
+      creator: `/users/${selectedCinema.value}`,
+      room: room.value,
+      movieId: resultSearch.id,
+      movieTitle: resultSearch.title,
+      cinema: selectedCinema.value,
+    }),
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
+    requestOptions
+  ).then((response) => response.json().then((data) => console.log(data)));
+};
+
 </script>
+
 
 <style scoped>
 h3,
@@ -219,3 +241,4 @@ hr {
   background-color: #ffffff30;
 }
 </style>
+

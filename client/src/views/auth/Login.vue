@@ -1,12 +1,13 @@
 <script setup>
-import { reactive, ref } from "vue";
+import {onMounted, reactive, ref} from "vue";
+import router from "@/router";
 
 const formInputs = reactive({
   email: "",
   password: "",
 });
 
-const errorMessage = ref(null);
+const message = ref(null);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
@@ -20,15 +21,20 @@ const handleSubmitForm = async (e) => {
   const data = await response.json();
 
   if (data.token) {
-    errorMessage.value = null;
+    message.value = null;
     localStorage.setItem("token", data.token);
-    // location.href = "/";
+    await router.push("/");
   } else if (data.message) {
-    errorMessage.value = data.message;
+    message.value = data.message;
   } else if (data.error) {
-    errorMessage.value = data.error;
+    message.value = data.error;
   }
 };
+
+onMounted(() => {
+  const signupMessage = router.currentRoute.value.query.message;
+  message.value = signupMessage;
+});
 </script>
 
 <template>
@@ -67,7 +73,7 @@ const handleSubmitForm = async (e) => {
               v-model="formInputs.password"
             />
           </div>
-          <span>{{ errorMessage }}</span>
+          <span>{{ message }}</span>
           <div class="d-flex justify-content-center">
             <button class="btn mt-4 btn-cinemax" type="submit">
               <span>S'identifier</span>

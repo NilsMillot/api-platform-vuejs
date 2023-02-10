@@ -3,6 +3,7 @@
         <table class="table p-5 tab">
           <thead>
             <tr>
+              <th scope="col">CINEMA</th>
               <th scope="col">SEANCE</th>
               <th scope="col">DATE</th>
               <th scope="col">ACTIONS</th>
@@ -10,10 +11,11 @@
           </thead>
           <tbody>
             <tr v-for="(session, index) in sessions.value" :key="index">
+              <td>{{ session.creator.name }}</td>
               <td>{{ session.movie_title }}</td>
               <td>{{ session.session_datetime.split("T")[0] }}</td>
               <td>
-                <button class="btn btn-danger btn-sm" @click="() => this.$router.push({path: '/cinema/session/edit/' + session.id})">Modifier</button>
+                <button class="btn btn-danger btn-sm" @click="() => this.$router.push({path: '/admin/session/edit/' + session.id})">Modifier</button>
                 <button
                   class="btn btn-danger btn-sm mx-2"
                   @click="handleDelete(session.id)"
@@ -43,6 +45,7 @@ const handleDelete = (id) => {
   ).then((response) => response.json().then( (data) => console.log(data)));
 };
 
+
 onMounted(async () => {
   await fetchSessions();
 
@@ -58,6 +61,7 @@ const fetchSessions = async () => {
         ))
     );
 };
+
 
 </script>
 
