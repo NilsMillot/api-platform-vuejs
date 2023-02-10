@@ -23,6 +23,10 @@ import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
 
+
+
+import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -140,6 +144,14 @@ const router = createRouter({
       name: "admin-cinema-confirm",
       component: ConfirmCinemaAdmin,
     },
+
+    {
+      path: "/admin/quizz/new",
+      name: "admin-quizz-new",
+      component: AdminNewQuizzView,
+    },
+
+
     {
       path: "/:catchAll(.*)",
       name: "Not Found",
