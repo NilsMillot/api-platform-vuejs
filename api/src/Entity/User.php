@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new Get(),
     new GetCollection(
-        security: 'is_granted("ROLE_ADMIN")',
+        // security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
     ),
     new Put(

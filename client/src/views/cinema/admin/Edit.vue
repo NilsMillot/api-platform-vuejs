@@ -100,7 +100,7 @@ const handleSubmit = () => {
     }),
   };
   fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/sesssion/edit/${session.id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/session/edit/${session.id}`,
     requestOptions
   ).then((response) => console.log(response.json()));
 };
