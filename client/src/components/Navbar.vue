@@ -26,10 +26,6 @@
           <a class="nav-link" href="#">Quizz</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-
         <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_ADMIN')">
           <a class="nav-link" href="/admin">Admin</a>
         </li>

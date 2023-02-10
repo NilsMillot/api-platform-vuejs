@@ -7,6 +7,7 @@ const formInputs = reactive({
   email: "",
   password: "",
   passwordConfirm: "",
+  isCinema: false,
 });
 
 const violations = ref([]);
@@ -19,30 +20,33 @@ const handleSubmitForm = async (e) => {
     email: formInputs.email,
     password: formInputs.password,
     passwordConfirm: formInputs.passwordConfirm,
-    adress: "Pas d'adresse",
-    isCinema: false,
-    status: 'Aucun'
+    isCinema: formInputs.isCinema,
   };
 
-  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
-  })
+  const response = await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/signup`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    }
+  );
 
   if (response.status === 201) {
     violations.value = [];
     await router.push({
       name: "login",
-      query: { message: "Votre compte a été créé, vérifiez votre boite mail pour activer votre compte" },
+      query: {
+        message:
+          "Votre compte a été créé, vérifiez votre boite mail pour activer votre compte",
+      },
     });
   }
 
   if (response.status === 422) {
     const data = await response.json();
-    console.log(data.violations)
     violations.value = data.violations;
   }
 };
@@ -115,6 +119,20 @@ const handleSubmitForm = async (e) => {
                 {{ violation.propertyPath }} : {{ violation.message }}
               </li>
             </ul>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="invalidCheck"
+                v-model="formInputs.isCinema"
+              />
+              <label class="form-check-label" for="invalidCheck">
+                Je suis un cinéma
+              </label>
+            </div>
           </div>
           <div class="d-flex justify-content-center">
             <button class="btn mt-4 btn-cinemax" type="submit">
