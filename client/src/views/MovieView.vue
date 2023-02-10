@@ -58,6 +58,11 @@ onMounted(async () => {
   movie.value.country = movie.value.production_countries[0].iso_3166_1;
   movie.value.movieDuration = Math.round(movie.value.runtime / 60);
 
+  const movieInstances = await getMovieInstances();
+  availableMovies.value = movieInstances;
+  stock.value = movieInstances.length;
+  price.value = await getPrice();
+
   if (currentUserRoles?.value?.includes("ROLE_ADMIN")) {
     isCurrentUserAdmin.value = true;
   }
@@ -65,11 +70,6 @@ onMounted(async () => {
   if (currentUserRoles?.value?.includes("ROLE_USER")) {
     isCurrentUserUser.value = true;
   }
-
-  const movieInstances = await getMovieInstances();
-  availableMovies.value = movieInstances;
-  stock.value = movieInstances.length;
-  price.value = await getPrice();
 });
 
 // TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
