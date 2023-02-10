@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark px-5">
-    <a class="navbar-brand logo" href="/">CINEMAX</a>
+    <router-link class="navbar-brand logo" to="/">CINEMAX</router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,14 +16,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/">Découvrir</a>
+          <router-link class="nav-link" to="/">Découvrir</router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/session">Cinéma</a>
+          <router-link class="nav-link" to="/session">Cinéma</router-link>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="#">Quizz</a>
+          <router-link class="nav-link" to="/quizz-list">Quizz</router-link>
         </li>
 
         <li class="nav-item">
@@ -31,7 +31,7 @@
         </li>
 
         <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_ADMIN')">
-          <a class="nav-link" href="/admin">Admin</a>
+          <router-link class="nav-link" to="/admin">Admin</router-link>
         </li>
 
         <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_CINEMA')">
@@ -41,10 +41,10 @@
 
       <ul class="navbar-nav">
         <li class="nav-item" v-show="!isCurrentUserLoggedIn">
-          <a class="nav-link" href="/register">Inscription</a>
+          <router-link class="nav-link" to="/register">Inscription</router-link>
         </li>
         <li class="nav-item" v-show="!isCurrentUserLoggedIn">
-          <a class="nav-link" href="/login">Connexion</a>
+          <router-link class="nav-link" to="/login">Connexion</router-link>
         </li>
 
         <li class="nav-item" v-show="isCurrentUserLoggedIn">
