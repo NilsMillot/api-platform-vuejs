@@ -15,8 +15,7 @@ import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
-import QuizzListView from "@/views/quizz/QuizzList.vue";
-
+import QuizzListView from "../views/quizz/QuizzList.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
@@ -28,6 +27,7 @@ import AdminUserView from "../views/admin/users/UserView.vue";
 
 import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
 import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
+import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -158,8 +158,12 @@ const router = createRouter({
       name: "admin-quizz-list",
       component: AdminListQuizzView,
     },
-
-
+    {
+      path: "/admin/quizz/edit/:id",
+      name: "admin-quizz-edit",
+      query: { id: Number },
+      component: AdminEditQuizzView,
+    },
     {
       path: "/quizz-list",
       name: "quizz-list",
