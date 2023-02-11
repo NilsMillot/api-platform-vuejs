@@ -29,6 +29,8 @@ import HeaderBanner from "../../../components/HeaderBanner.vue";
 const quizz = reactive({ value: [] });
 onMounted(async () => {
   await fetchQuizz();
+
+
 });
 
 const fetchQuizz = async () => {
@@ -48,6 +50,8 @@ const fetchQuizz = async () => {
 
       // TO DO : FILTRER LES QUIZZ
     } else {
+      const data = await response.json();
+      console.log(data);
       throw new Error("Erreur");
     }
   } catch (error) {
