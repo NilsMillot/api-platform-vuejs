@@ -1,6 +1,9 @@
 <template>
   <div class="container">
     <div class="row">
+      <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
       <div class="col-md-6">
         <div class="card card-form shadow-sm">
           <form @submit.prevent="handleSubmit">
@@ -75,6 +78,7 @@ const question = reactive({
 });
 
 const questions = reactive({ value: [] });
+const message = ref("");
 
 onMounted(async () => {
   await fetchQuestions();
@@ -116,11 +120,12 @@ const deleteQuestion = async (id) => {
       }
     );
     if (response.ok) {
-      // const data = await response.json();
-      // console.log(data);
+      message.value = "La question a bien été supprimée.";
+      let found = questions.value.findIndex( (e) => e.id == id )
+      questions.value.splice(found,1);
     } else {
-      // const data = await response.json();
-      // console.log(data);
+      const data = await response.json();
+      message.value = data["hydra:description"];
     }
   } catch (error) {
     console.log(error);
@@ -148,22 +153,12 @@ const handleSubmit = async () => {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data);
-
-      //   message.value =
-      //     "Veuillez remplir tous les champs. La date doit être supérieur à celle d'aujourd'hui";
+      message.value = data["hydra:description"];
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
       const data = await response.json();
-
-      console.log(data);
-
       questions.value.push(data);
-      //   message.value = "Votre quizz a bien été créé.";
-      //   quizz = reactive({
-      //     name: "",
-      //     date: "",
-      //   });
+      message.value = "La question a bien été créé.";
     }
   } catch (error) {
     console.log(error);
