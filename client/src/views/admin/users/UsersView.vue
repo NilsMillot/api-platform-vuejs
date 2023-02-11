@@ -1,8 +1,8 @@
 <template>
   <div class="container m-5">
     <div>
-        <h2 class="pt-2">Utilisateurs</h2>
-        <hr class="pb-5">
+      <h2 class="pt-2">Utilisateurs</h2>
+      <hr class="pb-5" />
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -29,7 +29,10 @@
                   class="btn btn-sm me-2 btn-cinemax"
                   >Modifier</router-link
                 >
-                <button class="btn btn-sm btn-cinemax" @click="deleteUser(user.id)">
+                <button
+                  class="btn btn-sm btn-cinemax"
+                  @click="deleteUser(user.id)"
+                >
                   Supprimer
                 </button>
               </td>
@@ -73,7 +76,9 @@
                 <label for="isAdmin">EST UN ADMIN</label>
               </td>
               <td>
-                <button class="btn mt-2 btn-cinemax" @click="addUser">Ajouter</button>
+                <button class="btn mt-2 btn-cinemax" @click="addUser">
+                  Ajouter
+                </button>
               </td>
             </tr>
           </tbody>
@@ -86,7 +91,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-const shouldOfuscate = ref(false);
+const shouldOfuscate = ref(true);
 const users = reactive([]);
 const newUser = reactive({
   name: "",
@@ -108,7 +113,7 @@ onMounted(async () => {
     }
   );
   if (response.status !== 200) {
-    shouldOfuscate.value = true;
+    location.href = "/";
   } else {
     shouldOfuscate.value = false;
   }
@@ -172,25 +177,24 @@ const deleteUser = async (userId) => {
 </script>
 
 <style scoped>
-
-.container{
-  color:white;
+.container {
+  color: white;
 }
 
-.tab{
+.tab {
   background-color: #2f2f2f;
-  color:white;
-  padding:200px !important;
+  color: white;
+  padding: 200px !important;
 }
-label{
+label {
   padding-left: 5px;
   font-size: 12px;
 }
 
 .btn-cinemax {
-background-color: var(--color-red);
-color: var(--color-white);
-text-align: center;
+  background-color: var(--color-red);
+  color: var(--color-white);
+  text-align: center;
 }
 .btn-cinemax:hover {
   background-color: var(--color-darkred);
