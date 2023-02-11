@@ -26,6 +26,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
+use App\Controller\DeleteUserController;
 use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Mercure\Update;
@@ -36,7 +37,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 
 #[ApiResource(operations: [
-    new Get(),
+    new Get(
+        uriTemplate: '/users/{id}',
+        // Only if current user is admin or current user is the user that is being fetched
+        security: 'is_granted("ROLE_ADMIN") or object == user',
+        openapiContext: ['description' => 'Get an account'],
+        normalizationContext: ['groups' => ['user:read']]
+    ),
     new GetCollection(
         // security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
@@ -65,7 +72,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_ADMIN")',
         securityMessage: 'Only admins can access this route',
         uriTemplate: '/users/{id}',
-        openapiContext: ['description' => 'Delete an account']
+        controller: DeleteUserController::class,
+        openapiContext: ['description' => 'Delete an account'],
     ),
     // Everyone can call this route but only admins can update roles and totalCredits for another user
     new Put(
@@ -98,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['session:read', 'getCollection:read'])]
+    #[Groups(['session:read', 'getCollection:read', 'user:read'])]
     private ?int $id = null;
 
     #[Groups(['user:read', 'getCollection:read', 'session:read'])]
@@ -138,6 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $confirmationToken = null;
 
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 

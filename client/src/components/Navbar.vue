@@ -44,6 +44,9 @@
         </li>
 
         <li class="nav-item" v-show="isCurrentUserLoggedIn">
+          <a class="nav-link" href="/user-account">Mon profil</a>
+        </li>
+        <li class="nav-item" v-show="isCurrentUserLoggedIn">
           <a class="nav-link" href="#" @click="handleDisconnect"
             >Deconnexion ({{ currentUserEmail }})</a
           >

@@ -197,7 +197,7 @@ const setItems = () => {
 <style>
 .movie-view {
   position: relative;
-  height: 95vh;
+  padding-top: 50px;
   display: flex;
 }
 
@@ -222,7 +222,7 @@ const setItems = () => {
 .movie-view__poster-image {
   min-width: 280px;
   max-width: 720px;
-  max-height: 100vh;
+  height: fit-content;
   border-radius: 14px;
 }
 
@@ -269,6 +269,7 @@ const setItems = () => {
 
   .movie-view__poster-image {
     max-width: 100%;
+    max-height: none;
     margin-bottom: 20px;
   }
 
