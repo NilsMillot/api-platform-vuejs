@@ -39,7 +39,7 @@ class Quizz
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quizz-list:read', 'quizz:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read','questions-admin:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
