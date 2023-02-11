@@ -77,11 +77,14 @@ const handleSubmitForm = () => {
   // TODO: SEE why api doesn't update the user
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: JSON.stringify({
       name: user.name,
       adress: user.adress,
-      status: user?.isCinema ? "cinemaRoleRequested" : null,
+      status: user?.isCinema ? "cinemaRoleRequested" : "",
     }),
   };
   fetch(
