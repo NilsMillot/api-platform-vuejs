@@ -24,6 +24,11 @@ import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
 
+
+
+import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
+import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -141,6 +146,20 @@ const router = createRouter({
       name: "admin-cinema-confirm",
       component: ConfirmCinemaAdmin,
     },
+
+    {
+      path: "/admin/quizz/new",
+      name: "admin-quizz-new",
+      component: AdminNewQuizzView,
+    },
+
+    {
+      path: "/admin/quizz/list",
+      name: "admin-quizz-list",
+      component: AdminListQuizzView,
+    },
+
+
     {
       path: "/quizz-list",
       name: "quizz-list",
