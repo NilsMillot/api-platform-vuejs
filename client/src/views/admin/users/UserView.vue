@@ -1,37 +1,36 @@
 <template>
-
-<div>
+  <div>
     <div class="card card-user-edit shadow-sm" v-if="!shouldOfuscate">
       <div>
-        <h3 class="pt-3">Utilisateurs</h3>
-        <hr/>
+        <h3 class="pt-3">Utilisateur: {{ user.email }}</h3>
+        <hr />
       </div>
       <div class="d-flex">
-      <div class="card-body">
-        <form @submit="handleSubmitUpdatedUser">
+        <div class="card-body">
+          <form @submit="handleSubmitUpdatedUser">
             <!-- <input type="hidden" v-model="user.id" /> -->
-          <div class="form-group">
-            <label for="name">Nom :</label>
-            <input
+            <div class="form-group">
+              <label for="name">Nom :</label>
+              <input
                 type="text"
                 class="form-control"
                 id="name"
                 v-model="user.name"
                 placeholder="Nom"
               />
-          </div>
-          <div class="form-group">
-            <label for="address">Adresse :</label>
-            <input
+            </div>
+            <div class="form-group">
+              <label for="address">Adresse :</label>
+              <input
                 type="text"
                 class="form-control"
                 id="adress"
                 v-model="user.adress"
                 placeholder="Adresse"
               />
-          </div>
-          <div class="form-group">
-            <label for="totalCredits">Total de crédits :</label>
+            </div>
+            <div class="form-group">
+              <label for="totalCredits">Total de crédits :</label>
               <input
                 type="text"
                 class="form-control"
@@ -39,27 +38,20 @@
                 v-model="user.totalCredits"
                 placeholder="Crédits"
               />
-          </div>
-          <div class="form-group">
-            <label for="status">Status :</label>
+            </div>
+            <div class="form-group">
+              <label for="status">Status :</label>
               <input
                 type="text"
                 class="form-control"
                 id="status"
                 v-model="user.status"
                 placeholder="Status"
-              />  
-          </div>
-          <div class="form-group">
-            <label for="enabled">Activé :</label>
-              <input
-                type="text"
-                class="form-control"
-                id="enabled"
-                v-model="user.enabled"
               />
-          </div>
-          <div class="form-group">
+            </div>
+            <label for="isAdmin">COMPTE ACTIVE :</label>
+            <input type="checkbox" v-model="user.enabled" />
+            <div class="form-group">
               <label for="roles">Role :</label>
               <input
                 type="text"
@@ -68,18 +60,20 @@
                 v-model="user.roles"
                 placeholder="Role"
               />
-          </div>
-          <div class="d-flex">
-            <button type="submit" class="btn m-4 btn-cinemax">Envoyer</button>
-            <router-link to="/admin/users" class="btn m-4 btn-cinemax">Retour</router-link>
-          </div>
-        </form>
-      </div>
+            </div>
+            <div class="d-flex">
+              <button type="submit" class="btn m-4 btn-cinemax">Envoyer</button>
+              <router-link to="/admin/users" class="btn m-4 btn-cinemax"
+                >Retour</router-link
+              >
+            </div>
+          </form>
+        </div>
       </div>
     </div>
     <div class="col-md-12" v-else>
-        <h1>User</h1>
-        <p>Vous n'avez pas accès à cette page</p>
+      <h1>User</h1>
+      <p>Vous n'avez pas accès à cette page</p>
     </div>
   </div>
 </template>
@@ -114,6 +108,7 @@ onMounted(async () => {
     user.roles = userFetched.roles;
     user.totalCredits = userFetched.totalCredits;
     user.enabled = userFetched.enabled;
+    user.email = userFetched.email;
   }
 });
 

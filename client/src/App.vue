@@ -19,6 +19,10 @@ const fetchCurrentUserInfos = async () => {
       },
     });
     const userFetched = await response.json();
+    if (!userFetched.enabled) {
+      localStorage.removeItem("token");
+      location.href = "/";
+    }
     currentUser.id = userFetched.id;
     currentUser.email = userFetched.email;
     currentUser.roles = userFetched.roles;

@@ -24,17 +24,20 @@
               <td>{{ user.email }}</td>
               <td>{{ user.roles }}</td>
               <td>
-                <router-link
-                  :to="'/admin/users/' + user.id"
-                  class="btn btn-sm me-2 btn-cinemax"
-                  >Modifier</router-link
-                >
-                <button
-                  class="btn btn-sm btn-cinemax"
-                  @click="deleteUser(user.id)"
-                >
-                  Supprimer
-                </button>
+                <div class="actionsButtons">
+                  <router-link
+                    :to="'/admin/users/' + user.id"
+                    class="btn btn-sm me-2 btn-cinemax"
+                    >Modifier</router-link
+                  >
+                  <button
+                    v-if="user.enabled"
+                    class="btn btn-sm btn-cinemax"
+                    @click="deleteUser(user.id)"
+                  >
+                    Supprimer
+                  </button>
+                </div>
               </td>
               <td></td>
             </tr>
@@ -145,12 +148,20 @@ const addUser = async () => {
   }
   if (response.status === 201) {
     alert("User created");
+    const higherId = users.reduce((prev, current) =>
+      prev.id > current.id ? prev : current
+    );
+    newUser.id = higherId?.id + 1;
+
+    if (user?.id) {
+      newUser.id = higherId?.id + 1;
+    }
     if (newUser.isCinema) {
-      newUser.roles = "ROLE_CINEMA";
+      newUser.roles = ["ROLE_CINEMA", "ROLE_USER"];
     } else if (newUser.isAdmin) {
-      newUser.roles = "ROLE_ADMIN";
+      newUser.roles = ["ROLE_ADMIN", "ROLE_USER"];
     } else {
-      newUser.roles = "ROLE_USER";
+      newUser.roles = ["ROLE_USER"];
     }
     users.push(newUser);
   }
@@ -167,11 +178,10 @@ const deleteUser = async (userId) => {
       },
     }
   );
-  const user = await response.json();
-  console.log(response.status);
-  if (response.status === 200) {
+  if (response.status === 204) {
     alert("User deleted");
-    users.splice(users.indexOf(user), 1);
+    const index = users.findIndex((user) => user.id === userId);
+    users.splice(index, 1);
   }
 };
 </script>
@@ -190,7 +200,10 @@ label {
   padding-left: 5px;
   font-size: 12px;
 }
-
+.actionsButtons {
+  display: inline-flex;
+  justify-content: space-between;
+}
 .btn-cinemax {
   background-color: var(--color-red);
   color: var(--color-white);
