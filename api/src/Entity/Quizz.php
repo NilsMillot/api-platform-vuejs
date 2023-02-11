@@ -7,7 +7,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Get;
 use App\Repository\QuizzRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
     new Put(),
     new Post(),
-    new Get(),
+    new Get(
         normalizationContext: ['groups' => ['quizz-list:read']],
         security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
     ),
