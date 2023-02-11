@@ -1,80 +1,85 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12" v-if="!shouldOfuscate">
-        <h1>User</h1>
+
+<div>
+    <div class="card card-user-edit shadow-sm" v-if="!shouldOfuscate">
+      <div>
+        <h3 class="pt-3">Utilisateurs</h3>
+        <hr/>
+      </div>
+      <div class="d-flex">
+      <div class="card-body">
         <form @submit="handleSubmitUpdatedUser">
-          <!-- <input type="hidden" v-model="user.id" /> -->
+            <!-- <input type="hidden" v-model="user.id" /> -->
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">Nom :</label>
             <input
-              type="text"
-              class="form-control"
-              id="name"
-              v-model="user.name"
-              placeholder="Name"
-            />
+                type="text"
+                class="form-control"
+                id="name"
+                v-model="user.name"
+                placeholder="Nom"
+              />
           </div>
           <div class="form-group">
-            <label for="adress">Adress</label>
+            <label for="address">Adresse :</label>
             <input
-              type="text"
-              class="form-control"
-              id="adress"
-              v-model="user.adress"
-              placeholder="Adress"
-            />
+                type="text"
+                class="form-control"
+                id="adress"
+                v-model="user.adress"
+                placeholder="Adresse"
+              />
           </div>
           <div class="form-group">
-            <label for="totalCredits">Total Credits</label>
-            <input
-              type="text"
-              class="form-control"
-              id="totalCredits"
-              v-model="user.totalCredits"
-              placeholder="Total Credits"
-            />
+            <label for="totalCredits">Total de crédits :</label>
+              <input
+                type="text"
+                class="form-control"
+                id="totalCredits"
+                v-model="user.totalCredits"
+                placeholder="Crédits"
+              />
           </div>
           <div class="form-group">
-            <label for="status">Status</label>
-            <input
-              type="text"
-              class="form-control"
-              id="status"
-              v-model="user.status"
-              placeholder="Status"
-            />
+            <label for="status">Status :</label>
+              <input
+                type="text"
+                class="form-control"
+                id="status"
+                v-model="user.status"
+                placeholder="Status"
+              />  
           </div>
           <div class="form-group">
-            <label for="enabled">Enabled</label>
-            <input
-              type="text"
-              class="form-control"
-              id="enabled"
-              v-model="user.enabled"
-              placeholder="Enabled"
-            />
+            <label for="enabled">Activé :</label>
+              <input
+                type="text"
+                class="form-control"
+                id="enabled"
+                v-model="user.enabled"
+              />
           </div>
           <div class="form-group">
-            <label for="roles">Roles</label>
-            <input
-              type="text"
-              class="form-control"
-              id="roles"
-              v-model="user.roles"
-              placeholder="Roles"
-            />
+              <label for="roles">Role :</label>
+              <input
+                type="text"
+                class="form-control"
+                id="roles"
+                v-model="user.roles"
+                placeholder="Role"
+              />
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-          <router-link to="/admin/users" class="btn btn-primary"
-            >Back</router-link
-          >
+          <div class="d-flex">
+            <button type="submit" class="btn m-4 btn-cinemax">Envoyer</button>
+            <router-link to="/admin/users" class="btn m-4 btn-cinemax">Retour</router-link>
+          </div>
         </form>
       </div>
-      <div class="col-md-12" v-else>
+      </div>
+    </div>
+    <div class="col-md-12" v-else>
         <h1>User</h1>
         <p>Vous n'avez pas accès à cette page</p>
-      </div>
     </div>
   </div>
 </template>
@@ -144,5 +149,26 @@ const handleSubmitUpdatedUser = async (e) => {
 h1,
 p {
   color: #fff;
+}
+
+.card-user-edit {
+  width: 70%;
+  height: 90%;
+  margin: 0 auto;
+  margin-top: 80px;
+  padding: 20px;
+  background-color: #ffffff30;
+  color: var(--color-white);
+  box-shadow: 20px;
+}
+.btn-cinemax {
+  background-color: var(--color-red);
+  color: var(--color-white);
+  text-align: center;
+  width: 25%;
+}
+.btn-cinemax:hover {
+  background-color: var(--color-darkred);
+  color: var(--color-white);
 }
 </style>

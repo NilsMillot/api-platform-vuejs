@@ -15,6 +15,7 @@ import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
+import QuizzListView from "@/views/quizz/QuizzList.vue";
 
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
@@ -159,6 +160,11 @@ const router = createRouter({
     },
 
 
+    {
+      path: "/quizz-list",
+      name: "quizz-list",
+      component: QuizzListView,
+    },
     {
       path: "/:catchAll(.*)",
       name: "Not Found",
