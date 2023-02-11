@@ -76,6 +76,7 @@ onMounted(async () => {
       }
     );
     if (!response.ok) {
+       
       router.push("/admin/quizz/list");
       throw new Error("Une erreur est survenue.");
     } else {
@@ -106,8 +107,8 @@ const handleSubmit = async () => {
     );
     if (!response.ok) {
       const data = await response.json();
-      message.value =
-        "Veuillez remplir tous les champs. La date doit être supérieur à celle d'aujourd'hui";
+      console.log(data);
+      message.value = data['hydra:description'];
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
       message.value = "Votre quizz a bien été modifié.";

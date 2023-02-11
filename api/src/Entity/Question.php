@@ -5,7 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use ApiPlatform\Metadata\Post;
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource]
 class Question
