@@ -91,15 +91,16 @@ const fetchSession = async (id) => {
 const handleSubmit = () => {
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
     body: JSON.stringify({
       sessionDatetime: new Date(new Date(session.date + " " + session.time)),
-      price: session.price,
-      room: 1,
     }),
   };
   fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${session.id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/session/edit/${session.id}`,
     requestOptions
   ).then((response) => console.log(response.json()));
 };

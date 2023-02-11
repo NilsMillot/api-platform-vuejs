@@ -15,16 +15,14 @@ class SignupDto
     public string $password;
 
     #[Assert\NotBlank]
-    public string $adress;
-    #[Assert\NotBlank]
-    public string $status;
+    #[Assert\Length(min: 8)]
+    #[Assert\EqualTo(propertyPath: 'password', message: 'Les mots de passe ne correspondent pas')]
+    public string $passwordConfirm;
 
     #[Assert\NotNull]
     public bool $isCinema;
 
-    #[Assert\Null]
     public string $name;
-
 
 
     /**
@@ -59,38 +57,6 @@ class SignupDto
         $this->password = $password;
     }
 
-    /**
-     * @return string
-     */
-    public function getAdress(): string
-    {
-        return $this->adress;
-    }
-
-    /**
-     * @param string $adress
-     */
-    public function setAdress(string $adress): void
-    {
-        $this->adress = $adress;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
      /**
      * @return bool
      */
@@ -122,5 +88,21 @@ class SignupDto
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordConfirm(): string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string $passwordConfirm
+     */
+    public function setPasswordConfirm(string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
     }
 }

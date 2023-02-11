@@ -3,16 +3,37 @@ import { ref } from "vue";
 
 const email = ref(null);
 const sent = ref(false);
+const violations = ref([]);
+const successMsg = ref('');
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
   sent.value = true;
-  // TODO: Call the API to send forgot password email
-  console.log(email.value);
+  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/reset_password_request`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email.value,
+    }),
+  });
 
-  setTimeout(() => {
-    sent.value = false;
-  }, 3000);
+  const data = await response.json();
+
+  if (response.status === 404) {
+    violations.value = [{ propertyPath: "user", message: data.error }];
+  }
+
+  if (response.status === 422) {
+    violations.value = data.violations;
+  }
+
+  if (response.status === 200) {
+    successMsg.value = "L'email de réinitialisation de mot de passe a été envoyé"
+  }
+
+  sent.value = false;
 };
 </script>
 <template>
@@ -39,6 +60,10 @@ const handleSubmitForm = async (e) => {
               autofocus
             />
           </div>
+          <span v-for="violation in violations" :key="violation">
+            <span class="text-danger">{{ violation.message }}</span>
+          </span>
+          <span>{{ successMsg }}</span>
           <div class="d-flex justify-content-center">
             <span
               class="spinner-border spinner-border-sm"
@@ -62,7 +87,6 @@ const handleSubmitForm = async (e) => {
   width: 450px;
   margin: 150px auto auto;
   padding: 20px;
-  height: 285px;
   background-color: var(--color-black);
   color: var(--color-white);
   border-radius: 10px;

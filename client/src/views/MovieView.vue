@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
@@ -14,6 +14,7 @@ const itemCount = ref(0);
 const availableMovies = ref([]);
 const items = reactive({ value: [] });
 const price = reactive({ price: null });
+const currentUser = inject("currentUser");
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -57,26 +58,18 @@ onMounted(async () => {
   movie.value.country = movie.value.production_countries[0].iso_3166_1;
   movie.value.movieDuration = Math.round(movie.value.runtime / 60);
 
-  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  const currentUser = await response.json();
-  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
-    isCurrentUserAdmin.value = true;
-  }
-
-  if (currentUser?.roles?.includes("ROLE_USER")) {
-    isCurrentUserUser.value = true;
-  }
-
   const movieInstances = await getMovieInstances();
   availableMovies.value = movieInstances;
   stock.value = movieInstances.length;
   price.value = await getPrice();
+
+  if (currentUser?.roles?.value?.includes("ROLE_ADMIN")) {
+    isCurrentUserAdmin.value = true;
+  }
+
+  if (currentUser?.roles?.value?.includes("ROLE_USER")) {
+    isCurrentUserUser.value = true;
+  }
 });
 
 // TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
@@ -153,7 +146,7 @@ const setItems = () => {
             >{{ movie.value.movieDuration }}h</span
           >
         </p>
-        <p v-if="price !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
+        <p v-if="price.value !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
         <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
         <!-- TODO: Check if current user have user role to display this div -->
         <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
@@ -204,7 +197,7 @@ const setItems = () => {
 <style>
 .movie-view {
   position: relative;
-  height: 95vh;
+  padding-top: 50px;
   display: flex;
 }
 
@@ -229,7 +222,7 @@ const setItems = () => {
 .movie-view__poster-image {
   min-width: 280px;
   max-width: 720px;
-  max-height: 100vh;
+  height: fit-content;
   border-radius: 14px;
 }
 
@@ -276,6 +269,7 @@ const setItems = () => {
 
   .movie-view__poster-image {
     max-width: 100%;
+    max-height: none;
     margin-bottom: 20px;
   }
 

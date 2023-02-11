@@ -65,17 +65,24 @@ const cinema = reactive({ value: [] });
 const search = ref("");
 
 const fetchCinema = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users`)
-    .then((response) => response.json())
-    .then(
-      (data) =>
-        (cinema.value = data["hydra:member"].filter(
-          (x) =>
-            x.enabled == true &&
-            x.roles.includes("ROLE_CINEMA") &&
-            x.status == 1
-        ))
-    );
+  const requestOptions = {
+    method: "GET",
+    headers: { 
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/users`,
+    requestOptions
+  ).then((response) => response.json().then((data) =>
+
+  (cinema.value = data["hydra:member"].filter(
+    (x) =>
+      x.enabled == true &&
+      x.roles.includes("ROLE_CINEMA")
+  ))
+));
+
 };
 
 watch(search, async (newSearch) => {

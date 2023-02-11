@@ -57,7 +57,8 @@ const fetchSessions = async () => {
     .then(
       (data) =>
         (sessions.value = data["hydra:member"].filter(
-          (x) => new Date(x.session_datetime) > new Date()
+          (x) => new Date(x.session_datetime) > new Date() && 
+                x.status != -1
         ))
     );
 };

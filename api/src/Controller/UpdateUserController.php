@@ -18,6 +18,7 @@ class UpdateUserController extends AbstractController
     if($user && $this->getUser() && ($this->getUser()->getRoles() === ['ROLE_ADMIN'] || $this->getUser()->getId() === $user->getId())) {
       if ($updateUserDto->getName()) $user->setName($updateUserDto->getName());
       if ($updateUserDto->getAdress()) $user->setAdress($updateUserDto->getAdress());
+      if ($updateUserDto->getStatus()) $user->setStatus($updateUserDto->getStatus());
       
       if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
         if ($updateUserDto->getRoles()) $user->setRoles($updateUserDto->getRoles());

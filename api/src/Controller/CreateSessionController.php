@@ -44,14 +44,14 @@ class CreateSessionController extends AbstractController
             if (in_array("ROLE_ADMIN", $user->getRoles())) {
 
                 if (empty($parameters['cinema'])) {
-                    return $this->json(['message' => 'Veuillez remplir tous les champs'], 400);
+                    return $this->json(['message' => 'Une erreur est survenue'], 400);
                 }
                 $user = $userRepository->findById($parameters['cinema']);
                 $user = $user[0];
             }
 
             if (!in_array("ROLE_CINEMA", $user->getRoles())) {
-                return $this->json(['message' => 'Une erreur est survenue.'], 400);
+                return $this->json(['message' => "Vous n'avez pas les droits"], 400);
             }
 
             $errors = $validator->validate($movieScreening);

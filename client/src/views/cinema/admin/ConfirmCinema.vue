@@ -36,7 +36,7 @@ const getCinemas = async () => {
         .then((response) => response.json())
         .then((data) => {
             cinemas.value = data["hydra:member"].filter(
-          (x) => x.roles.includes("ROLE_CINEMA") && x.status == 0
+          (x) => x.roles.includes("ROLE_CINEMA")
         );
         });
 };

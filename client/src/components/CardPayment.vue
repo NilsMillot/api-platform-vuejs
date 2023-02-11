@@ -4,11 +4,13 @@ import { computed, onMounted, reactive, ref, watch, watchEffect } from "vue";
 const props = defineProps({
   items: Object,
   price: Object,
+  session: Object,
   url: String,
 });
 onMounted(() => {
   price.value = props.price;
   items.value = props.items;
+  session.value = props.session;
 });
 watch(props.price, (newPrice) => {
   price.value = newPrice;
@@ -30,6 +32,7 @@ const modeLoading = ref(false);
 
 const price = ref("");
 const items = reactive({ value: [] });
+const session = reactive({ value: [] });
 
 const minCardMonth = computed(() => {
   if (cardYear.value === minCardYear.value) return new Date().getMonth() + 1;
@@ -64,11 +67,13 @@ function handlePay() {
         cardMonth: cardMonth.value,
         cardYear: cardYear.value,
         cardCvv: cardCvv.value,
-        price: price.value.value,
+        price: price.value.price,
         items: items.value,
+        session: session.value,
       }),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
     }
   );

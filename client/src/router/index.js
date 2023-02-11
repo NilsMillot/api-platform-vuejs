@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/Login.vue";
 import RegisterView from "../views/auth/Register.vue";
 import ForgetPasswordView from "../views/auth/ForgetPassword.vue";
+import NewPasswordView from "../views/auth/NewPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import EnableAccountView from "../views/auth/EnableAccount.vue";
 import MovieView from "../views/MovieView.vue";
@@ -14,7 +15,8 @@ import BookingView from "../views/cinema/BookingView.vue";
 import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
-
+import QuizzListView from "../views/quizz/QuizzList.vue";
+import QuizzView from "../views/quizz/Quizz.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
@@ -22,6 +24,12 @@ import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
 
+
+
+import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
+import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
+import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
+import AdminFormQuizzView from "../views/admin/quizz/FormQuizzView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -45,6 +53,11 @@ const router = createRouter({
       path: "/forget-password",
       name: "forget-password",
       component: ForgetPasswordView,
+    },
+    {
+      path: "/new-password",
+      name: "new-password",
+      component: NewPasswordView,
     },
     {
       path: "/user-account",
@@ -133,6 +146,42 @@ const router = createRouter({
       path: "/admin/cinema/confirm",
       name: "admin-cinema-confirm",
       component: ConfirmCinemaAdmin,
+    },
+
+    {
+      path: "/admin/quizz/new",
+      name: "admin-quizz-new",
+      component: AdminNewQuizzView,
+    },
+
+    {
+      path: "/admin/quizz/list",
+      name: "admin-quizz-list",
+      component: AdminListQuizzView,
+    },
+    {
+      path: "/admin/quizz/edit/:id",
+      name: "admin-quizz-edit",
+      query: { id: Number },
+      component: AdminEditQuizzView,
+    },
+
+    {
+      path: "/admin/quizz/:id/form",
+      name: "admin-quizz-form",
+      query: { id: Number },
+      component: AdminFormQuizzView,
+    },
+
+    {
+      path: "/quizz-list",
+      name: "quizz-list",
+      component: QuizzListView,
+    },
+    {
+      path: "/quizz/:id",
+      name: "quizz",
+      component: QuizzView,
     },
     {
       path: "/:catchAll(.*)",

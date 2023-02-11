@@ -8,7 +8,11 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
+use App\Controller\ResetPasswordController;
+use App\Controller\ResetPasswordRequestController;
 use App\Dto\EnableAccountDto;
+use App\Dto\ResetPasswordDto;
+use App\Dto\ResetPasswordRequestDto;
 use App\Dto\SignupDto;
 use App\Dto\UpdateUserDto;
 use App\Dto\SignupAdminDto;
@@ -22,6 +26,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
+use App\Controller\DeleteUserController;
 use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Mercure\Update;
@@ -32,9 +37,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 
 #[ApiResource(operations: [
-    new Get(),
+    new Get(
+        uriTemplate: '/users/{id}',
+        // Only if current user is admin or current user is the user that is being fetched
+        security: 'is_granted("ROLE_ADMIN") or object == user',
+        openapiContext: ['description' => 'Get an account'],
+        normalizationContext: ['groups' => ['user:read']]
+    ),
     new GetCollection(
-        security: 'is_granted("ROLE_ADMIN")',
+        // security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
     ),
     new Put(
@@ -61,7 +72,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_ADMIN")',
         securityMessage: 'Only admins can access this route',
         uriTemplate: '/users/{id}',
-        openapiContext: ['description' => 'Delete an account']
+        controller: DeleteUserController::class,
+        openapiContext: ['description' => 'Delete an account'],
     ),
     // Everyone can call this route but only admins can update roles and totalCredits for another user
     new Put(
@@ -76,16 +88,28 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: CurrentUserController::class,
         openapiContext: ['description' => 'Get current user']
     ),
+    new Post(
+        uriTemplate: '/reset_password_request',
+        controller: ResetPasswordRequestController::class,
+        openapiContext: ['summary' => 'Send mail to reset password'],
+        input: ResetPasswordRequestDto::class
+    ),
+    new Post(
+        uriTemplate: '/reset_password',
+        controller: ResetPasswordController::class,
+        openapiContext: ['summary' => 'Reset password'],
+        input: ResetPasswordDto::class
+    ),
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['session:read', 'getCollection:read'])]
+    #[Groups(['session:read', 'getCollection:read', 'user:read'])]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'getCollection:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'session:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
@@ -122,6 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $confirmationToken = null;
 
+    #[Groups(['user:read', 'getCollection:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
@@ -131,6 +156,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
     private Collection $bookings;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetPasswordToken = null;
 
     public function __construct()
     {
@@ -367,6 +395,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $booking->setBuyerId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->resetPasswordToken;
+    }
+
+    public function setResetPasswordToken(?string $resetPasswordToken): self
+    {
+        $this->resetPasswordToken = $resetPasswordToken;
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark px-5">
-    <a class="navbar-brand logo" href="/">CINEMAX</a>
+    <router-link class="navbar-brand logo" to="/">CINEMAX</router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,40 +16,41 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/">Découvrir</a>
+          <router-link class="nav-link" to="/">Découvrir</router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/session">Cinéma</a>
+          <router-link class="nav-link" to="/session">Cinéma</router-link>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Quizz</a>
+        <li class="nav-item" v-if="currentUser?.roles">
+          <router-link class="nav-link" to="/quizz-list">Quizz</router-link>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
+        <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_ADMIN')">
+          <router-link class="nav-link" to="/admin">Admin</router-link>
         </li>
 
-        <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_ADMIN')">
-          <a class="nav-link" href="/admin">Admin</a>
-        </li>
-
-        <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_CINEMA')">
-          <a class="nav-link" href="#">Mes projections</a>
+        <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_CINEMA')">
+          <router-link class="nav-link" to="#">Mes projections</router-link>
         </li>
       </ul>
 
       <ul class="navbar-nav">
-        <li class="nav-item" v-show="!isCurrentUserLoggedIn">
-          <a class="nav-link" href="/register">Inscription</a>
+        <li class="nav-item" v-show="!currentUser?.roles">
+          <router-link class="nav-link" to="/register">Inscription</router-link>
         </li>
-        <li class="nav-item" v-show="!isCurrentUserLoggedIn">
-          <a class="nav-link" href="/login">Connexion</a>
+        <li class="nav-item" v-show="!currentUser?.roles">
+          <router-link class="nav-link" to="/login">Connexion</router-link>
         </li>
 
-        <li class="nav-item" v-show="isCurrentUserLoggedIn">
-          <a class="nav-link" href="#" @click="handleDisconnect"
-            >Deconnexion ({{ currentUserEmail }})</a
+        <li class="nav-item" v-show="currentUser?.roles">
+          <router-link class="nav-link" to="/user-account"
+            >Mon profil</router-link
+          >
+        </li>
+        <li class="nav-item" v-show="currentUser?.roles">
+          <router-link class="nav-link" to="#" @click="handleDisconnect"
+            >Deconnexion ({{ currentUser.email }})</router-link
           >
         </li>
       </ul>
@@ -58,32 +59,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-const currentUserEmail = ref("");
-const currentUserRoles = ref([]);
-const isCurrentUserLoggedIn = ref(false);
+import { inject } from "vue";
 
-onMounted(async () => {
-  const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  if (localStorage.getItem("token")) {
-    const currentUser = await response.json();
-    if (currentUser.roles) {
-      isCurrentUserLoggedIn.value = true;
-    }
-    currentUserRoles.value = currentUser.roles;
-    currentUserEmail.value = currentUser.email;
-  }
-});
+const currentUser = inject("currentUser");
 
 const handleDisconnect = () => {
   localStorage.removeItem("token");
-  isCurrentUserLoggedIn.value = false;
+  currentUser.roles = null;
   location.href = "/login";
 };
 </script>

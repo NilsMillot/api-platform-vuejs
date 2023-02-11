@@ -27,11 +27,12 @@ class SignupController extends AbstractController
         $user->setEmail($signupDto->email);
         $user->setPassword($passwordHasher->hashPassword($user, $signupDto->password));
         $user->setConfirmationToken(bin2hex(random_bytes(32)));
-
-        if ($signupDto->isCinema){
-          $user->setName($signupDto->name);
-          $user->setRoles(['ROLE_CINEMA']);
+        $user->setRoles(['ROLE_USER']);
+        $user->setName($signupDto->name);
+        if($signupDto->isCinema) {
+            $user->setStatus('cinemaRoleRequested');
         }
+
         $em->persist($user);
         $em->flush();
 

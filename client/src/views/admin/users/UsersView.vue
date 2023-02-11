@@ -1,16 +1,20 @@
 <template>
-  <div class="container">
-    <h1>Users</h1>
+  <div class="container m-5">
+    <div>
+      <h2 class="pt-2">Utilisateurs</h2>
+      <hr class="pb-5" />
+    </div>
     <div class="row">
       <div class="col-md-12">
-        <table class="table table-striped" v-if="!shouldOfuscate">
+        <table class="table pt-10 tab" v-if="!shouldOfuscate">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
+              <th scope="col">ID</th>
+              <th scope="col">NOM</th>
+              <th scope="col">EMAIL</th>
+              <th scope="col">ROLE</th>
+              <th scope="col">ACTIONS</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -20,15 +24,22 @@
               <td>{{ user.email }}</td>
               <td>{{ user.roles }}</td>
               <td>
-                <router-link
-                  :to="'/admin/users/' + user.id"
-                  class="btn btn-primary"
-                  >Edit</router-link
-                >
-                <button class="btn btn-danger" @click="deleteUser(user.id)">
-                  Delete
-                </button>
+                <div class="actionsButtons">
+                  <router-link
+                    :to="'/admin/users/' + user.id"
+                    class="btn btn-sm me-2 btn-cinemax"
+                    >Modifier</router-link
+                  >
+                  <button
+                    v-if="user.enabled"
+                    class="btn btn-sm btn-cinemax"
+                    @click="deleteUser(user.id)"
+                  >
+                    Supprimer
+                  </button>
+                </div>
               </td>
+              <td></td>
             </tr>
             <tr>
               <td></td>
@@ -37,7 +48,7 @@
                   type="text"
                   class="form-control"
                   v-model="newUser.name"
-                  placeholder="Name"
+                  placeholder="Nom"
                 />
               </td>
               <td>
@@ -53,7 +64,7 @@
                   type="text"
                   class="form-control"
                   v-model="newUser.adress"
-                  placeholder="Adress"
+                  placeholder="Adresse"
                 />
               </td>
               <td>
@@ -62,13 +73,15 @@
                   v-model="newUser.isCinema"
                   placeholder="Is Cinema"
                 />
-                <label for="isCinema">Is Cinema</label>
+                <label for="isCinema">EST UN CINÉMA</label>
                 <br />
                 <input type="checkbox" v-model="newUser.isAdmin" />
-                <label for="isAdmin">Is Admin</label>
+                <label for="isAdmin">EST UN ADMIN</label>
               </td>
               <td>
-                <button class="btn btn-success" @click="addUser">Add</button>
+                <button class="btn mt-2 btn-cinemax" @click="addUser">
+                  Ajouter
+                </button>
               </td>
             </tr>
           </tbody>
@@ -81,7 +94,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-const shouldOfuscate = ref(false);
+const shouldOfuscate = ref(true);
 const users = reactive([]);
 const newUser = reactive({
   name: "",
@@ -103,7 +116,7 @@ onMounted(async () => {
     }
   );
   if (response.status !== 200) {
-    shouldOfuscate.value = true;
+    location.href = "/";
   } else {
     shouldOfuscate.value = false;
   }
@@ -135,12 +148,20 @@ const addUser = async () => {
   }
   if (response.status === 201) {
     alert("User created");
+    const higherId = users.reduce((prev, current) =>
+      prev.id > current.id ? prev : current
+    );
+    newUser.id = higherId?.id + 1;
+
+    if (user?.id) {
+      newUser.id = higherId?.id + 1;
+    }
     if (newUser.isCinema) {
-      newUser.roles = "ROLE_CINEMA";
+      newUser.roles = ["ROLE_CINEMA", "ROLE_USER"];
     } else if (newUser.isAdmin) {
-      newUser.roles = "ROLE_ADMIN";
+      newUser.roles = ["ROLE_ADMIN", "ROLE_USER"];
     } else {
-      newUser.roles = "ROLE_USER";
+      newUser.roles = ["ROLE_USER"];
     }
     users.push(newUser);
   }
@@ -157,19 +178,39 @@ const deleteUser = async (userId) => {
       },
     }
   );
-  const user = await response.json();
-  console.log(response.status);
-  if (response.status === 200) {
+  if (response.status === 204) {
     alert("User deleted");
-    users.splice(users.indexOf(user), 1);
+    const index = users.findIndex((user) => user.id === userId);
+    users.splice(index, 1);
   }
 };
 </script>
 
 <style scoped>
-h1,
-th,
-td {
+.container {
   color: white;
+}
+
+.tab {
+  background-color: #2f2f2f;
+  color: white;
+  padding: 200px !important;
+}
+label {
+  padding-left: 5px;
+  font-size: 12px;
+}
+.actionsButtons {
+  display: inline-flex;
+  justify-content: space-between;
+}
+.btn-cinemax {
+  background-color: var(--color-red);
+  color: var(--color-white);
+  text-align: center;
+}
+.btn-cinemax:hover {
+  background-color: var(--color-darkred);
+  color: var(--color-white);
 }
 </style>

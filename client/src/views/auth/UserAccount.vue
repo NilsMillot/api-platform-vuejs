@@ -6,70 +6,46 @@
         <hr />
       </div>
       <div class="d-flex">
-      <div class="card-body">
-        <div class="form-group">
-          <label for="name">Nom :</label>
-          <input
-            type="text"
-            v-model="user.value.name"
-            name="name"
-            class="form-control"
-          />
+        <div class="card-body">
+          <div class="form-group">
+            <label for="name">Nom :</label>
+            <input
+              type="text"
+              v-model="user.name"
+              name="name"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="address">Adresse :</label>
+            <input
+              type="text"
+              v-model="user.adress"
+              name="address"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="address">Demande de rôle cinéma :</label>
+            <input type="checkbox" v-model="user.isCinema" name="isCinema" />
+          </div>
+          <div class="d-flex justify-content-center">
+            <button
+              class="btn mt-4 btn-cinemax"
+              type="submit"
+              @click="handleSubmitForm()"
+            >
+              <span>Modifier</span>
+            </button>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="address">Adresse :</label>
-          <input
-            type="text"
-            v-model="user.value.adress"
-            name="address"
-            class="form-control"
-          />
+        <div class="card-body">
+          <div class="d-flex justify-content-center">
+            <router-link to="/forget-password" class="btn mt-4 btn-cinemax"
+              >Changer mon mot de passe</router-link
+            >
+          </div>
         </div>
-        <div class="form-group">
-          <label for="email">E-mail : </label>
-          <input
-            disabled
-            type="email"
-            v-model="user.value.email"
-            name="email"
-            class="form-control"
-          />
-        </div>
-        <div class="d-flex justify-content-center">
-          <button class="btn mt-4 btn-cinemax" type="submit" @click="handleSubmitForm()">
-            <span>Modifier</span>
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <label for="password">Mot de passe :</label>
-          <input
-            type="password"
-            name="password"
-            class="form-control"
-            autocomplete="password"
-            required
-            autofocus
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Nouveau mot de passe :</label>
-          <input
-            type="password"
-            name="password"
-            class="form-control"
-            autocomplete="password"
-            required
-            autofocus
-          />
-        </div>
-        <div class="d-flex justify-content-center">
-          <button class="btn mt-4 btn-cinemax" type="submit">
-            <span>Changer mon mot de passe</span>
-          </button>
-        </div>
-      </div>
       </div>
     </div>
   </div>
@@ -78,35 +54,44 @@
 <script setup>
 import { onMounted, reactive } from "vue";
 
-const user = reactive({ value: {} });
+const user = reactive({});
 
 onMounted(async () => {
-  await fetchUser();
-  console.log(user.value.id);
+  if (localStorage.getItem("token")) {
+    const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const currentUser = await response.json();
+    user.id = currentUser.id;
+    user.name = currentUser.name;
+    user.adress = currentUser.adress;
+    user.isCinema = currentUser.status === "cinemaRoleRequested" ? true : false;
+  }
 });
 
 const handleSubmitForm = () => {
+  // TODO: SEE why api doesn't update the user
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: JSON.stringify({
-      name: user.value.name,
-      adress: user.value.adress,
+      name: user.name,
+      adress: user.adress,
+      status: user?.isCinema ? "cinemaRoleRequested" : "",
     }),
   };
   fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.value.id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.id}`,
     requestOptions
   ).then((response) => console.log(response.json()));
-};
-
-const fetchUser = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/users/1`)
-    .then((response) => response.json())
-    .then((data) => {
-      user.value = data;
-      console.log(user.value);
-    });
+  console.log("%cUserAccount.vue line:89 user", "color: #007acc;", user);
 };
 </script>
 
