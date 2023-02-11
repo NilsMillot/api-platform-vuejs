@@ -16,6 +16,7 @@ import SuccessView from "../views/payment/Success.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
 import QuizzListView from "../views/quizz/QuizzList.vue";
+import QuizzView from "../views/quizz/Quizz.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
@@ -176,6 +177,11 @@ const router = createRouter({
       path: "/quizz-list",
       name: "quizz-list",
       component: QuizzListView,
+    },
+    {
+      path: "/quizz/:id",
+      name: "quizz",
+      component: QuizzView,
     },
     {
       path: "/:catchAll(.*)",

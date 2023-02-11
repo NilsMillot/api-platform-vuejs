@@ -19,7 +19,7 @@ class LoginSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
 
         if (!$user->isEnabled()) {
-            $errorMessage = "Veuillez activer votre compte avant de pouvoir vous connecter";
+            $errorMessage = "Il semble que vous n'ayez pas encore activé votre compte ou bien que votre compte ait été bloqué. Veuillez consulter votre boîte mail.";
             $event->setData(['error' => $errorMessage]);
             $event->getResponse()->setStatusCode(403);
         }

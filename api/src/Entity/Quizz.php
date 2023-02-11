@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -25,18 +26,26 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Put(),
     new Post(),
     new Get(),
+        normalizationContext: ['groups' => ['quizz-list:read']],
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    ),
+    new Get(
+        uriTemplate: '/quizzs/{id}',
+        normalizationContext: ['groups' => ['quizz:read']],
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    )
 ])]
 class Quizz
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quizz-list:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['quizz-list:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -45,6 +54,7 @@ class Quizz
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\OneToMany(mappedBy: 'quizz', targetEntity: Question::class, orphanRemoval: true)]
+    #[Groups(['quizz:read'])]
     private Collection $questions;
 
     public function __construct()

@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource]
 class Question
@@ -13,15 +15,19 @@ class Question
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['quizz:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['quizz:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 500)]
+    #[Groups(['quizz:read'])]
     private ?string $firstAnswer = null;
 
     #[ORM\Column(length: 500)]
+    #[Groups(['quizz:read'])]
     private ?string $secondAnswer = null;
 
     #[ORM\Column]

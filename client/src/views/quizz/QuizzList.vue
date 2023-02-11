@@ -41,7 +41,7 @@ onMounted(async () => {
     <ul class="list-group" v-if="activeQuizzs !== null && activeQuizzs.length > 0">
       <li v-for="quizz in activeQuizzs" :key="quizz.id" class="list-group-item d-flex justify-content-between align-items-center">
         {{ quizz.name }}
-        <button class="btn btn-danger">Jouer</button>
+        <router-link :to="`/quizz/${quizz.id}`" class="btn btn-cinemax-primary">Jouer</router-link>
       </li>
     </ul>
   </div>

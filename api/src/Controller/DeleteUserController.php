@@ -16,7 +16,7 @@ class DeleteUserController extends AbstractController
 {
     public function __invoke(ValidatorInterface $validator, User $user, EntityManagerInterface $em, UserRepository $userRepository): JsonResponse
     {   
-        $user->setStatus('deleted');
+        $user->setEnabled(false);
         $em->persist($user);
         $em->flush();
 
