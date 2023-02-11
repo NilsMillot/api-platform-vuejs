@@ -26,29 +26,31 @@
           <router-link class="nav-link" to="/quizz-list">Quizz</router-link>
         </li>
 
-        <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_ADMIN')">
+        <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_ADMIN')">
           <router-link class="nav-link" to="/admin">Admin</router-link>
         </li>
 
-        <li class="nav-item" v-if="currentUserRoles?.includes('ROLE_CINEMA')">
-          <a class="nav-link" href="#">Mes projections</a>
+        <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_CINEMA')">
+          <router-link class="nav-link" to="#">Mes projections</router-link>
         </li>
       </ul>
 
       <ul class="navbar-nav">
-        <li class="nav-item" v-show="!isCurrentUserLoggedIn">
+        <li class="nav-item" v-show="!currentUser?.roles">
           <router-link class="nav-link" to="/register">Inscription</router-link>
         </li>
-        <li class="nav-item" v-show="!isCurrentUserLoggedIn">
+        <li class="nav-item" v-show="!currentUser?.roles">
           <router-link class="nav-link" to="/login">Connexion</router-link>
         </li>
 
-        <li class="nav-item" v-show="isCurrentUserLoggedIn">
-          <a class="nav-link" href="/user-account">Mon profil</a>
+        <li class="nav-item" v-show="currentUser?.roles">
+          <router-link class="nav-link" to="/user-account"
+            >Mon profil</router-link
+          >
         </li>
-        <li class="nav-item" v-show="isCurrentUserLoggedIn">
-          <a class="nav-link" href="#" @click="handleDisconnect"
-            >Deconnexion ({{ currentUserEmail }})</a
+        <li class="nav-item" v-show="currentUser?.roles">
+          <router-link class="nav-link" to="#" @click="handleDisconnect"
+            >Deconnexion ({{ currentUser.email }})</router-link
           >
         </li>
       </ul>
@@ -59,13 +61,11 @@
 <script setup>
 import { inject } from "vue";
 
-const currentUserEmail = inject("currentUserEmail");
-const currentUserRoles = inject("currentUserRoles");
-const isCurrentUserLoggedIn = inject("isCurrentUserLoggedIn");
+const currentUser = inject("currentUser");
 
 const handleDisconnect = () => {
   localStorage.removeItem("token");
-  isCurrentUserLoggedIn.value = false;
+  currentUser.roles = null;
   location.href = "/login";
 };
 </script>

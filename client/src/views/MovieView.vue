@@ -14,7 +14,7 @@ const itemCount = ref(0);
 const availableMovies = ref([]);
 const items = reactive({ value: [] });
 const price = reactive({ price: null });
-const currentUserRoles = inject("currentUserRoles");
+const currentUser = inject("currentUser");
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -63,11 +63,11 @@ onMounted(async () => {
   stock.value = movieInstances.length;
   price.value = await getPrice();
 
-  if (currentUserRoles?.value?.includes("ROLE_ADMIN")) {
+  if (currentUser?.roles?.value?.includes("ROLE_ADMIN")) {
     isCurrentUserAdmin.value = true;
   }
 
-  if (currentUserRoles?.value?.includes("ROLE_USER")) {
+  if (currentUser?.roles?.value?.includes("ROLE_USER")) {
     isCurrentUserUser.value = true;
   }
 });

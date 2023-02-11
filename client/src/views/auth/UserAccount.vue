@@ -66,6 +66,7 @@ onMounted(async () => {
       },
     });
     const currentUser = await response.json();
+    user.id = currentUser.id;
     user.name = currentUser.name;
     user.adress = currentUser.adress;
     user.isCinema = currentUser.status === "cinemaRoleRequested" ? true : false;
@@ -73,19 +74,20 @@ onMounted(async () => {
 });
 
 const handleSubmitForm = () => {
-  // TODO: update currentUser
-  // const requestOptions = {
-  //   method: "PUT",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({
-  //     name: user.value.name,
-  //     adress: user.value.adress,
-  //   }),
-  // };
-  // fetch(
-  //   `${import.meta.env.VITE_API_SERVER_URL}/users/${user.value.id}`,
-  //   requestOptions
-  // ).then((response) => console.log(response.json()));
+  // TODO: SEE why api doesn't update the user
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: user.name,
+      adress: user.adress,
+      status: user?.isCinema ? "cinemaRoleRequested" : null,
+    }),
+  };
+  fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.id}`,
+    requestOptions
+  ).then((response) => console.log(response.json()));
   console.log("%cUserAccount.vue line:89 user", "color: #007acc;", user);
 };
 </script>

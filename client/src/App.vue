@@ -1,11 +1,9 @@
 <script setup>
-import { provide, ref, onMounted } from "vue";
+import { provide, onMounted, reactive } from "vue";
 import { RouterView } from "vue-router";
 import Navbar from "./components/Navbar.vue";
 
-const currentUserEmail = ref("");
-const currentUserRoles = ref([]);
-const isCurrentUserLoggedIn = ref(false);
+const currentUser = reactive({});
 
 onMounted(async () => {
   fetchCurrentUserInfos();
@@ -20,18 +18,21 @@ const fetchCurrentUserInfos = async () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    const currentUser = await response.json();
-    if (currentUser.roles) {
-      isCurrentUserLoggedIn.value = true;
+    const userFetched = await response.json();
+    // TODO: PUT THIS LOGIC IN THE BACKEND TOO: if user is deleted, don't pass him the token
+    if (userFetched.status === "deleted") {
+      localStorage.removeItem("token");
+      return;
     }
-    currentUserRoles.value = currentUser.roles;
-    currentUserEmail.value = currentUser.email;
+    currentUser.id = userFetched.id;
+    currentUser.email = userFetched.email;
+    currentUser.roles = userFetched.roles;
+    currentUser.name = userFetched.name;
+    currentUser.adress = userFetched.adress;
   }
 };
 
-provide("currentUserEmail", currentUserEmail);
-provide("currentUserRoles", currentUserRoles);
-provide("isCurrentUserLoggedIn", isCurrentUserLoggedIn);
+provide("currentUser", currentUser);
 </script>
 
 <template>
