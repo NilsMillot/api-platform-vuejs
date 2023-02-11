@@ -47,7 +47,7 @@ onMounted(async () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   background-color: #222222;
   padding: 50px;
