@@ -56,6 +56,9 @@ class Quizz
     #[Groups(['quizz:read'])]
     private Collection $questions;
 
+    #[ORM\Column]
+    private ?int $status = 0;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -116,6 +119,18 @@ class Quizz
                 $question->setQuizz(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
