@@ -14,6 +14,7 @@
           <td>{{ value.endDate.split("T")[0] }}</td>
           <td>
             <router-link :to="{ path: '/admin/quizz/edit/'+ value.id}" class="btn btn-cinemax btn-sm me-2" >Modifier</router-link>
+            <router-link :to="{ path: '/admin/quizz/'+ value.id+'/form'}" class="btn btn-cinemax btn-sm me-2" >Question</router-link>
             <button class="btn btn-cinemax btn-sm" >Supprimer</button>
           </td>
         </tr>

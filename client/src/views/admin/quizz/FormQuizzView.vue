@@ -55,15 +55,15 @@
         </div>
       </div>
       <div class="col-md-6">
-          <List />
+        <ListQuestion @deleteQuestion="deleteQuestion" :questions="questions" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "@vue/reactivity";
-import List from '../quizz/ListQuizzView.vue';
+import { onMounted, reactive, ref } from "vue";
+import ListQuestion from "../../../components/admin/quizz/ListQuestionForm.vue";
 
 import { useRoute, useRouter } from "vue-router";
 
@@ -74,8 +74,58 @@ const question = reactive({
   correctAnswer: 1,
 });
 
-const message = ref("");
+const questions = reactive({ value: [] });
 
+onMounted(async () => {
+  await fetchQuestions();
+});
+
+const fetchQuestions = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/questions`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      questions.value = data["hydra:member"];
+    } else {
+      const data = await response.json();
+      console.log(data);
+      throw new Error("Erreur");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteQuestion = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/questions/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      // const data = await response.json();
+      // console.log(data);
+    } else {
+      // const data = await response.json();
+      // console.log(data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const handleSubmit = async () => {
   try {
@@ -88,28 +138,32 @@ const handleSubmit = async () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-            name: question.name,
-            firstAnswer: question.firstAnswer,
-            secondAnswer: question.secondAnswer,
-            correctAnswer: parseInt(question.correctAnswer),
-            quizz : `/quizzs/1`
+          name: question.name,
+          firstAnswer: question.firstAnswer,
+          secondAnswer: question.secondAnswer,
+          correctAnswer: parseInt(question.correctAnswer),
+          quizz: `/quizzs/1`,
         }),
       }
     );
     if (!response.ok) {
       const data = await response.json();
       console.log(data);
-     
-    //   message.value =
-    //     "Veuillez remplir tous les champs. La date doit être supérieur à celle d'aujourd'hui";
+
+      //   message.value =
+      //     "Veuillez remplir tous les champs. La date doit être supérieur à celle d'aujourd'hui";
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
-      
-    //   message.value = "Votre quizz a bien été créé.";
-    //   quizz = reactive({
-    //     name: "",
-    //     date: "",
-    //   });
+      const data = await response.json();
+
+      console.log(data);
+
+      questions.value.push(data);
+      //   message.value = "Votre quizz a bien été créé.";
+      //   quizz = reactive({
+      //     name: "",
+      //     date: "",
+      //   });
     }
   } catch (error) {
     console.log(error);
