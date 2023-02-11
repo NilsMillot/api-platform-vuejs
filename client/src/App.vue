@@ -19,11 +19,6 @@ const fetchCurrentUserInfos = async () => {
       },
     });
     const userFetched = await response.json();
-    // TODO: PUT THIS LOGIC IN THE BACKEND TOO: if user is deleted, don't pass him the token
-    if (userFetched.status === "deleted") {
-      localStorage.removeItem("token");
-      return;
-    }
     currentUser.id = userFetched.id;
     currentUser.email = userFetched.email;
     currentUser.roles = userFetched.roles;
