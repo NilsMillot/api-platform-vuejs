@@ -27,6 +27,10 @@ class Question
     #[ORM\Column]
     private ?int $correctAnswer = null;
 
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Quizz $quizz = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class Question
     public function setCorrectAnswer(int $correctAnswer): self
     {
         $this->correctAnswer = $correctAnswer;
+
+        return $this;
+    }
+
+    public function getQuizz(): ?Quizz
+    {
+        return $this->quizz;
+    }
+
+    public function setQuizz(?Quizz $quizz): self
+    {
+        $this->quizz = $quizz;
 
         return $this;
     }

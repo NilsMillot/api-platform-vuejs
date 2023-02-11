@@ -22,7 +22,7 @@
           <router-link class="nav-link" to="/session">Cinéma</router-link>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" v-if="currentUser?.roles">
           <router-link class="nav-link" to="/quizz-list">Quizz</router-link>
         </li>
 
