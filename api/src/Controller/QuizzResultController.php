@@ -82,7 +82,7 @@ class QuizzResultController extends AbstractController
 
         $quizzResult = new QuizzResult();
         $quizzResult->setParticipant($this->getUser());
-        $quizzResult->setQuizz($quizz->getQuizz());
+        $quizzResult->setQuizz($quizz);
         $quizzResult->setScore($userScore);
         $em->persist($quizzResult);
 
