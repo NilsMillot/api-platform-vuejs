@@ -122,15 +122,38 @@ onMounted(async () => {
 });
 
 const fetchSession = async (id) => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${id}`)
-    .then((response) => response.json())
-    .then((data) => (session.value = data));
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${id}`,
+    requestOptions
+  ).then((response) =>
+    response.json().then((data) => {
+        session.value = data
+    })
+  );
 };
 
+
 const fetchBookings = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/bookings/`)
-    .then((response) => response.json())
-    .then((data) => (bookings.value = data["hydra:member"]));
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/bookings/`,
+    requestOptions
+  ).then((response) =>
+    response.json().then((data) => {
+        bookings.value = data["hydra:member"]
+    })
+  );
 };
 
 const handleSelected = (booking) => {

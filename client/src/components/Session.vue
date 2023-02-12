@@ -67,22 +67,23 @@ const search = ref("");
 const fetchCinema = async () => {
   const requestOptions = {
     method: "GET",
-    headers: { 
-      Authorization: `Bearer ${localStorage.getItem("token")}`
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
   await fetch(
     `${import.meta.env.VITE_API_SERVER_URL}/users`,
     requestOptions
-  ).then((response) => response.json().then((data) =>
-
-  (cinema.value = data["hydra:member"].filter(
-    (x) =>
-      x.enabled == true &&
-      x.roles.includes("ROLE_CINEMA")
-  ))
-));
-
+  ).then((response) =>
+    response
+      .json()
+      .then(
+        (data) =>
+          (cinema.value = data["hydra:member"].filter(
+            (x) => x.enabled == true && x.roles.includes("ROLE_CINEMA")
+          ))
+      )
+  );
 };
 
 watch(search, async (newSearch) => {
@@ -115,7 +116,7 @@ watch(search, async (newSearch) => {
 
 onMounted(async () => {
   await fetchCinema();
-  search.value = cinema.value[0].id;
+  search.value = cinema.value[0]?.id;
 });
 
 const handleChange = (e) => {
@@ -135,9 +136,18 @@ const fetchMovie = async (id) => {
 };
 
 const fetchSessions = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`)
-    .then((response) => response.json())
-    .then((data) => (result.value = data["hydra:member"]));
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`,
+    requestOptions
+  ).then((response) =>
+    response.json().then((data) => (result.value = data["hydra:member"]))
+  );
 };
 </script>
 

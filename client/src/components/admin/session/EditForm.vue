@@ -75,9 +75,17 @@ onMounted(async () => {
 });
 
 const fetchSession = async (id) => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${id}`)
-    .then((response) => response.json())
-    .then((data) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings/${id}`,
+    requestOptions
+  ).then((response) =>
+    response.json().then((data) => {
       session.id = data.id;
       session.movie_title = data.movie_title;
       session.date = data.session_datetime.split("T")[0];
@@ -85,15 +93,16 @@ const fetchSession = async (id) => {
       session.time = data.session_datetime.split("T")[1].substr(0, 5);
       session.room = data.room;
       session.movie_id = data.movie_id;
-    });
+    })
+  );
 };
 
 const handleSubmit = () => {
   const requestOptions = {
     method: "PUT",
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({
       sessionDatetime: new Date(new Date(session.date + " " + session.time)),
