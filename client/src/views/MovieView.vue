@@ -13,7 +13,7 @@ const stock = ref(0);
 const itemCount = ref(0);
 const availableMovies = ref([]);
 const items = reactive({ value: [] });
-const price = reactive({ price: null });
+const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
 
 const getPrice = async () => {
