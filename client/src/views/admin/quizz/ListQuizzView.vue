@@ -29,6 +29,11 @@
               class="btn btn-cinemax btn-sm me-2"
               >Voir</router-link
             >
+             <router-link
+              :to="{ path: '/admin/quizz/' + value.id + '/results' }"
+              class="btn btn-cinemax btn-sm me-2"
+              >Résultats</router-link
+            >
             <button v-if="value.status == 0"
               class="btn btn-cinemax btn-sm"
               @click="handlePublish(value.id)"
@@ -67,8 +72,6 @@ const fetchQuizz = async () => {
     if (response.ok) {
       const data = await response.json();
       quizz.value = data["hydra:member"];
-
-      // TO DO : FILTRER LES QUIZZ
     } else {
       const data = await response.json();
       throw new Error("Erreur");

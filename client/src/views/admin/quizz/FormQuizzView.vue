@@ -67,7 +67,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import ListQuestion from "../../../components/admin/quizz/ListQuestionForm.vue";
-
 import { useRoute, useRouter } from "vue-router";
 
 const question = reactive({
@@ -76,6 +75,10 @@ const question = reactive({
   secondAnswer: "",
   correctAnswer: 1,
 });
+
+
+const $route = useRoute();
+const router = useRouter();
 
 const questions = reactive({ value: [] });
 const message = ref("");
@@ -97,7 +100,7 @@ const fetchQuestions = async () => {
     );
     if (response.ok) {
       const data = await response.json();
-      questions.value = data["hydra:member"];
+      questions.value = data["hydra:member"].filter( (x) => x.quizz.id == $route.params.id);
     } else {
       const data = await response.json();
       console.log(data);
@@ -147,7 +150,7 @@ const handleSubmit = async () => {
           firstAnswer: question.firstAnswer,
           secondAnswer: question.secondAnswer,
           correctAnswer: parseInt(question.correctAnswer),
-          quizz: `/quizzs/1`,
+          quizz: `/quizzs/${$route.params.id}`,
         }),
       }
     );
