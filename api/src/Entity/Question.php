@@ -5,36 +5,51 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
-#[ApiResource]
+#[ApiResource(operations: [
+    new GetCollection(
+        normalizationContext: ['groups' => ['questions-admin:read']]
+    ),
+    new Post(),
+    new Delete(),
+])]
 class Question
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quizz:read'])]
+    #[Groups(['quizz:read','questions-admin:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['quizz:read'])]
+    #[Groups(['quizz:read','questions-admin:read'])]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 500)]
-    #[Groups(['quizz:read'])]
+    #[Groups(['quizz:read','questions-admin:read'])]
+    #[Assert\NotBlank]
     private ?string $firstAnswer = null;
 
     #[ORM\Column(length: 500)]
-    #[Groups(['quizz:read'])]
+    #[Groups(['quizz:read','questions-admin:read'])]
+    #[Assert\NotBlank]
     private ?string $secondAnswer = null;
 
     #[ORM\Column]
+    #[Assert\Choice([1, 2])]
+    #[Groups(['questions-admin:read'])]
     private ?int $correctAnswer = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['questions-admin:read'])]
     private ?Quizz $quizz = null;
 
     public function getId(): ?int

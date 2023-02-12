@@ -20,7 +20,8 @@ const getActiveQuizzList = async () => {
   const activeQuizzList = quizzList.filter(quizz => {
     const endDate = new Date(quizz.endDate);
     const now = new Date();
-    return endDate > now;
+
+    return quizz.status === 1 && endDate > now;
   });
 
   return activeQuizzList;
@@ -53,15 +54,9 @@ onMounted(async () => {
   padding: 50px;
 }
 
-.btn-danger {
-  background-color: #e50914;
-  border-color: #e50914;
-}
-
 .list-group-item {
   background-color: #333333 !important;
   color: white !important;
-  border-color: #e50914;
 }
 
 .list-group-item:hover {

@@ -71,6 +71,7 @@ const handleSubmit = async () => {
           endDate: quizz.date,
           name: quizz.name,
         }),
+        
       }
     );
     if (!response.ok) {

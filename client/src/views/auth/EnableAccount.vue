@@ -1,7 +1,7 @@
 <script setup>
-
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+const isErrorOnFetch = ref(true);
 
 onMounted(async () => {
   const { params } = useRoute();
@@ -15,28 +15,38 @@ const enableAccount = async (id, token) => {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token: token }),
-  })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
+  }).then((response) => {
+    if (response.status == 200) {
+      isErrorOnFetch.value = false;
+    }
+  });
 };
 </script>
 
 <template>
   <div class="enable-account-vue_background">
     <div class="card card-enable-account shadow-sm">
-      <div class="text-center pt-3">
+      <div class="text-center pt-3" v-if="isErrorOnFetch">
+        <h2 class="text-center">Zut!</h2>
+        <p class="text-center">
+          Le token que vous nous donnez n'est pas valide. Veuillez vérifier vos
+          mails ou tentez de vous connecter 😪.
+        </p>
+      </div>
+      <div class="text-center pt-3" v-else>
         <h2 class="text-center">Compte activé</h2>
-        <p class="text-center">Votre compte a été activé. Vous pouvez vous connecter.</p>
-      </div>    
+        <p class="text-center">
+          Votre compte a été activé. Vous pouvez vous connecter.
+        </p>
+      </div>
       <div class="d-flex justify-content-center">
-        <router-link to="/login" class="btn mt-4 btn-cinemax">Me connecter</router-link>
+        <router-link to="/login" class="btn mt-4 btn-cinemax"
+          >Me connecter</router-link
+        >
       </div>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .card-enable-account {
@@ -49,10 +59,10 @@ const enableAccount = async (id, token) => {
   border-radius: 10px;
 }
 .btn-cinemax {
-background-color: var(--color-red);
-color: var(--color-white);
-text-align: center;
-width: 100%;
+  background-color: var(--color-red);
+  color: var(--color-white);
+  text-align: center;
+  width: 100%;
 }
 .btn-cinemax:hover {
   background-color: var(--color-darkred);

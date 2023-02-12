@@ -74,7 +74,6 @@ onMounted(async () => {
 });
 
 const handleSubmitForm = () => {
-  // TODO: SEE why api doesn't update the user
   const requestOptions = {
     method: "PUT",
     headers: {

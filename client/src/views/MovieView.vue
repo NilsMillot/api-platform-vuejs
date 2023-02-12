@@ -13,7 +13,7 @@ const stock = ref(0);
 const itemCount = ref(0);
 const availableMovies = ref([]);
 const items = reactive({ value: [] });
-const price = reactive({ price: null });
+const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
 
 const getPrice = async () => {
@@ -63,11 +63,11 @@ onMounted(async () => {
   stock.value = movieInstances.length;
   price.value = await getPrice();
 
-  if (currentUser?.roles?.value?.includes("ROLE_ADMIN")) {
+  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
     isCurrentUserAdmin.value = true;
   }
 
-  if (currentUser?.roles?.value?.includes("ROLE_USER")) {
+  if (currentUser?.roles?.includes("ROLE_USER")) {
     isCurrentUserUser.value = true;
   }
 });
