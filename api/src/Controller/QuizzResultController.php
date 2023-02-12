@@ -6,6 +6,7 @@ use ApiPlatform\Validator\ValidatorInterface;
 use App\Dto\QuizzResultDto;
 use App\Entity\QuizzResult;
 use App\Repository\QuestionRepository;
+use App\Repository\QuizzRepository;
 use App\Repository\QuizzResultRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 class QuizzResultController extends AbstractController
 {
-    public function __invoke(ValidatorInterface $validator, QuizzResultDto $quizzResultDto, QuizzResultRepository $quizzResultRepository, QuestionRepository $questionRepository, EntityManagerInterface $em): JsonResponse
+    public function __invoke(ValidatorInterface $validator, QuizzRepository $quizzRepository, QuizzResultDto $quizzResultDto, QuizzResultRepository $quizzResultRepository, QuestionRepository $questionRepository, EntityManagerInterface $em): JsonResponse
     {
         $validator->validate($quizzResultDto);
         foreach ($quizzResultDto->getAnswers() as $answer) {
@@ -25,9 +26,13 @@ class QuizzResultController extends AbstractController
         $userId = $this->getUser()->getId();
         $quizzId = $quizzResultDto->getQuizzId();
 
-        $quizz = $questionRepository->findOneBy(['quizz' => $quizzId]);
+        $quizz = $quizzRepository->find($quizzId);
         if (!$quizz) {
             return $this->json(['message' => 'Ce quizz n\'existe pas'], 400);
+        }
+
+        if ($quizz->getStatus() !== 1) {
+            return $this->json(['message' => 'Ce quizz n\'est pas encore publié'], 400);
         }
 
         $oldUserResult = $quizzResultRepository->findOneBy(['participant' => $userId, 'quizz' => $quizzId]);
