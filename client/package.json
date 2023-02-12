@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "run-p type-check build-only",
     "test": "vitest",
+    "test-api": "npx newman run ../postman/postman_collection.json -e ../postman/postman_environment.json --insecure",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
