@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, inject } from "vue";
+import { onMounted, reactive, ref, inject, watch } from "vue";
 import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
@@ -15,6 +15,7 @@ const availableMovies = ref([]);
 const items = reactive({ value: [] });
 const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
+const orderPrice = ref(null);
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -116,6 +117,17 @@ const setItems = () => {
     items.value.push(availableMovies.value[i]);
   }
 };
+
+// watch itemCount
+watch(itemCount, () => {
+  if (itemCount.value === 0) {
+    orderPrice.value = 0;
+  } else if (itemCount.value < 0) {
+    orderPrice.value = null;
+  } else {
+    orderPrice.value = price.value * itemCount.value;
+  }
+});
 </script>
 
 <template>
@@ -147,10 +159,10 @@ const setItems = () => {
           >
         </p>
         <p v-if="price.value !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
-        <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
-        <!-- TODO: Check if current user have user role to display this div -->
-        <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
-        <form
+        <div class="bg-dark">
+          <h3>Gestion du Stock</h3>
+          <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
+          <form
           v-if="isCurrentUserAdmin"
           @submit.prevent="handleSubmitChangeStock()"
           class="movie-view__form"
@@ -165,6 +177,9 @@ const setItems = () => {
           </div>
           <input type="submit" class="btn btn-cinemax-primary" value="Valider" />
         </form>
+        </div>
+
+        <div class="bg-dark mt-4 p-4">
         <div v-for="msg in successMsg" :key="msg" v-if="successMsg" class="alert movie-view__alert-danger-dark">
           <span>{{ msg }}</span>
         </div>
@@ -177,17 +192,20 @@ const setItems = () => {
             {{ violation.propertyPath }} : {{ violation.message }}
           </li>
         </ul>
-        <div v-if="isCurrentUserUser && stock > 0">
+        <div class="container" v-if="isCurrentUserUser && stock > 0">
           <h3 class="text-center">Acheter</h3>
           <div class="form-group">
             <span>En stock : {{ stock }}</span><br>
             <label for="item-count">Quantité à acheter</label>
             <input @input="setItems" type="number" class="item-count ml-2" min="1" :max="stock" id="price" v-model="itemCount">
           </div>
+          <span v-if="orderPrice !== null" class="font-weight-bold">Prix de la commande : {{ orderPrice }} €</span><br>
+          <p v-if="orderPrice !== null" class="mb-4">Une réduction sera automatiquement ajouté si vous avez gagnés des crédits sur votre compte</p>
           <CardPaymentMovie :items="items.value" :price="price" url="/movie_instances/buy" />
         </div>
         <div v-if="isCurrentUserUser && stock === 0" class="alert movie-view__alert-danger-dark" role="alert">
           <span class="text-center">Rupture de stock</span>
+        </div>
         </div>
       </div>
     </div>
