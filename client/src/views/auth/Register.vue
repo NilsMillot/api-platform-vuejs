@@ -2,6 +2,8 @@
 import { reactive, ref } from "vue";
 import router from "@/router";
 
+const isSending = ref(false);
+
 const formInputs = reactive({
   name: "",
   email: "",
@@ -14,6 +16,7 @@ const violations = ref([]);
 
 const handleSubmitForm = async (e) => {
   e.preventDefault();
+  isSending.value = true;
 
   const requestData = {
     name: formInputs.name,
@@ -33,6 +36,9 @@ const handleSubmitForm = async (e) => {
       body: JSON.stringify(requestData),
     }
   );
+  if (response) {
+    isSending.value = false;
+  }
 
   if (response.status === 201) {
     violations.value = [];
@@ -133,8 +139,18 @@ const handleSubmitForm = async (e) => {
             </div>
           </div>
           <div class="d-flex justify-content-center">
-            <button class="btn mt-4 btn-cinemax" type="submit">
-              <span>S'inscrire</span>
+            <button
+              class="btn mt-4 btn-cinemax"
+              type="submit"
+              :disabled="isSending"
+            >
+              <span v-show="!isSending">S'inscrire</span>
+              <span
+                v-show="isSending"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
             </button>
           </div>
         </form>
