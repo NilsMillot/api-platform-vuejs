@@ -21,7 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/quizzs',
         normalizationContext: ['groups' => ['quizz-list:read']]
     ),
-
+    new Put(
+        uriTemplate: '/quizz/publish/{id}',
+        denormalizationContext: ['groups' => ['quizz-publish:put']]
+    ),
     new Put(),
     new Post(),
     new Get(
@@ -57,6 +60,7 @@ class Quizz
     private Collection $questions;
 
     #[ORM\Column]
+    #[Groups(['quizz:read','quizz-list:read','quizz-publish:put'])]
     private ?int $status = 0;
 
     public function __construct()

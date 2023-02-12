@@ -132,6 +132,7 @@ class BookingController extends AbstractController
             foreach($parameters['items'] as $item){
                 $booking = $this->bookingRepository->findById($item['id']);
                 $booking[0]->setBuyerId($user);
+                $booking[0]->setStatus(1);
                 $this->em->flush();
             }
 
