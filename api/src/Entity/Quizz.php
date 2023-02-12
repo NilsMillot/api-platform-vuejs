@@ -60,6 +60,7 @@ class Quizz
     private Collection $quizzResults;
 
     #[ORM\Column]
+    #[Groups(['quizz-list:read'])]
     private ?int $status = 0;
 
     public function __construct()
