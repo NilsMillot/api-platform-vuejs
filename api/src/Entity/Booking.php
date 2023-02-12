@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new GetCollection(),
         new Get(),
-        new Post(),
+        // new Post(),
         new Post(
             uriTemplate: '/booking/payment',
             controller: BookingController::class,
