@@ -23,6 +23,12 @@
               class="btn btn-cinemax btn-sm me-2"
               >Question</router-link
             >
+
+             <router-link
+              :to="{ path: '/admin/quizz/' + value.id + '/visualisation' }"
+              class="btn btn-cinemax btn-sm me-2"
+              >Voir</router-link
+            >
             <button v-if="value.status == 0"
               class="btn btn-cinemax btn-sm"
               @click="handlePublish(value.id)"
