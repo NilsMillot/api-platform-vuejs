@@ -9,7 +9,7 @@
                 <p>x{{ i + 1 }} - place {{ seat.seat }}</p>
               </div>
               <hr />
-              Prix TTC : {{ session.price * seats.value.length }} €
+              Prix TTC : {{ Math.round(session.price * seats.value.length*100)/100 }} €
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ onMounted(async () => {
     location.href = "/";
   }
 
-  await fetchBookings();
+  await fetchBookings(id);
   bookings.value = bookings.value.filter(
     (e, i) => e.session_id == `/movie_screenings/${id}`
   );
@@ -139,7 +139,7 @@ const fetchSession = async (id) => {
 };
 
 
-const fetchBookings = async () => {
+const fetchBookings = async (id) => {
   const requestOptions = {
     method: "GET",
     headers: {
@@ -147,11 +147,12 @@ const fetchBookings = async () => {
     },
   };
   await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/bookings/`,
+    `${import.meta.env.VITE_API_SERVER_URL}/seats/${id}`,
     requestOptions
   ).then((response) =>
     response.json().then((data) => {
-        bookings.value = data["hydra:member"]
+        bookings.value = data.data
+       
     })
   );
 };
