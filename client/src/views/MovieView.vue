@@ -159,9 +159,9 @@ watch(itemCount, () => {
           >
         </p>
         <p v-if="price.value !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
-        <div class="bg-dark">
+        <div class="bg-dark p-4" v-if="isCurrentUserAdmin">
           <h3>Gestion du Stock</h3>
-          <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
+          <p>Quantité en stock : {{ stock }}</p>
           <form
           v-if="isCurrentUserAdmin"
           @submit.prevent="handleSubmitChangeStock()"
@@ -179,7 +179,7 @@ watch(itemCount, () => {
         </form>
         </div>
 
-        <div class="bg-dark mt-4 p-4">
+        <div class="bg-dark mt-4 p-4" v-if="isCurrentUserUser && stock > 0">
         <div v-for="msg in successMsg" :key="msg" v-if="successMsg" class="alert movie-view__alert-danger-dark">
           <span>{{ msg }}</span>
         </div>
