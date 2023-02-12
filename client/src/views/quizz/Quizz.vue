@@ -5,6 +5,7 @@ import router from "@/router";
 const currentUser = inject("currentUser");
 const quizz = ref(null);
 const questions = ref([]);
+const message = ref('');
 
 const getQuizz = async () => {
   const quizzId = router.currentRoute.value.params.id;
@@ -44,7 +45,7 @@ const sendAnswers = async () => {
       }
   );
   const data = await response.json();
-  console.log(data);
+  message.value = data.message;
 };
 
 onMounted(async () => {
@@ -77,6 +78,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <span class="message">{{ message }}</span>
     <div class="text-center">
       <button @click="sendAnswers" class="btn btn-cinemax-primary">Envoyer les réponses</button>
     </div>
@@ -86,5 +88,9 @@ onMounted(async () => {
 <style scoped>
 .form-check-input {
   cursor: pointer;
+}
+
+.message {
+  color: white;
 }
 </style>

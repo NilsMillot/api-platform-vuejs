@@ -2,6 +2,8 @@
 import { onMounted, reactive, ref } from "vue";
 import router from "@/router";
 
+const isSending = ref(false);
+
 const emit = defineEmits(["trigger-fetch-current-user"]);
 
 const formInputs = reactive({
@@ -12,6 +14,7 @@ const formInputs = reactive({
 const message = ref(null);
 
 const handleSubmitForm = async (e) => {
+  isSending.value = true;
   e.preventDefault();
   const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/auth`, {
     method: "POST",
@@ -20,8 +23,10 @@ const handleSubmitForm = async (e) => {
     },
     body: JSON.stringify(formInputs),
   });
+  if (response) {
+    isSending.value = false;
+  }
   const data = await response.json();
-
   if (data.token) {
     message.value = null;
     localStorage.setItem("token", data.token);
@@ -78,8 +83,18 @@ onMounted(() => {
           </div>
           <span>{{ message }}</span>
           <div class="d-flex justify-content-center">
-            <button class="btn mt-4 btn-cinemax" type="submit">
-              <span>S'identifier</span>
+            <button
+              class="btn mt-4 btn-cinemax"
+              type="submit"
+              :disabled="isSending"
+            >
+              <span v-show="!isSending">S'identifier</span>
+              <span
+                v-show="isSending"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
             </button>
           </div>
           <a href="/forget-password" id="forgetPassword"

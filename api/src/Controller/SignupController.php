@@ -49,7 +49,7 @@ class SignupController extends AbstractController
 
         $mailer->send($email);
 
-        return $this->json(['success' => 'Account created but not enabled, activate the account by clicking the link sent by email'], 201);
+        return $this->json(['success' => 'Account created but not enabled, activate the account by clicking the link sent by email', 'email' => $user->getEmail()], 201);
     }
 
     private function createEmailBody($enableAccountLink): string {

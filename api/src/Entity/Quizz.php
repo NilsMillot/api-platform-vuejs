@@ -69,6 +69,7 @@ class Quizz
     private Collection $quizzResults;
 
     #[ORM\Column]
+
     #[Groups(['quizz:read','quizz-list:read','quizz-publish:put'])]
     private ?int $status = 0;
 

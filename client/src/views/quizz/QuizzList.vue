@@ -20,7 +20,8 @@ const getActiveQuizzList = async () => {
   const activeQuizzList = quizzList.filter(quizz => {
     const endDate = new Date(quizz.endDate);
     const now = new Date();
-    return endDate > now;
+
+    return quizz.status === 1 && endDate > now;
   });
 
   return activeQuizzList;
