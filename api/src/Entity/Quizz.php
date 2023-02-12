@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
     ),
     new Get(
-        uriTemplate: '/quizzs/{id}',
+        uriTemplate: '/single_quizz/{id}',
         normalizationContext: ['groups' => ['quizz:read']],
         security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
     )
@@ -56,12 +56,16 @@ class Quizz
     #[Groups(['quizz:read'])]
     private Collection $questions;
 
+    #[ORM\OneToMany(mappedBy: 'Quizz', targetEntity: QuizzResult::class, orphanRemoval: true)]
+    private Collection $quizzResults;
+
     #[ORM\Column]
     private ?int $status = 0;
 
     public function __construct()
     {
         $this->questions = new ArrayCollection();
+        $this->quizzResults = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +121,36 @@ class Quizz
             // set the owning side to null (unless already changed)
             if ($question->getQuizz() === $this) {
                 $question->setQuizz(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizzResult>
+     */
+    public function getQuizzResults(): Collection
+    {
+        return $this->quizzResults;
+    }
+
+    public function addQuizzResult(QuizzResult $quizzResult): self
+    {
+        if (!$this->quizzResults->contains($quizzResult)) {
+            $this->quizzResults->add($quizzResult);
+            $quizzResult->setQuizz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizzResult(QuizzResult $quizzResult): self
+    {
+        if ($this->quizzResults->removeElement($quizzResult)) {
+            // set the owning side to null (unless already changed)
+            if ($quizzResult->getQuizz() === $this) {
+                $quizzResult->setQuizz(null);
             }
         }
 

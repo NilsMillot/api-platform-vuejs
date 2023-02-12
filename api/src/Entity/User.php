@@ -160,11 +160,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resetPasswordToken = null;
 
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: QuizzResult::class, orphanRemoval: true)]
+    private Collection $quizzResults;
+
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
         $this->movieInstances = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->quizzResults = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -407,6 +411,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetPasswordToken(?string $resetPasswordToken): self
     {
         $this->resetPasswordToken = $resetPasswordToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizzResult>
+     */
+    public function getQuizzResults(): Collection
+    {
+        return $this->quizzResults;
+    }
+
+    public function addQuizzResult(QuizzResult $quizzResult): self
+    {
+        if (!$this->quizzResults->contains($quizzResult)) {
+            $this->quizzResults->add($quizzResult);
+            $quizzResult->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizzResult(QuizzResult $quizzResult): self
+    {
+        if ($this->quizzResults->removeElement($quizzResult)) {
+            // set the owning side to null (unless already changed)
+            if ($quizzResult->getParticipant() === $this) {
+                $quizzResult->setParticipant(null);
+            }
+        }
 
         return $this;
     }

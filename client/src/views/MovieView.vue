@@ -63,11 +63,11 @@ onMounted(async () => {
   stock.value = movieInstances.length;
   price.value = await getPrice();
 
-  if (currentUser?.roles?.value?.includes("ROLE_ADMIN")) {
+  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
     isCurrentUserAdmin.value = true;
   }
 
-  if (currentUser?.roles?.value?.includes("ROLE_USER")) {
+  if (currentUser?.roles?.includes("ROLE_USER")) {
     isCurrentUserUser.value = true;
   }
 });

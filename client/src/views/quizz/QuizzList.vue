@@ -53,15 +53,9 @@ onMounted(async () => {
   padding: 50px;
 }
 
-.btn-danger {
-  background-color: #e50914;
-  border-color: #e50914;
-}
-
 .list-group-item {
   background-color: #333333 !important;
   color: white !important;
-  border-color: #e50914;
 }
 
 .list-group-item:hover {
