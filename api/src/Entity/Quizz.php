@@ -21,25 +21,34 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/quizzs',
         normalizationContext: ['groups' => ['quizz-list:read']]
     ),
-
-    new Put(),
-    new Post(),
-    new Get(
-        normalizationContext: ['groups' => ['quizz-list:read']],
-        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    new Put(
+        uriTemplate: '/quizz/publish/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        denormalizationContext: ['groups' => ['quizz-publish:put']]
+    ),
+    new Put(
+        security: 'is_granted("ROLE_ADMIN")',
+    ),
+    new Post(
+        security: 'is_granted("ROLE_ADMIN")',
     ),
     new Get(
         uriTemplate: '/single_quizz/{id}',
         normalizationContext: ['groups' => ['quizz:read']],
         security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
-    )
+    ),
+    new Get(
+        uriTemplate: '/quizzs/{id}',
+        normalizationContext: ['groups' => ['quizz-list:read']],
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    ),
 ])]
 class Quizz
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quizz-list:read', 'quizz:read','questions-admin:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read','questions-admin:read','quizz-result:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -60,7 +69,8 @@ class Quizz
     private Collection $quizzResults;
 
     #[ORM\Column]
-    #[Groups(['quizz-list:read'])]
+
+    #[Groups(['quizz:read','quizz-list:read','quizz-publish:put'])]
     private ?int $status = 0;
 
     public function __construct()

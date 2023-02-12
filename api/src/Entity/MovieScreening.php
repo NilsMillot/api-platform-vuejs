@@ -28,16 +28,19 @@ use App\Controller\UpdateSessionController;
         new Put(),
         new Post(),
         new Put(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/edit/{id}',
             controller: UpdateSessionController::class,
             openapiContext: ['description' => 'Update new session'],
         ),
         new Post(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/new',
             controller: CreateSessionController::class,
             openapiContext: ['description' => 'Register new session'],
         ),
         new Delete(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/delete/{id}',
             controller: DeleteSessionController::class,
             openapiContext: ['description' => 'Delete session'],

@@ -109,7 +109,7 @@ const handleSubmit = async () => {
       const data = await response.json();
       console.log(data);
       message.value = data['hydra:description'];
-      throw new Error("Une erreur est survenue dans le formulaire.");
+      // throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
       message.value = "Votre quizz a bien été modifié.";
     }

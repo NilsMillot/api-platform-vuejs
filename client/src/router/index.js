@@ -30,6 +30,8 @@ import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
 import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
 import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
 import AdminFormQuizzView from "../views/admin/quizz/FormQuizzView.vue";
+import AdminFormQuizzVisualisationView from "../views/admin/quizz/FormQuizzVisualisationView.vue";
+import AdminFormQuizzResultView from "../views/admin/quizz/FormQuizzResultView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -171,6 +173,18 @@ const router = createRouter({
       name: "admin-quizz-form",
       query: { id: Number },
       component: AdminFormQuizzView,
+    },
+    {
+      path: "/admin/quizz/:id/visualisation",
+      name: "admin-quizz-visualisation",
+      query: { id: Number },
+      component: AdminFormQuizzVisualisationView,
+    },
+    {
+      path: "/admin/quizz/:id/results",
+      name: "admin-quizz-results",
+      query: { id: Number },
+      component: AdminFormQuizzResultView,
     },
 
     {
