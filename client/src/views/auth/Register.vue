@@ -68,8 +68,7 @@ const handleSubmitForm = async (e) => {
               type="name"
               placeholder="Nom"
               name="email"
-              id="inputMail"
-              class="form-control"
+              class="form-control inputMail"
               v-model="formInputs.name"
               autocomplete="email"
               required
@@ -81,8 +80,7 @@ const handleSubmitForm = async (e) => {
               type="email"
               placeholder="E-mail"
               name="email"
-              id="inputMail"
-              class="form-control"
+              class="form-control inputMail"
               v-model="formInputs.email"
               autocomplete="email"
               required
@@ -165,7 +163,7 @@ const handleSubmitForm = async (e) => {
   background-color: var(--color-darkred);
   color: var(--color-white);
 }
-#inputMail {
+.inputMail {
   background-color: #ffffff30;
   color: var(--color-white);
   border: none;

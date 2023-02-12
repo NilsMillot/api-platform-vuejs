@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, defineEmits } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import router from "@/router";
 
 const emit = defineEmits(["trigger-fetch-current-user"]);
