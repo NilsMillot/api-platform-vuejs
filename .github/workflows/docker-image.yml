@@ -24,7 +24,7 @@ jobs:
         with:
           context: client/
           load: true
-          tags: "firsty:0.1"
+          tags: "firsty:latest"
       - name: Inspect
         run: |
-          docker image inspect firsty:0.1
+          docker image inspect firsty:latest
