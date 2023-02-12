@@ -87,13 +87,22 @@ class BuyMovieInstancesController extends AbstractController
                 ],
             ]);
 
+            $price = $parameters['price'];
+            $oldTotalCredits = $this->getUser()->getTotalCredits();
+
+            if ($oldTotalCredits >= $price - 1) {
+                $this->getUser()->setTotalCredits($oldTotalCredits - $price + 1);
+                $price = 1;
+            } else {
+                $price = $price - $oldTotalCredits;
+                $this->getUser()->setTotalCredits(0);
+            }
 
             $charge = Charge::create([
-                'amount' => $parameters['price'] * 100,
+                'amount' => $price * 100,
                 'currency' => 'eur',
                 'source' => $token,
             ]);
-
 
             foreach($parameters['items'] as $item){
                 $movie_instance = $this->movieInstanceRepository->find($item['id']);
@@ -101,7 +110,7 @@ class BuyMovieInstancesController extends AbstractController
                 $movie_instance->setBuyedDate(new DateTime());
             }
 
-            $emailHtml = $this->generateOrderRecapHtml($parameters);
+            $emailHtml = $this->generateOrderRecapHtml($parameters, $price, $oldTotalCredits);
 
             $email = (new Email())
                 ->from('cinemax.esgi@gmail.com')
@@ -120,7 +129,7 @@ class BuyMovieInstancesController extends AbstractController
 
     }
 
-    private function generateOrderRecapHtml($parameters): string
+    private function generateOrderRecapHtml($parameters, $price_with_credits, $old_total_credits): string
     {
 
         $html = '
@@ -170,6 +179,12 @@ class BuyMovieInstancesController extends AbstractController
                 color: #e50914;
                 text-align: right;
             }
+            
+            .credits {
+                font-weight: bold;
+                margin-top: 20px;
+                text-align: left;
+            }
         </style>
     </head>
     <body>
@@ -195,9 +210,21 @@ class BuyMovieInstancesController extends AbstractController
         $total_price = $parameters['price'];
         $total_price_to_display = number_format($total_price, 2, ',', ' ');
 
+        $price_with_credits_to_display = number_format($price_with_credits, 2, ',', ' ');
+        $old_total_credits_to_display = number_format($old_total_credits, 0, ',', ' ');
+        $new_total_credits_to_display = number_format($this->getUser()->getTotalCredits(), 0, ',', ' ');
+        $used_credits = $old_total_credits - $this->getUser()->getTotalCredits();
+        $used_credits_to_display = number_format($used_credits, 0, ',', ' ');
+
+
         $html .= '
                 </div>
-                <div class="total">Total: ' . $total_price_to_display . ' €</div>
+                <p>Rappel : 1 crédit = 1 euro de réduction sur votre commande</p>
+                <div class="credits">Vos crédits avant l\'achat: ' . $old_total_credits_to_display . '</div>
+                <div class="credits">Crédits utilisés: ' . $used_credits_to_display . '</div>
+                <div class="credits">Vos crédits après l\'achat: ' . $new_total_credits_to_display . '</div>
+                <div class="total">Prix Total: ' . $total_price_to_display . ' €</div>
+                <div class="total">Prix Total (avec les crédits): ' . $price_with_credits_to_display . ' €</div>
             </div>
         </div>
     </body>
