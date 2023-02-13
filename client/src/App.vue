@@ -23,6 +23,7 @@ const fetchCurrentUserInfos = async () => {
       localStorage.removeItem("token");
       location.href = "/";
     }
+    currentUser.totalCredits = userFetched.totalCredits;
     currentUser.id = userFetched.id;
     currentUser.email = userFetched.email;
     currentUser.roles = userFetched.roles;

@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref, inject, watch } from "vue";
-import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
 const movie = reactive({ value: {} });
@@ -16,6 +15,11 @@ const items = reactive({ value: [] });
 const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
 const orderPrice = ref(null);
+
+// TODO: Michael you can get totalCredits like this and display the reduction with it in the template (security is in back as you did ;))
+watch(currentUser, () => {
+  console.log(currentUser?.totalCredits);
+});
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -78,11 +82,6 @@ onMounted(async () => {
     isCurrentUserUser.value = true;
   }
 });
-
-// TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
-const handleBuyMovie = () => {
-  console.log("buy movie with this id", movie.value.id);
-};
 
 const handleSubmitChangeStock = async () => {
   const response = await fetch(
