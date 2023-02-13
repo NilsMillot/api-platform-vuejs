@@ -16,11 +16,23 @@ const items = reactive({ value: [] });
 const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
 const orderPrice = ref(null);
+const orderPriceFinal = ref(null);
+const reduction = ref(0);
 
 // TODO: Michael you can get totalCredits like this and display the reduction with it in the template (security is in back as you did ;))
 watch(currentUser, () => {
   console.log(currentUser?.totalCredits);
 });
+
+const updateOrderPrice = () => {
+  if (currentUser.totalCredits >= orderPrice.value - 1) {
+    reduction.value = orderPrice.value - 1;
+    orderPriceFinal.value = 1;
+  } else {
+    reduction.value = currentUser.totalCredits;
+    orderPriceFinal.value = orderPrice.value - currentUser.totalCredits;
+  }
+}
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -139,6 +151,11 @@ watch(itemCount, () => {
     orderPrice.value = price.value * itemCount.value;
   }
 });
+
+const onOrderQuantityChange = () => {
+  setItems();
+  updateOrderPrice();
+};
 </script>
 
 <template>
@@ -242,7 +259,7 @@ watch(itemCount, () => {
               ><br />
               <label for="item-count">Quantité à acheter</label>
               <input
-                @input="setItems"
+                @input="onOrderQuantityChange"
                 type="number"
                 class="item-count ml-2"
                 min="1"
@@ -251,12 +268,16 @@ watch(itemCount, () => {
                 v-model="itemCount"
               />
             </div>
-            <span v-if="orderPrice !== null" class="font-weight-bold"
-              >Prix de la commande : {{ orderPrice }} €</span
+            <span v-if="orderPrice !== null" class="mb-5"
+            >Vos crédits : {{ currentUser.totalCredits }}</span><br>
+            <span v-if="orderPrice !== null"
+              >Prix Total : {{ orderPrice }} €</span
             ><br />
-            <p v-if="orderPrice !== null" class="mb-4">
-              Une réduction sera automatiquement ajouté si vous avez gagnés des
-              crédits sur votre compte
+            <span v-if="orderPrice !== null" class="font-weight-bold"
+            >Prix Final : {{ orderPriceFinal }} €</span
+            ><br />
+            <p v-if="orderPrice !== null" class="mb-4 mt-4">
+              1 crédit = 1 € de réduction.<br>Vous économisez {{ reduction }} € sur votre commande grâce à vos crédits.
             </p>
             <CardPaymentMovie
               :items="items.value"
