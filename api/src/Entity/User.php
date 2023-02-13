@@ -140,6 +140,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $adress = null;
     
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $totalCredits = 0;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]

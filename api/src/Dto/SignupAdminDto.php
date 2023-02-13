@@ -9,6 +9,7 @@ class SignupAdminDto
 {
     #[Assert\Email]
     #[UniqueEmail]
+    #[Assert\NotBlank]
     public string $email;
     
     #[Assert\NotBlank]
@@ -19,7 +20,7 @@ class SignupAdminDto
     #[Assert\NotNull]
     public bool $isAdmin;
 
-    #[Assert\Null]
+    #[Assert\NotBlank]
     public string $name;
 
     /**
