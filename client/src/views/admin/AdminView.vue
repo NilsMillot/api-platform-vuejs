@@ -16,6 +16,9 @@
         <router-link class="btn mt-4 btn-cinemax" to="/admin/quizz/new"
           >Quiz</router-link
         >
+        <router-link class="btn mt-4 btn-cinemax" to="/admin/sales"
+        >Commandes de films</router-link
+        >
       </div>
     </div>
   </div>
@@ -65,8 +68,8 @@ h1 {
   background-color: var(--color-red);
   color: var(--color-white);
   text-align: center;
-  width: 150px;
-  margin: 50px;
+  width: 200px;
+  margin: 20px;
 }
 .btn-cinemax:hover {
   background-color: var(--color-darkred);

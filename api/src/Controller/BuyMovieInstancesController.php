@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\MovieOrder;
 use App\Repository\MovieInstanceRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -109,6 +110,13 @@ class BuyMovieInstancesController extends AbstractController
                 $movie_instance->setBuyer($this->getUser());
                 $movie_instance->setBuyedDate(new DateTime());
             }
+
+            $movieOrder = new MovieOrder();
+            $movieOrder->setBuyer($this->getUser());
+            $movieOrder->setPrice($price);
+            $movieOrder->setQuantity(count($parameters['items']));
+            $movieOrder->setMovieName($movie->getTitle());
+            $this->em->persist($movieOrder);
 
             $emailHtml = $this->generateOrderRecapHtml($parameters, $price, $oldTotalCredits);
 

@@ -117,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['session:read', 'getCollection:read', 'user:read', 'getCollectionForAllUsers:read'])]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'getCollection:read', 'session:read','quizz-result:read', 'getCollectionForAllUsers:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'session:read','quizz-result:read', 'getCollectionForAllUsers:read', 'movieOrderList:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
@@ -172,12 +172,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: QuizzResult::class, orphanRemoval: true)]
     private Collection $quizzResults;
 
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: MovieOrder::class, orphanRemoval: true)]
+    private Collection $movieOrders;
+
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
         $this->movieInstances = new ArrayCollection();
         $this->bookings = new ArrayCollection();
         $this->quizzResults = new ArrayCollection();
+        $this->movieOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -448,6 +452,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($quizzResult->getParticipant() === $this) {
                 $quizzResult->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieOrder>
+     */
+    public function getMovieOrders(): Collection
+    {
+        return $this->movieOrders;
+    }
+
+    public function addMovieOrder(MovieOrder $movieOrder): self
+    {
+        if (!$this->movieOrders->contains($movieOrder)) {
+            $this->movieOrders->add($movieOrder);
+            $movieOrder->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieOrder(MovieOrder $movieOrder): self
+    {
+        if ($this->movieOrders->removeElement($movieOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($movieOrder->getBuyer() === $this) {
+                $movieOrder->setBuyer(null);
             }
         }
 
