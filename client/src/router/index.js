@@ -7,29 +7,33 @@ import NewPasswordView from "../views/auth/NewPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import EnableAccountView from "../views/auth/EnableAccount.vue";
 import MovieView from "../views/MovieView.vue";
+import SuccessView from "../views/payment/Success.vue";
+import NotFoundView from "../views/NotFoundView.vue";
+import QuizzListView from "../views/quizz/QuizzList.vue";
+import QuizzView from "../views/quizz/Quizz.vue";
+
 import SessionView from "../views/cinema/SessionView.vue";
 import New from "../views/cinema/admin/New.vue";
 import List from "../views/cinema/admin/List.vue";
 import EditSessionCinema from "../views/cinema/admin/Edit.vue";
 import BookingView from "../views/cinema/BookingView.vue";
-import SuccessView from "../views/payment/Success.vue";
-import NotFoundView from "../views/NotFoundView.vue";
+import BookingSessionCinemaView from "../views/cinema/admin/BookingView.vue";
+
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
-import QuizzListView from "../views/quizz/QuizzList.vue";
-import QuizzView from "../views/quizz/Quizz.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
 import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
-
-
-
-import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
+import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue";
 import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
 import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
 import AdminFormQuizzView from "../views/admin/quizz/FormQuizzView.vue";
+import AdminFormQuizzVisualisationView from "../views/admin/quizz/FormQuizzVisualisationView.vue";
+import AdminFormQuizzResultView from "../views/admin/quizz/FormQuizzResultView.vue";
+import AdminMovieOrdersView from "../views/admin/MovieOrdersView.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -97,6 +101,12 @@ const router = createRouter({
       component: EditSessionCinema,
     },
     {
+      path: "/cinema/session/booking/:id",
+      name: "cinema-session-booking",
+      query: { id: Number },
+      component: BookingSessionCinemaView,
+    },
+    {
       path: "/booking",
       name: "booking",
       component: BookingView,
@@ -118,7 +128,6 @@ const router = createRouter({
       component: AdminUsersView,
     },
 
-    // admin users with id
     {
       path: "/admin/users/:id",
       name: "admin-users-id",
@@ -172,7 +181,23 @@ const router = createRouter({
       query: { id: Number },
       component: AdminFormQuizzView,
     },
-
+    {
+      path: "/admin/quizz/:id/visualisation",
+      name: "admin-quizz-visualisation",
+      query: { id: Number },
+      component: AdminFormQuizzVisualisationView,
+    },
+    {
+      path: "/admin/quizz/:id/results",
+      name: "admin-quizz-results",
+      query: { id: Number },
+      component: AdminFormQuizzResultView,
+    },
+    {
+      path: "/admin/sales",
+      name: "admin-sales",
+      component: AdminMovieOrdersView,
+    },
     {
       path: "/quizz-list",
       name: "quizz-list",
@@ -182,6 +207,7 @@ const router = createRouter({
       path: "/quizz/:id",
       name: "quizz",
       component: QuizzView,
+      query: { id: Number },
     },
     {
       path: "/:catchAll(.*)",

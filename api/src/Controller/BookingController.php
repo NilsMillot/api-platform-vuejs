@@ -55,7 +55,10 @@ class BookingController extends AbstractController
             }
 
             $getSession = $this->movieScreeningRepository->findById($parameters['session']['id']);
-            $verifyDate = date_format($getSession[0]->getSessionDatetime(),"d-m-Y h:i:s") < date('d-m-Y h:i:s');
+            
+            $dateTimestamp1 = strtotime(date_format($getSession[0]->getSessionDatetime(), "d-m-Y h:i:s"));
+            $dateTimestamp2 = strtotime(date('d-m-Y h:i:s'));
+            $verifyDate = $dateTimestamp1 < $dateTimestamp2;
 
             if ($verifyDate == true || $getSession[0]->getStatus() == -1 ){
                 return $this->json(['message' => "Erreur au niveau de la séance"], 400);
@@ -132,6 +135,7 @@ class BookingController extends AbstractController
             foreach($parameters['items'] as $item){
                 $booking = $this->bookingRepository->findById($item['id']);
                 $booking[0]->setBuyerId($user);
+                $booking[0]->setStatus(1);
                 $this->em->flush();
             }
 

@@ -21,46 +21,64 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/quizzs',
         normalizationContext: ['groups' => ['quizz-list:read']]
     ),
+    new Put(
+        uriTemplate: '/quizz/publish/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        denormalizationContext: ['groups' => ['quizz-publish:put']]
+    ),
 
-    new Put(),
-    new Post(),
-    new Get(
-        normalizationContext: ['groups' => ['quizz-list:read']],
-        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    new Put(
+        uriTemplate: '/quizz/dispublish/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        denormalizationContext: ['groups' => ['quizz-dispublish:put']]
+    ),
+
+    new Put(
+        security: 'is_granted("ROLE_ADMIN")',
+    ),
+    new Post(
+        denormalizationContext: ['groups' => ['quizz:create']],
+        security: 'is_granted("ROLE_ADMIN")',
     ),
     new Get(
         uriTemplate: '/single_quizz/{id}',
         normalizationContext: ['groups' => ['quizz:read']],
         security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
-    )
+    ),
+    new Get(
+        uriTemplate: '/quizzs/{id}',
+        normalizationContext: ['groups' => ['quizz-list:read']],
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+    ),
 ])]
 class Quizz
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['quizz-list:read', 'quizz:read','questions-admin:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read','questions-admin:read','quizz-result:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['quizz-list:read', 'quizz:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read', 'quizz:create'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\GreaterThan("today", message:"La date doit être supérieure à la date d'aujourd'hui")]
-    #[Groups(['quizz-list:read'])]
+    #[Groups(['quizz-list:read', 'quizz:create'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\OneToMany(mappedBy: 'quizz', targetEntity: Question::class, orphanRemoval: true)]
     #[Groups(['quizz:read'])]
     private Collection $questions;
 
-    #[ORM\OneToMany(mappedBy: 'Quizz', targetEntity: QuizzResult::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'quizz', targetEntity: QuizzResult::class, orphanRemoval: true)]
     private Collection $quizzResults;
 
     #[ORM\Column]
-    #[Groups(['quizz-list:read'])]
+
+    #[Groups(['quizz:read','quizz-list:read','quizz-publish:put','quizz-dispublish:put'])]
     private ?int $status = 0;
 
     public function __construct()

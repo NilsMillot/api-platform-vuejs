@@ -1,25 +1,26 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark px-5">
     <router-link class="navbar-brand logo" to="/">CINEMAX</router-link>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" @click="showMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div
+      v-show="showMenu"
+      class="collapse navbar-collapse"
+      id="navbarSupportedContent"
+    >
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <router-link class="nav-link" to="/">Découvrir</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/session">Cinéma</router-link>
+          <router-link
+            class="nav-link"
+            to="/session"
+            v-if="currentUser?.roles?.includes('ROLE_USER')"
+            >Cinéma</router-link
+          >
         </li>
 
         <li class="nav-item" v-if="currentUser?.roles">
@@ -31,7 +32,9 @@
         </li>
 
         <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_CINEMA')">
-          <router-link class="nav-link" to="#">Mes projections</router-link>
+          <router-link class="nav-link" to="/cinema/session/list"
+            >Mes projections</router-link
+          >
         </li>
       </ul>
 
@@ -59,7 +62,7 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, ref } from "vue";
 
 const currentUser = inject("currentUser");
 
@@ -67,6 +70,11 @@ const handleDisconnect = () => {
   localStorage.removeItem("token");
   currentUser.roles = null;
   location.href = "/login";
+};
+
+const showMenu = () => {
+  const menu = document.getElementById("navbarSupportedContent");
+  menu.classList.toggle("show");
 };
 </script>
 

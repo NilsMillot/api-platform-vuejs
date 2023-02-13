@@ -15,7 +15,6 @@ watch(props.price, (newPrice) => {
 });
 
 watch(props.items, (newItems) => {
-  console.log(newItems)
   items.value = newItems;
 });
 
@@ -31,7 +30,7 @@ const modeLoading = ref(false);
 
 const price = ref("");
 const items = reactive({ value: [] });
-
+const isSending = ref(false);
 const minCardMonth = computed(() => {
   if (cardYear.value === minCardYear.value) return new Date().getMonth() + 1;
   return 1;
@@ -52,6 +51,7 @@ watchEffect(() => {
 });
 
 function handlePay() {
+  isSending.value = true;
   modeLoading.value = true;
   error.value = null;
 
@@ -78,13 +78,17 @@ function handlePay() {
   fetch(request)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       modeLoading.value = false;
       if (data.message === "success") {
+        isSending.value = false;
         location.href = "/payment/success";
       } else {
-        console.log(data.message)
-        error.value = data.message;
+        if (data["hydra:title"] === 'An error occurred') {
+          error.value = "Une erreur est survenue, la commande n'est pas passé";
+        } else {
+          error.value = data.message;
+        }
+        isSending.value = false;
       }
     });
 }
@@ -182,12 +186,18 @@ function handlePay() {
                 </p>
 
                 <button
-                  v-bind:disabled="modeLoading || items.value.length === 0"
                   v-bind:class="{ 'is-loading': modeLoading, 'disabled-button': items.value.length === 0 }"
                   class="card-form-button"
                   type="submit"
+                  :disabled="isSending || items.value.length === 0"
                 >
-                  Acheter
+                  <span v-show="!isSending">Acheter</span>
+                  <span
+                    v-show="isSending"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                 </button>
               </div>
             </form>

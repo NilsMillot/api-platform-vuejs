@@ -25,19 +25,22 @@ use App\Controller\UpdateSessionController;
     operations: [
         new GetCollection(),
         new Get(),
-        new Put(),
-        new Post(),
+        // new Put(),
+        // new Post(),
         new Put(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/edit/{id}',
             controller: UpdateSessionController::class,
             openapiContext: ['description' => 'Update new session'],
         ),
         new Post(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/new',
             controller: CreateSessionController::class,
             openapiContext: ['description' => 'Register new session'],
         ),
         new Delete(
+            security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/delete/{id}',
             controller: DeleteSessionController::class,
             openapiContext: ['description' => 'Delete session'],
@@ -61,7 +64,10 @@ class MovieScreening
     #[ORM\Column]
     #[Groups(['session:read'])]
     #[Assert\NotNull]
-    #[Assert\Regex('/^(?!^0\.00$)(([1-9][\d]{0,6})|([0]))\.[\d]{2}$/')]
+    // #[Assert\Regex('/^(?!^0\.00$)(([1-9][\d]{0,6})|([0]))\.[\d]{2}$/')]
+    
+    #[Assert\Type("float")]
+    
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]

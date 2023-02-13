@@ -1,6 +1,18 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="!shouldOfuscate">
     <div class="row">
+      <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
+
+      <div class="d-flex justify-content-end p-3">
+      <router-link
+        to="/admin/quizz/list"
+        class="btn btn-sm btn-cinemax-primary"
+      >
+        Mes quiz
+      </router-link>
+      </div>
       <div class="col-md-6">
         <div class="card card-form shadow-sm">
           <form @submit.prevent="handleSubmit">
@@ -62,10 +74,31 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject, watchEffect } from "vue";
 import ListQuestion from "../../../components/admin/quizz/ListQuestionForm.vue";
-
 import { useRoute, useRouter } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const question = reactive({
   name: "",
@@ -74,7 +107,11 @@ const question = reactive({
   correctAnswer: 1,
 });
 
+const $route = useRoute();
+const router = useRouter();
+
 const questions = reactive({ value: [] });
+const message = ref("");
 
 onMounted(async () => {
   await fetchQuestions();
@@ -93,10 +130,11 @@ const fetchQuestions = async () => {
     );
     if (response.ok) {
       const data = await response.json();
-      questions.value = data["hydra:member"];
+      questions.value = data["hydra:member"].filter(
+        (x) => x.quizz.id == $route.params.id
+      );
     } else {
       const data = await response.json();
-      console.log(data);
       throw new Error("Erreur");
     }
   } catch (error) {
@@ -116,11 +154,12 @@ const deleteQuestion = async (id) => {
       }
     );
     if (response.ok) {
-      // const data = await response.json();
-      // console.log(data);
+      message.value = "La question a bien été supprimée.";
+      let found = questions.value.findIndex((e) => e.id == id);
+      questions.value.splice(found, 1);
     } else {
-      // const data = await response.json();
-      // console.log(data);
+      const data = await response.json();
+      message.value = data["hydra:description"];
     }
   } catch (error) {
     console.log(error);
@@ -142,28 +181,18 @@ const handleSubmit = async () => {
           firstAnswer: question.firstAnswer,
           secondAnswer: question.secondAnswer,
           correctAnswer: parseInt(question.correctAnswer),
-          quizz: `/quizzs/1`,
+          quizz: `/quizzs/${$route.params.id}`,
         }),
       }
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data);
-
-      //   message.value =
-      //     "Veuillez remplir tous les champs. La date doit être supérieur à celle d'aujourd'hui";
+      message.value = data["hydra:description"];
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
       const data = await response.json();
-
-      console.log(data);
-
       questions.value.push(data);
-      //   message.value = "Votre quizz a bien été créé.";
-      //   quizz = reactive({
-      //     name: "",
-      //     date: "",
-      //   });
+      message.value = "La question a bien été créé.";
     }
   } catch (error) {
     console.log(error);

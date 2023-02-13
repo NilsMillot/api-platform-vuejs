@@ -32,7 +32,7 @@
             <div class="form-group">
               <label for="totalCredits">Total de crédits :</label>
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 id="totalCredits"
                 v-model="user.totalCredits"
@@ -49,20 +49,41 @@
                 placeholder="Status"
               />
             </div>
-            <label for="isAdmin">COMPTE ACTIVE :</label>
-            <input type="checkbox" v-model="user.enabled" />
-            <div class="form-group">
-              <label for="roles">Role :</label>
-              <input
-                type="text"
-                class="form-control"
-                id="roles"
-                v-model="user.roles"
-                placeholder="Role"
-              />
+            <div id="roles">
+              <span>
+                <label for="isAdmin">COMPTE ACTIVE :</label>
+                <input type="checkbox" v-model="user.enabled" />
+              </span>
+              <span>
+                <label for="isAdmin">COMPTE CINEMA :</label>
+                <input type="checkbox" v-model="user.isCinema" />
+              </span>
+              <span>
+                <label for="isAdmin">COMPTE ADMIN :</label>
+                <input type="checkbox" v-model="user.isAdmin" />
+              </span>
             </div>
-            <div class="d-flex">
-              <button type="submit" class="btn m-4 btn-cinemax">Envoyer</button>
+            <div
+              class="alert alert-primary"
+              role="alert"
+              v-show="messageFromFetch"
+            >
+              {{ messageFromFetch }}
+            </div>
+            <div class="d-flex" id="buttonsSubmit">
+              <button
+                type="submit"
+                class="btn m-4 btn-cinemax"
+                :disabled="isSent"
+              >
+                <span v-show="!isSent">Envoyer</span>
+                <span
+                  v-show="isSent"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </button>
               <router-link to="/admin/users" class="btn m-4 btn-cinemax"
                 >Retour</router-link
               >
@@ -79,9 +100,31 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watchEffect, inject } from "vue";
 const user = reactive({});
-const shouldOfuscate = ref(false);
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+const isSent = ref(false);
+const messageFromFetch = ref("");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 onMounted(async () => {
   const id = location.href.split("/").pop();
@@ -97,6 +140,7 @@ onMounted(async () => {
     }
   );
   const userFetched = await response.json();
+
   if (response.status !== 200) {
     shouldOfuscate.value = true;
   } else {
@@ -105,7 +149,8 @@ onMounted(async () => {
     user.adress = userFetched.adress;
     user.status = userFetched.status;
     user.name = userFetched.name;
-    user.roles = userFetched.roles;
+    user.isAdmin = userFetched.roles.includes("ROLE_ADMIN");
+    user.isCinema = userFetched.roles.includes("ROLE_CINEMA");
     user.totalCredits = userFetched.totalCredits;
     user.enabled = userFetched.enabled;
     user.email = userFetched.email;
@@ -113,6 +158,7 @@ onMounted(async () => {
 });
 
 const handleSubmitUpdatedUser = async (e) => {
+  isSent.value = true;
   e.preventDefault();
   const response = await fetch(
     `${import.meta.env.VITE_API_SERVER_URL}/users/${user.id}`,
@@ -128,15 +174,21 @@ const handleSubmitUpdatedUser = async (e) => {
         totalCredits: user.totalCredits,
         status: user.status,
         enabled: user.enabled,
-        roles: user.roles,
+        roles: user.isAdmin
+          ? ["ROLE_ADMIN"]
+          : user.isCinema
+          ? ["ROLE_CINEMA"]
+          : ["ROLE_USER"],
       }),
     }
   );
   if (response.status === 200) {
-    alert("User updated");
+    messageFromFetch.value = "User updated successfully";
   } else {
     alert("Error when trying to update user");
+    messageFromFetch.value = "";
   }
+  isSent.value = false;
 };
 </script>
 
@@ -165,5 +217,17 @@ p {
 .btn-cinemax:hover {
   background-color: var(--color-darkred);
   color: var(--color-white);
+}
+
+#roles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+#buttonsSubmit {
+  justify-content: center;
 }
 </style>

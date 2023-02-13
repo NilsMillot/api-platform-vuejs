@@ -2,49 +2,11 @@
 
 namespace App\Dto;
 
-// use App\Validators\UniqueEmail;
-// use Symfony\Component\Validator\Constraints as Assert;
-
 class UpdateUserDto
 {
-    // adress can be undefined
     public string $adress;
     public string $status;
     public string $name;
-    public array $roles;
-    public int $totalCredits;
-
-    /**
-     * @return int
-     */
-    public function getTotalCredits(): int
-    {
-        return $this->totalCredits;
-    }
-
-    /**
-     * @param int $totalCredits
-     */
-    public function setTotalCredits(int $totalCredits): void
-    {
-        $this->totalCredits = $totalCredits;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param array $roles
-     */
-    public function setRoles(array $roles): void
-    {
-        $this->roles = $roles;
-    }
 
     /**
      * @return string

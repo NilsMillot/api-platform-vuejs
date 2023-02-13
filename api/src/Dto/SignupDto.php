@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class SignupDto
 {
+    #[Assert\NotBlank]
     #[Assert\Email]
     #[UniqueEmail]
     public string $email;
@@ -22,6 +23,7 @@ class SignupDto
     #[Assert\NotNull]
     public bool $isCinema;
 
+    #[Assert\NotBlank]
     public string $name;
 
 

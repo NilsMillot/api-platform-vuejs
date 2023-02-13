@@ -1,86 +1,106 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="d-flex justify-content-end p-5">
-        <button class="btn btn-cinemax-dark">Mes séances</button>
-      </div>
+  <div v-if="!shouldOfuscate">
+    <HeaderBanner
+      title="Nouvelle séance"
+      img="../../../src/assets/cinema.jpeg"
+    />
+    <div class="container">
+      <div class="row">
+        <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+          {{ message }}
+        </div>
+        <div class="d-flex justify-content-end p-5">
+          <router-link
+            to="/cinema/session/list"
+            class="btn btn-sm btn-cinemax-primary"
+            >Mes séances</router-link
+          >
+        </div>
 
-      <div class="col-md-6">
-        <div class="card card-session shadow-sm">
-          <div>
-            <h3 class="pt-3">Séance</h3>
-            <hr />
-          </div>
-          <div class="card-body">
-            <div class="form-group mt-3">
-              <input
-                type="text"
-                class="form-control"
-                :value="resultSearch.title"
-                required
-                autofocus
-                disabled
-              />
+        <div class="col-md-6">
+          <div class="card card-session shadow-sm">
+            <div>
+              <h3 class="pt-3">Séance</h3>
+              <hr />
             </div>
-            <div class="form-group mt-3">
-              <input
-                type="date"
-                class="form-control"
-                v-model="date"
-                required
-                autofocus
-              />
-            </div>
-            <div class="form-group mt-3">
-              <input
-                type="time"
-                class="form-control"
-                v-model="time"
-                required
-                autofocus
-              />
-            </div>
-            <div class="form-group mt-3">
-              <input
-                type="number"
-                placeholder="12,30 €"
-                v-model="price"
-                class="form-control"
-                required
-                autofocus
-              />
-            </div>
+            <div class="card-body">
+              <form @submit.prevent="handleSubmit">
+                <div class="form-group mt-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    :value="resultSearch.title"
+                    required
+                    autofocus
+                    disabled
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="date"
+                    required
+                    autofocus
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="time"
+                    class="form-control"
+                    v-model="time"
+                    required
+                    autofocus
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="number"
+                    placeholder="12,30 €"
+                    v-model="price"
+                    class="form-control"
+                    required
+                    autofocus
+                  />
+                </div>
 
-
-            <div class="d-flex justify-content-center">
-              <button
-                class="btn btn-danger mt-4"
-                type="submit"
-                @click.prevent="handleSubmit"
-              >
-                <span>Enregistrer</span>
-              </button>
+                <div class="d-flex justify-content-center">
+                  <button
+                    class="btn btn-sm btn-cinemax-primary mt-4"
+                    type="submit"
+                    :disabled="isSending"
+                  >
+                    <span v-show="!isSending">Enregistrer</span>
+                    <span
+                      v-show="isSending"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <SearchBar
-          @customEvent="updateSearch"
-          placeholder="Choisissez un film..."
-        />
+        <div class="col-md-6">
+          <SearchBar
+            @customEvent="updateSearch"
+            placeholder="Choisissez un film..."
+          />
 
-        <div>
-          <div class="row mt-5">
-            <div class="list">
-              <div v-for="(item, index) in result.value" :key="index">
-                <div @click="handleChange(item)" class="block">
-                  <img
-                    class="listElements"
-                    :src="`${getImageFromSrc(
-                      item.backdrop_path || item.poster_path
-                    )}`"
-                  />
+          <div>
+            <div class="row mt-5">
+              <div class="list">
+                <div v-for="(item, index) in result.value" :key="index">
+                  <div @click="handleChange(item)" class="block">
+                    <img
+                      class="listElements"
+                      :src="`${getImageFromSrc(
+                        item.backdrop_path || item.poster_path
+                      )}`"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -92,63 +112,88 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref } from "vue";
+import { inject, watchEffect, watch, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getImageFromSrc } from "../../../utils/tmdbCalls";
 import SearchBar from "../../../components/SearchBar.vue";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+const message = ref("");
+const isSending = ref(false);
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const router = useRouter();
 const search = ref("");
-const date = ref();
-const time = ref();
-const price = ref();
+let date = ref();
+let time = ref();
+let price = ref();
 const result = reactive({ value: [] });
-const resultSearch = reactive({ id: "", title: "" });
+let resultSearch = reactive({ id: "", title: "" });
 const session = ref(null);
 const updateSearch = (e) => {
   search.value = e.target.value;
 };
 
-const generateSeat = async (id) => {
-  for (let i = 1; i <= 30; i++) {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: 1,
-        seat: i,
-        sessionId: "/movie_screenings/" + id,
-        buyerId: null,
-      }),
-    };
-    await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/bookings`,
-      requestOptions
-    ).then((response) => console.log(response.json()));
+const handleSubmit = async () => {
+  isSending.value = true;
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          sessionDatetime: new Date(
+            new Date(date.value.toString() + " " + time.value)
+          ),
+          price: price.value,
+          room: 1,
+          movieId: resultSearch.id,
+          movieTitle: resultSearch.title,
+        }),
+      }
+    );
+    if (!response.ok) {
+      const data = await response.json();
+      isSending.value = false;
+      message.value = data.message || "Une erreur est survenue.";
+      throw new Error("Une erreur est survenue dans le formulaire.");
+    } else {
+      isSending.value = false;
+      message.value = "La séance a bien été créée.";
+      price.value = "";
+      date.value = "";
+      time.value = "";
+      resultSearch.id = "";
+      resultSearch.title = "";
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
-
-const handleSubmit = async () => {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
-    body: JSON.stringify({
-      sessionDatetime: new Date(
-        new Date(date.value.toString() + " " + time.value)
-      ),
-      price: price.value,
-      room: 1,
-      movieId: resultSearch.id,
-      movieTitle: resultSearch.title,
-    }),
-  };
-  await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
-    requestOptions
-  ).then((response) => response.json().then((data) => console.log(data)));
-
-};
-
 
 const handleChange = (item) => {
   resultSearch.id = item.id;

@@ -59,7 +59,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         uriTemplate: '/movie_instances/buy',
         controller: BuyMovieInstancesController::class,
         openapiContext: ['description' => 'Buy movie instances'],
-        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")'
+        security: 'is_granted("ROLE_USER") and not is_granted("ROLE_ADMIN")',
     )
 ])]
 #[ApiFilter(SearchFilter::class, properties: ['movie' => 'exact'])]

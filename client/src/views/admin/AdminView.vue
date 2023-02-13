@@ -16,6 +16,9 @@
         <router-link class="btn mt-4 btn-cinemax" to="/admin/quizz/new"
           >Quiz</router-link
         >
+        <router-link class="btn mt-4 btn-cinemax" to="/admin/sales"
+        >Commandes de films</router-link
+        >
       </div>
     </div>
   </div>
@@ -31,8 +34,17 @@ if (!localStorage.getItem("token")) {
 }
 
 watchEffect(() => {
-  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
-    shouldOfuscate.value = false;
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
   }
 });
 </script>
@@ -56,8 +68,8 @@ h1 {
   background-color: var(--color-red);
   color: var(--color-white);
   text-align: center;
-  width: 150px;
-  margin: 50px;
+  width: 200px;
+  margin: 20px;
 }
 .btn-cinemax:hover {
   background-color: var(--color-darkred);

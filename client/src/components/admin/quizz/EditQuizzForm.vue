@@ -107,7 +107,6 @@ const handleSubmit = async () => {
     );
     if (!response.ok) {
       const data = await response.json();
-      console.log(data);
       message.value = data['hydra:description'];
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {

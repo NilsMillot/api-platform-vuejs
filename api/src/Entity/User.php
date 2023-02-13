@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ResetPasswordRequestController;
+use App\Controller\UpdateUserController;
 use App\Dto\EnableAccountDto;
 use App\Dto\ResetPasswordDto;
 use App\Dto\ResetPasswordRequestDto;
@@ -23,11 +24,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
 use App\Controller\DeleteUserController;
-use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -45,8 +44,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         normalizationContext: ['groups' => ['user:read']]
     ),
     new GetCollection(
-        // security: 'is_granted("ROLE_ADMIN")',
+        security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
+    ),
+    new GetCollection(
+        uriTemplate: '/getUsers',
+        security: 'is_granted("ROLE_USER")',
+        normalizationContext: ['groups' => ['getCollectionForAllUsers:read']]
     ),
     new Put(
         uriTemplate: '/enable_account/{id}',
@@ -75,11 +79,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: DeleteUserController::class,
         openapiContext: ['description' => 'Delete an account'],
     ),
-    // Everyone can call this route but only admins can update roles and totalCredits for another user
     new Put(
         uriTemplate: '/users/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        openapiContext: ['description' => 'Update an account when you are an admin'],
+    ),
+    new Put(
+        uriTemplate: '/me',
         controller: UpdateUserController::class,
-        openapiContext: ['description' => 'Update an account'],
+        openapiContext: ['description' => 'Update current user'],
         input: UpdateUserDto::class
     ),
     // Call this route when you want to get the current user
@@ -106,15 +114,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['session:read', 'getCollection:read', 'user:read'])]
+    #[Groups(['session:read', 'getCollection:read', 'user:read', 'getCollectionForAllUsers:read'])]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'getCollection:read', 'session:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'session:read','quizz-result:read', 'getCollectionForAllUsers:read', 'movieOrderList:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
 
-    #[Groups(['user:read', 'getCollection:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     #[ORM\Column]
     private array $roles = ['ROLE_USER'];
 
@@ -131,6 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $adress = null;
     
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $totalCredits = 0;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: MovieScreening::class)]
@@ -140,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $movieInstances;
 
     #[ORM\Column]
-    #[Groups(['user:read', 'getCollection:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     private ?bool $enabled = false;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -151,7 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read','session:read', 'getCollection:read'])]
+    #[Groups(['user:read','session:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
@@ -163,12 +172,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: QuizzResult::class, orphanRemoval: true)]
     private Collection $quizzResults;
 
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: MovieOrder::class, orphanRemoval: true)]
+    private Collection $movieOrders;
+
     public function __construct()
     {
         $this->movieScreenings = new ArrayCollection();
         $this->movieInstances = new ArrayCollection();
         $this->bookings = new ArrayCollection();
         $this->quizzResults = new ArrayCollection();
+        $this->movieOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -439,6 +452,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($quizzResult->getParticipant() === $this) {
                 $quizzResult->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieOrder>
+     */
+    public function getMovieOrders(): Collection
+    {
+        return $this->movieOrders;
+    }
+
+    public function addMovieOrder(MovieOrder $movieOrder): self
+    {
+        if (!$this->movieOrders->contains($movieOrder)) {
+            $this->movieOrders->add($movieOrder);
+            $movieOrder->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieOrder(MovieOrder $movieOrder): self
+    {
+        if ($this->movieOrders->removeElement($movieOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($movieOrder->getBuyer() === $this) {
+                $movieOrder->setBuyer(null);
             }
         }
 

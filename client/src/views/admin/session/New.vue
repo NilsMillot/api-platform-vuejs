@@ -1,11 +1,34 @@
 <template>
-    <div>
-        <HeaderBanner title="Séances" img="../../src/assets/cinema.jpeg" />
-        <NewForm/>
-    </div>
+  <div v-if="!shouldOfuscate">
+    <HeaderBanner title="Séances" img="../../src/assets/cinema.jpeg" />
+    <NewForm />
+  </div>
 </template>
 
 <script setup>
-import NewForm from '../../../components/admin/session/NewForm.vue';
-import HeaderBanner from '../../../components/HeaderBanner.vue';
+import { inject, watchEffect, ref } from "vue";
+import NewForm from "../../../components/admin/session/NewForm.vue";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
+const shouldOfuscate = ref(true);
+
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 </script>

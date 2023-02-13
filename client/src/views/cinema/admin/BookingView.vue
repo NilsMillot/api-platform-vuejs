@@ -1,24 +1,19 @@
 <template>
   <div>
-    <div class="container mt-2">
-      <div class="row">
-        <div class="col-md-2">
-          <div v-if="seats.value.length > 0">
-            <div class="card d-flex justify-content-center p-3">
-              <div v-for="(seat, i) in seats.value" :key="i">
-                <p>x{{ i + 1 }} - place {{ seat.seat }}</p>
-              </div>
-              <hr />
-              Prix TTC : {{ Math.round(session.price * seats.value.length*100)/100 }} €
-            </div>
-          </div>
+    <HeaderBanner
+      title="Les places réservés"
+      img="../../../src/assets/cinema.jpeg"
+      v-if="!shouldOfuscate"
+    />
+    <div class="container mt-5">
+        <div class="d-flex justify-content-end p-5">
+          <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
         </div>
-        <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-9">
           <div class="card card-booking d-flex justify-content-center">
-            <div>
-              <h3 class="m-3 d-flex justify-content-center">
-                Sélectionnez vos places
-              </h3>
+            <div class="mt-5">
+              <h3 class="text-center">{{ session?.movie_title }}</h3>
               <hr />
             </div>
             <div class="d-flex justify-content-center">
@@ -64,61 +59,79 @@
                 </tbody>
               </table>
             </div>
-            <div
-              class="d-flex justify-content-center"
-              v-if="seats.value.length > 0"
-            >
-              <button
-                @click="() => (display = true)"
-                class="btn mt-4 btn-cinemax"
-              >
-                <span>Réserver ma place </span>
-              </button>
+          </div>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-2">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Places disponibles</h5>
+              <p class="card-text">
+                {{ seatAvailable }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Places réservées</h5>
+              <p class="card-text">
+                {{ seatReserved }}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <CardPayment
-      class="mt-3"
-      v-if="display"
-      :price="price"
-      :items="seats.value"
-      url="/booking/payment"
-      :session="session"
-    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
-import CardPayment from "./CardPayment.vue";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 
-const session = ref(null);
-const bookings = reactive({ value: [] });
-const seats = reactive({ value: [] });
-const price = reactive({ price: 0 });
-const display = ref(false);
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
 
-onMounted(async () => {
-  const id = new URLSearchParams(location.search).get("id");
-  if (!id) {
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
     location.href = "/";
   }
-  await fetchSession(id);
+});
 
+const $route = useRoute();
+const session = ref(null);
+const bookings = reactive({ value: [] });
+let seatReserved = ref(0);
+let seatAvailable = ref(0);
+
+onMounted(async () => {
+  await fetchSession($route.params.id);
   if (
     session.value.id == null ||
     new Date(session.value.session_datetime) < new Date()
   ) {
     location.href = "/";
   }
-
-  await fetchBookings(id);
-  bookings.value = bookings.value.filter(
-    (e, i) => e.session_id == `/movie_screenings/${id}`
-  );
+  await fetchBookings($route.params.id);
 });
 
 const fetchSession = async (id) => {
@@ -133,11 +146,10 @@ const fetchSession = async (id) => {
     requestOptions
   ).then((response) =>
     response.json().then((data) => {
-        session.value = data
+      session.value = data;
     })
   );
 };
-
 
 const fetchBookings = async (id) => {
   const requestOptions = {
@@ -151,24 +163,11 @@ const fetchBookings = async (id) => {
     requestOptions
   ).then((response) =>
     response.json().then((data) => {
-        bookings.value = data.data
-       
+      bookings.value = data.data;
+      seatReserved.value = data.data.filter((x) => x.buyer_id != null).length;
+      seatAvailable.value = data.data.filter((x) => x.buyer_id == null).length;
     })
   );
-};
-
-const handleSelected = (booking) => {
-  const found = seats.value.findIndex((e) => e.id == booking.id);
-  if (found != -1) {
-    seats.value.splice(found, 1);
-  } else {
-    seats.value.push(booking);
-  }
-
-  if (seats.value.length == 0) {
-    display.value = false;
-  }
-  price.price = session.value.price * seats.value.length;
 };
 </script>
 

@@ -1,6 +1,10 @@
 <script setup>
 import Session from "../../components/Session.vue";
 import HeaderBanner from "../../components/HeaderBanner.vue";
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
 </script>
 
 <template>

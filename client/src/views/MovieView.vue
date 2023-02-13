@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, inject } from "vue";
+import { onMounted, reactive, ref, inject, watch } from "vue";
 import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
@@ -15,11 +15,24 @@ const availableMovies = ref([]);
 const items = reactive({ value: [] });
 const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
+const orderPrice = ref(null);
+const orderPriceFinal = ref(null);
+const reduction = ref(0);
+
+const updateOrderPrice = () => {
+  if (currentUser.totalCredits >= orderPrice.value - 1) {
+    reduction.value = orderPrice.value - 1;
+    orderPriceFinal.value = 1;
+  } else {
+    reduction.value = currentUser.totalCredits;
+    orderPriceFinal.value = orderPrice.value - currentUser.totalCredits;
+  }
+}
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
   const response = await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/movies/${id}`,
+    `${import.meta.env.VITE_API_SERVER_URL}/movies/${id}`
   );
 
   if (response.status === 404) {
@@ -33,14 +46,16 @@ const getPrice = async () => {
 const getMovieInstances = async () => {
   const id = new URLSearchParams(location.search).get("id");
   const movieInstancesRes = await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/movie_instances?movie_id=${id}&available=true`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+    `${
+      import.meta.env.VITE_API_SERVER_URL
+    }/movie_instances?movie_id=${id}&available=true`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
   );
   const movieInstances = await movieInstancesRes.json();
   return movieInstances;
@@ -51,11 +66,15 @@ onMounted(async () => {
   if (!id) {
     location.href = "/";
   }
-  const data = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&lang=fr`);
+  const data = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}?api_key=${
+      import.meta.env.VITE_TMDB_API_KEY
+    }&lang=fr`
+  );
   movie.value = await data.json();
   movie.value.poster = `https://image.tmdb.org/t/p/w500${movie.value.poster_path}`;
   movie.value.background = `https://image.tmdb.org/t/p/w1280${movie.value.backdrop_path}`;
-  movie.value.country = movie.value.production_countries[0].iso_3166_1;
+  movie.value.country = movie.value?.production_countries?.[0]?.iso_3166_1;
   movie.value.movieDuration = Math.round(movie.value.runtime / 60);
 
   const movieInstances = await getMovieInstances();
@@ -72,11 +91,6 @@ onMounted(async () => {
   }
 });
 
-// TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
-const handleBuyMovie = () => {
-  console.log("buy movie with this id", movie.value.id);
-};
-
 const handleSubmitChangeStock = async () => {
   const response = await fetch(
     `${import.meta.env.VITE_API_SERVER_URL}/movie_instances`,
@@ -89,7 +103,7 @@ const handleSubmitChangeStock = async () => {
       body: JSON.stringify({
         movieId: movie.value.id,
         quantity: quantity.value,
-        price: price.value
+        price: price.value,
       }),
     }
   );
@@ -109,12 +123,28 @@ const handleSubmitChangeStock = async () => {
 
 const setItems = () => {
   const quantity = itemCount.value;
-  while(items.value.length) {
+  while (items.value.length) {
     items.value.pop();
   }
   for (let i = 0; i < quantity; i++) {
     items.value.push(availableMovies.value[i]);
   }
+};
+
+// watch itemCount
+watch(itemCount, () => {
+  if (itemCount.value === 0) {
+    orderPrice.value = 0;
+  } else if (itemCount.value < 0) {
+    orderPrice.value = null;
+  } else {
+    orderPrice.value = price.value * itemCount.value;
+  }
+});
+
+const onOrderQuantityChange = () => {
+  setItems();
+  updateOrderPrice();
 };
 </script>
 
@@ -146,48 +176,105 @@ const setItems = () => {
             >{{ movie.value.movieDuration }}h</span
           >
         </p>
-        <p v-if="price.value !== null" class="movie-view__price">Prix : {{ price.value }} €</p>
-        <p v-if="isCurrentUserAdmin">Quantité en stock : {{ stock }}</p>
-        <!-- TODO: Check if current user have user role to display this div -->
-        <!-- TODO: Check if current user have admin role to display this form wich call handleSubmitChangeStock -->
-        <form
-          v-if="isCurrentUserAdmin"
-          @submit.prevent="handleSubmitChangeStock()"
-          class="movie-view__form"
+        <p v-if="price.value !== null" class="movie-view__price">
+          Prix : {{ price.value }} €
+        </p>
+        <div
+          v-if="isCurrentUserUser && stock === 0"
+          class="alert movie-view__alert-danger-dark"
+          role="alert"
         >
-          <div class="form-group">
-            <label for="price">Fixer un prix</label>
-            <input type="number" class="form-control" step="0.01" id="price" v-model="price.value">
-          </div>
-          <div class="form-group">
-            <label for="quantity">Ajouter au stock :</label>
-            <input type="number" class="form-control" id="quantity" v-model="quantity.value">
-          </div>
-          <input type="submit" class="btn btn-cinemax-primary" value="Valider" />
-        </form>
-        <div v-for="msg in successMsg" :key="msg" v-if="successMsg" class="alert movie-view__alert-danger-dark">
-          <span>{{ msg }}</span>
+          <span class="text-center">Le film n'est pas en stock</span>
         </div>
-        <ul v-if="violations.length > 0" class="movie-view__message">
-          <li
-            v-for="violation in violations"
-            :key="violation.propertyPath"
-            class="movie-view__violation"
+        <div class="bg-dark p-4 rounded" v-if="isCurrentUserAdmin">
+          <h3>Gestion du Stock</h3>
+          <p>Quantité en stock : {{ stock }}</p>
+          <form
+            v-if="isCurrentUserAdmin"
+            @submit.prevent="handleSubmitChangeStock()"
+            class="movie-view__form"
           >
-            {{ violation.propertyPath }} : {{ violation.message }}
-          </li>
-        </ul>
-        <div v-if="isCurrentUserUser && stock > 0">
-          <h3 class="text-center">Acheter</h3>
-          <div class="form-group">
-            <span>En stock : {{ stock }}</span><br>
-            <label for="item-count">Quantité à acheter</label>
-            <input @input="setItems" type="number" class="item-count ml-2" min="1" :max="stock" id="price" v-model="itemCount">
+            <div class="form-group">
+              <label for="price">Fixer un prix</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="price"
+                v-model="price.value"
+              />
+            </div>
+            <div class="form-group">
+              <label for="quantity">Ajouter au stock :</label>
+              <input
+                type="number"
+                class="form-control"
+                id="quantity"
+                v-model="quantity.value"
+              />
+            </div>
+            <input
+              type="submit"
+              class="btn btn-cinemax-primary"
+              value="Valider"
+            />
+          </form>
+          <div
+            v-for="msg in successMsg"
+            :key="msg"
+            v-if="successMsg"
+            class="alert movie-view__alert-danger-dark"
+          >
+            <span>{{ msg }}</span>
           </div>
-          <CardPaymentMovie :items="items.value" :price="price" url="/movie_instances/buy" />
+          <ul v-if="violations.length > 0" class="movie-view__message">
+            <li
+              v-for="violation in violations"
+              :key="violation.propertyPath"
+              class="movie-view__violation"
+            >
+              {{ violation.propertyPath }} : {{ violation.message }}
+            </li>
+          </ul>
         </div>
-        <div v-if="isCurrentUserUser && stock === 0" class="alert movie-view__alert-danger-dark" role="alert">
-          <span class="text-center">Rupture de stock</span>
+
+        <div
+          class="bg-dark mt-4 p-4 rounded"
+          v-if="isCurrentUserUser && !isCurrentUserAdmin && stock > 0"
+        >
+          <div class="container">
+            <h3 class="text-center">Acheter</h3>
+            <div class="form-group">
+              <span>En stock : {{ stock }}</span
+              ><br />
+              <label for="item-count">Quantité à acheter</label>
+              <input
+                @input="onOrderQuantityChange"
+                type="number"
+                class="item-count ml-2"
+                min="1"
+                :max="stock"
+                id="price"
+                v-model="itemCount"
+              />
+            </div>
+            <span v-if="orderPrice !== null" class="mb-5"
+            >Vos crédits : {{ currentUser.totalCredits }}<br></span>
+            <span v-if="orderPrice !== null"
+              >Prix Total : {{ orderPrice }} €<br></span
+            >
+            <span v-if="orderPrice !== null" class="font-weight-bold"
+            >Prix Final : {{ orderPriceFinal }} €<br></span
+            >
+            <p v-if="orderPrice !== null" class="mb-4 mt-4">
+              1 crédit = 1 € de réduction.<br>Vous économisez {{ reduction }} € sur votre commande grâce à vos crédits.
+            </p>
+            <CardPaymentMovie
+              :items="items.value"
+              :price="price"
+              url="/movie_instances/buy"
+            />
+          </div>
         </div>
       </div>
     </div>

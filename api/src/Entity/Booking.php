@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Controller\GetBookingsController;
 use App\Controller\BookingController;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
@@ -17,8 +18,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
     // denormalizationContext: ['groups' => ['booking:write']],
     operations: [
         new GetCollection(),
+        new Get(
+            uriTemplate: '/seats/{id}',
+            controller: GetBookingsController::class,
+            security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
+            openapiContext: ['description' => 'Get seat'],
+        ),
         new Get(),
-        new Post(),
+        // new Post(),
         new Post(
             uriTemplate: '/booking/payment',
             controller: BookingController::class,
