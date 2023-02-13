@@ -1,5 +1,9 @@
 <template>
   <div class="container mt-5" v-if="!shouldOfuscate">
+
+    <div class="d-flex justify-content-end p-5">
+      <router-link to="/admin/quizz/new" class="btn btn-sm btn-cinemax-primary">Nouveau quiz</router-link>
+    </div>
     <table class="table table-dark table-striped">
       <thead>
         <tr>

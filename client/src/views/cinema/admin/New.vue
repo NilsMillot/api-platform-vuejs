@@ -7,7 +7,7 @@
     <div class="container">
       <div class="row">
         <div class="d-flex justify-content-end p-5">
-          <button class="btn btn-cinemax-dark">Mes séances</button>
+          <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
         </div>
 
         <div class="col-md-6">
@@ -58,7 +58,7 @@
 
               <div class="d-flex justify-content-center">
                 <button
-                  class="btn btn-danger mt-4"
+                  class="btn btn-sm btn-cinemax-primary mt-4"
                   type="submit"
                   @click.prevent="handleSubmit"
                 >

@@ -11,7 +11,7 @@
         <tr v-for="(question, index) in questions.value" :key="index">
           <td>{{ question.name }}</td>
           <td>
-            <button @click="$emit('deleteQuestion', question.id)" class="btn btn-danger btn-sm mx-2">Supprimer</button>
+            <button @click="$emit('deleteQuestion', question.id)" class="btn btn-sm btn-cinemax-primary mx-2">Supprimer</button>
           </td>
         </tr>
       </tbody>

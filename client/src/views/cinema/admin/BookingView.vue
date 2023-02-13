@@ -5,6 +5,9 @@
       img="../../../src/assets/cinema.jpeg"
     />
     <div class="container mt-5">
+        <div class="d-flex justify-content-end p-5">
+          <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
+        </div>
       <div class="row">
         <div class="col-md-9">
           <div class="card card-booking d-flex justify-content-center">
