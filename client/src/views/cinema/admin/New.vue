@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="shouldOfuscate">
     <div class="row">
       <div class="d-flex justify-content-end p-5">
         <button class="btn btn-cinemax-dark">Mes séances</button>
@@ -51,7 +51,6 @@
               />
             </div>
 
-
             <div class="d-flex justify-content-center">
               <button
                 class="btn btn-danger mt-4"
@@ -92,10 +91,32 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref } from "vue";
+import { inject, watchEffect, watch, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getImageFromSrc } from "../../../utils/tmdbCalls";
 import SearchBar from "../../../components/SearchBar.vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const router = useRouter();
 const search = ref("");
@@ -109,11 +130,13 @@ const updateSearch = (e) => {
   search.value = e.target.value;
 };
 
-
 const handleSubmit = async () => {
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: JSON.stringify({
       sessionDatetime: new Date(
         new Date(date.value.toString() + " " + time.value)
@@ -128,9 +151,7 @@ const handleSubmit = async () => {
     `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
     requestOptions
   ).then((response) => response.json().then((data) => console.log(data)));
-
 };
-
 
 const handleChange = (item) => {
   resultSearch.id = item.id;

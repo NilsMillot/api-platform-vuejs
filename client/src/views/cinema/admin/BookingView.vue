@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!shouldOfuscate">
     <div class="container mt-5">
       <div class="row">
         <div class="col-md-9">
@@ -85,8 +85,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const $route = useRoute();
 const session = ref(null);

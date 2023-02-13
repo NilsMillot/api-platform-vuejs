@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-5" v-if="!shouldOfuscate">
     <div class="card card-session shadow-sm">
       <div>
         <h3 class="pt-3">Modifier une séance</h3>
@@ -55,8 +55,30 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "@vue/runtime-core";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const session = reactive({
   id: "",
@@ -100,9 +122,9 @@ const fetchSession = async (id) => {
 const handleSubmit = () => {
   const requestOptions = {
     method: "PUT",
-    headers: { 
-      "Content-Type": "application/json", 
-      Authorization: `Bearer ${localStorage.getItem("token")}`
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({
       sessionDatetime: new Date(new Date(session.date + " " + session.time)),

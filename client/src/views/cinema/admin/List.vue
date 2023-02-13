@@ -1,5 +1,5 @@
 <template>
-  <div class="container m-5">
+  <div class="container m-5" v-if="!shouldOfuscate">
     <table class="table p-5 tab">
       <thead>
         <tr>
@@ -30,7 +30,11 @@
             >
               Supprimer
             </button>
-             <router-link :to="`/cinema/session/booking/` + session.id" class="btn btn-cinemax-primary btn-sm">Voir</router-link>
+            <router-link
+              :to="`/cinema/session/booking/` + session.id"
+              class="btn btn-cinemax-primary btn-sm"
+              >Voir</router-link
+            >
           </td>
         </tr>
       </tbody>
@@ -39,7 +43,29 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "@vue/runtime-core";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const sessions = reactive({ value: [] });
 
@@ -91,7 +117,8 @@ const fetchSessions = async () => {
           (sessions.value = data["hydra:member"].filter(
             (x) =>
               new Date(x.session_datetime) > new Date() &&
-              x.creator.email == email.value && x.status == 1
+              x.creator.email == email.value &&
+              x.status == 1
           ))
       )
   );
