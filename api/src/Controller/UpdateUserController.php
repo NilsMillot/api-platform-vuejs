@@ -15,7 +15,7 @@ class UpdateUserController extends AbstractController
 {
   public function __invoke(UpdateUserDto $updateUserDto, User $user, EntityManagerInterface $em): JsonResponse
   {
-    if($user && $this->getUser() && ($this->getUser()->getRoles() === ['ROLE_ADMIN'] || $this->getUser()->getId() === $user->getId())) {
+    if($user && $this->getUser() && (in_array('ROLE_ADMIN', $this->getUser()->getRoles()) || $this->getUser()->getId() === $user->getId())) {
       if ($updateUserDto->getName()) $user->setName($updateUserDto->getName());
       if ($updateUserDto->getAdress()) $user->setAdress($updateUserDto->getAdress());
       if ($updateUserDto->getStatus()) $user->setStatus($updateUserDto->getStatus());
