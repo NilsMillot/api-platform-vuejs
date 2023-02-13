@@ -1,53 +1,59 @@
 <template>
-  <div class="container mt-5">
-    <div class="card card-session shadow-sm">
-      <div>
-        <h3 class="pt-3">Modifier une séance</h3>
-        <hr />
-      </div>
-      <div class="card-body">
-        <div class="form-group mt-3">
-          <input
-            type="text"
-            class="form-control"
-            required
-            disabled
-            v-model="session.movie_title"
-          />
+  <div>
+    <HeaderBanner
+      title="Modifier une séance"
+      img="../../../src/assets/cinema.jpeg"
+    />
+    <div class="container mt-5">
+      <div class="card card-session shadow-sm">
+        <div>
+          <h3 class="pt-3">Modifier une séance</h3>
+          <hr />
         </div>
-        <div class="form-group mt-3">
-          <input
-            type="date"
-            v-model="session.date"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group mt-3">
-          <input
-            type="time"
-            class="form-control"
-            required
-            v-model="session.time"
-          />
-        </div>
-        <div class="form-group mt-3">
-          <input
-            type="number"
-            placeholder="12,30 €"
-            class="form-control"
-            required
-            v-model="session.price"
-          />
-        </div>
-        <div class="d-flex justify-content-center">
-          <button
-            class="btn btn-danger mt-4"
-            type="submit"
-            @click.prevent="handleSubmit"
-          >
-            <span>Enregistrer</span>
-          </button>
+        <div class="card-body">
+          <div class="form-group mt-3">
+            <input
+              type="text"
+              class="form-control"
+              required
+              disabled
+              v-model="session.movie_title"
+            />
+          </div>
+          <div class="form-group mt-3">
+            <input
+              type="date"
+              v-model="session.date"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group mt-3">
+            <input
+              type="time"
+              class="form-control"
+              required
+              v-model="session.time"
+            />
+          </div>
+          <div class="form-group mt-3">
+            <input
+              type="number"
+              placeholder="12,30 €"
+              class="form-control"
+              required
+              v-model="session.price"
+            />
+          </div>
+          <div class="d-flex justify-content-center">
+            <button
+              class="btn btn-danger mt-4"
+              type="submit"
+              @click.prevent="handleSubmit"
+            >
+              <span>Enregistrer</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -57,6 +63,7 @@
 <script setup>
 import { onMounted, reactive } from "@vue/runtime-core";
 import { useRoute } from "vue-router";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const session = reactive({
   id: "",
@@ -100,9 +107,9 @@ const fetchSession = async (id) => {
 const handleSubmit = () => {
   const requestOptions = {
     method: "PUT",
-    headers: { 
-      "Content-Type": "application/json", 
-      Authorization: `Bearer ${localStorage.getItem("token")}`
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({
       sessionDatetime: new Date(new Date(session.date + " " + session.time)),
