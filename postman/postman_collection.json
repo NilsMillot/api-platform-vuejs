@@ -15,7 +15,7 @@
 						"exec": [
 							"pm.environment.set(\"email\", pm.response.json().email);",
 							"",
-							"pm.test(\"Status set\", function () {",
+							"pm.test(\"Status de retour correct\", function () {",
 							"    pm.response.to.have.status(201);",
 							"})"
 						],
@@ -54,7 +54,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status set\", function () {",
+							"pm.test(\"Status de retour correct\", function () {",
 							"    pm.response.to.have.status(422);",
 							"})"
 						],
@@ -93,7 +93,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status set\", function () {",
+							"pm.test(\"Status de retour correct\", function () {",
 							"    pm.response.to.have.status(403);",
 							"})"
 						],
@@ -134,7 +134,7 @@
 						"exec": [
 							"pm.environment.set(\"userToken\", pm.response.json().token);",
 							"",
-							"pm.test(\"Status set\", function () {",
+							"pm.test(\"Status de retour correct\", function () {",
 							"    pm.response.to.have.status(200);",
 							"})"
 						],
@@ -174,7 +174,7 @@
 					"script": {
 						"exec": [
 							"",
-							"pm.test(\"Status set\", function () {",
+							"pm.test(\"Status de retour correct\", function () {",
 							"    pm.response.to.have.status(200);",
 							"})",
 							"",
@@ -207,6 +207,547 @@
 					],
 					"path": [
 						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should modify own user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"Wright success\", function () {",
+							"    pm.response.to.have.jsonBody(\"success\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"adress\": \"Nouvelle adresse de test\",\n  \"status\": \"Status sert à rien\",\n  \"name\": \"Jean Dupont test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/me",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not enable another user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(400);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token\": \"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/enable_account/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"enable_account",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not modify other user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"roles\": [\n    \"ROLE_USER\"\n  ],\n  \"adress\": \"string\",\n  \"totalCredits\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not create quizz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"string\",\n  \"endDate\": \"2026-02-13T18:12:02.133Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/quizzs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"quizzs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not create projection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"price\": 0,\n  \"creator\": \"string\",\n  \"room\": 0,\n  \"bookings\": [\n    \"string\"\n  ],\n  \"status\": 0,\n  \"sessionDatetime\": \"2026-02-13T18:15:09.854Z\",\n  \"movieId\": 0,\n  \"movieTitle\": \"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/session/new",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"session",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not create movie_instance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"movieId\": 1,\n  \"quantity\": 999,\n  \"price\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/movie_instances",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"movie_instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should get token with admin account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"adminToken\", pm.response.json().token);",
+							"",
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should create an stock of films when admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"movieId\": 238,\n  \"quantity\": 1,\n  \"price\": 12\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/movie_instances",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"movie_instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should not buy when card is wrong",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(400);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cardNumber\": \"666\",\n  \"cardName\": \"toto\",\n  \"cardMonth\": \"1\",\n  \"cardYear\": \"2024\",\n  \"cardCvv\": \"123\",\n  \"price\": \"12\",\n  \"items\": [{\"id\": \"2018\", \"buyedDate\": null, \"buyer\": null, \"movie\": \"/movies/238\" }]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/movie_instances/buy",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"movie_instances",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should buy an film when user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cardNumber\": \"4242424242424242\",\n  \"cardName\": \"toto\",\n  \"cardMonth\": \"1\",\n  \"cardYear\": \"2024\",\n  \"cardCvv\": \"123\",\n  \"price\": \"12\",\n  \"items\": [{\"id\": \"2018\", \"buyedDate\": null, \"buyer\": null, \"movie\": \"/movies/238\" }]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/movie_instances/buy",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"movie_instances",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "should buy an same instance of film",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status de retour correct\", function () {",
+							"    pm.response.to.have.status(404);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cardNumber\": \"4242424242424242\",\n  \"cardName\": \"toto\",\n  \"cardMonth\": \"1\",\n  \"cardYear\": \"2024\",\n  \"cardCvv\": \"123\",\n  \"price\": \"12\",\n  \"items\": [{\"id\": \"2018\", \"buyedDate\": null, \"buyer\": null, \"movie\": \"/movies/238\" }]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/movie_instances/buy",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"movie_instances",
+						"buy"
 					]
 				}
 			},
