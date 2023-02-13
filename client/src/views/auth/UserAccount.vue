@@ -5,7 +5,7 @@
         <h3 class="pt-3">
           Mon compte ({{
             user?.roles?.includes("ROLE_CINEMA") ? "cinéma" : "client"
-          }})
+          }}) - Mes crédits : {{ user?.totalCredits }}
         </h3>
         <hr />
       </div>
@@ -74,6 +74,7 @@ onMounted(async () => {
       },
     });
     const currentUser = await response.json();
+    user.totalCredits = currentUser.totalCredits;
     user.id = currentUser.id;
     user.name = currentUser.name;
     user.adress = currentUser.adress;

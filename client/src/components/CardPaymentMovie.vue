@@ -83,8 +83,12 @@ function handlePay() {
         isSending.value = false;
         location.href = "/payment/success";
       } else {
+        if (data["hydra:title"] === 'An error occurred') {
+          error.value = "Une erreur est survenue, la commande n'est pas passé";
+        } else {
+          error.value = data.message;
+        }
         isSending.value = false;
-        error.value = data.message;
       }
     });
 }
