@@ -33,7 +33,7 @@ const modeLoading = ref(false);
 const price = ref("");
 const items = reactive({ value: [] });
 const session = reactive({ value: [] });
-
+const isSending = ref(false);
 const minCardMonth = computed(() => {
   if (cardYear.value === minCardYear.value) return new Date().getMonth() + 1;
   return 1;
@@ -54,6 +54,7 @@ watchEffect(() => {
 });
 
 function handlePay() {
+  isSending.value = true;
   modeLoading.value = true;
   error.value = null;
 
@@ -73,7 +74,7 @@ function handlePay() {
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }
   );
@@ -82,10 +83,12 @@ function handlePay() {
     .then((response) => response.json())
     .then((data) => {
       modeLoading.value = false;
+      isSending.value = false;
       if (data.message === "success") {
         location.href = "/payment/success";
       } else {
         error.value = data.message;
+        isSending.value = false;
       }
     });
 }
@@ -183,11 +186,17 @@ function handlePay() {
                 </p>
 
                 <button
-                  v-bind:disabled="modeLoading"
                   class="card-form-button"
                   type="submit"
+                  :disabled="isSending"
                 >
-                  Payer
+                  <span v-show="!isSending">Payer</span>
+                  <span
+                    v-show="isSending"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                 </button>
               </div>
             </form>

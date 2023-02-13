@@ -20,6 +20,7 @@ import QuizzView from "../views/quizz/Quizz.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
+import BookingSessionCinemaView from "../views/cinema/admin/BookingView.vue";
 import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
@@ -97,6 +98,12 @@ const router = createRouter({
       name: "cinema-session-edit",
       query: { id: Number },
       component: EditSessionCinema,
+    },
+    {
+      path: "/cinema/session/booking/:id",
+      name: "cinema-session-booking",
+      query: { id: Number },
+      component: BookingSessionCinemaView,
     },
     {
       path: "/booking",

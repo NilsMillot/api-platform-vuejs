@@ -64,7 +64,10 @@ class MovieScreening
     #[ORM\Column]
     #[Groups(['session:read'])]
     #[Assert\NotNull]
-    #[Assert\Regex('/^(?!^0\.00$)(([1-9][\d]{0,6})|([0]))\.[\d]{2}$/')]
+    // #[Assert\Regex('/^(?!^0\.00$)(([1-9][\d]{0,6})|([0]))\.[\d]{2}$/')]
+    
+    #[Assert\Type("float")]
+    
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'movieScreenings')]
