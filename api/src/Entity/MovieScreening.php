@@ -25,8 +25,6 @@ use App\Controller\UpdateSessionController;
     operations: [
         new GetCollection(),
         new Get(),
-        // new Put(),
-        // new Post(),
         new Put(
             security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
             uriTemplate: '/session/edit/{id}',

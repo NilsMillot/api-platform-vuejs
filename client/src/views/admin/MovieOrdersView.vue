@@ -31,13 +31,14 @@
 </template>
 
 <script setup>
-import { onMounted, inject, reactive, ref, watchEffect } from "vue";
+import { onMounted, inject, reactive, ref, watchEffect} from "vue";
+import router from "@/router";
 const currentUser = inject("currentUser");
 const shouldOfuscate = ref(true);
 const movieOrders = ref([]);
 
 if (!localStorage.getItem("token")) {
-  location.href = "/";
+  router.push("/");
 }
 
 watchEffect(() => {
@@ -48,10 +49,10 @@ watchEffect(() => {
         currentUser.roles?.includes("ROLE_USER") ||
         currentUser.roles?.includes("ROLE_CINEMA")
     ) {
-      location.href = "/";
+      router.push("/");
     }
   } else {
-    location.href = "/";
+    router.push("/");
   }
 });
 

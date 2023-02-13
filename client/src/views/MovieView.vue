@@ -2,6 +2,7 @@
 import { onMounted, reactive, ref, inject, watch } from "vue";
 import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
+import router from "@/router";
 
 const movie = reactive({ value: {} });
 const quantity = reactive({ value: 0 });
@@ -64,7 +65,7 @@ const getMovieInstances = async () => {
 onMounted(async () => {
   const id = new URLSearchParams(location.search).get("id");
   if (!id) {
-    location.href = "/";
+    router.push("/")
   }
   const data = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?api_key=${
@@ -186,7 +187,7 @@ const onOrderQuantityChange = () => {
         >
           <span class="text-center">Le film n'est pas en stock</span>
         </div>
-        <div class="bg-dark p-4 rounded" v-if="isCurrentUserAdmin">
+        <div class="bg-dark p-4 rounded stock-gestion" v-if="currentUser?.roles?.includes('ROLE_ADMIN')">
           <h3>Gestion du Stock</h3>
           <p>Quantité en stock : {{ stock }}</p>
           <form
@@ -238,10 +239,11 @@ const onOrderQuantityChange = () => {
           </ul>
         </div>
 
-        <div
-          class="bg-dark mt-4 p-4 rounded"
-          v-if="isCurrentUserUser && !isCurrentUserAdmin && stock > 0"
-        >
+        <div class="payment-section" v-if="currentUser?.roles?.includes('ROLE_USER') && !currentUser?.roles?.includes('ROLE_ADMIN')">
+          <div
+              class="bg-dark mt-4 p-4 rounded"
+              v-if="stock > 0"
+          >
           <div class="container">
             <h3 class="text-center">Acheter</h3>
             <div class="form-group">
@@ -249,19 +251,19 @@ const onOrderQuantityChange = () => {
               ><br />
               <label for="item-count">Quantité à acheter</label>
               <input
-                @input="onOrderQuantityChange"
-                type="number"
-                class="item-count ml-2"
-                min="1"
-                :max="stock"
-                id="price"
-                v-model="itemCount"
+                  @input="onOrderQuantityChange"
+                  type="number"
+                  class="item-count ml-2"
+                  min="1"
+                  :max="stock"
+                  id="price"
+                  v-model="itemCount"
               />
             </div>
             <span v-if="orderPrice !== null" class="mb-5"
             >Vos crédits : {{ currentUser.totalCredits }}<br></span>
             <span v-if="orderPrice !== null"
-              >Prix Total : {{ orderPrice }} €<br></span
+            >Prix Total : {{ orderPrice }} €<br></span
             >
             <span v-if="orderPrice !== null" class="font-weight-bold"
             >Prix Final : {{ orderPriceFinal }} €<br></span
@@ -270,11 +272,12 @@ const onOrderQuantityChange = () => {
               1 crédit = 1 € de réduction.<br>Vous économisez {{ reduction }} € sur votre commande grâce à vos crédits.
             </p>
             <CardPaymentMovie
-              :items="items.value"
-              :price="price"
-              url="/movie_instances/buy"
+                :items="items.value"
+                :price="price"
+                url="/movie_instances/buy"
             />
           </div>
+        </div>
         </div>
       </div>
     </div>
