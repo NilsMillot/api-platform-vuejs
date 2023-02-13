@@ -183,10 +183,9 @@ const handleSubmitUpdatedUser = async (e) => {
     }
   );
   if (response.status === 200) {
-    messageFromFetch.value = "User updated successfully";
+    messageFromFetch.value = "L'utilisateur a été modifié avec succès !";
   } else {
-    alert("Error when trying to update user");
-    messageFromFetch.value = "";
+    messageFromFetch.value = "Une erreur est survenue.";
   }
   isSent.value = false;
 };

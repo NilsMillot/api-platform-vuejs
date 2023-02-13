@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+     <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
     <div>
       <h2 class="pt-2">Utilisateurs</h2>
       <hr class="pb-5" />
@@ -99,6 +102,8 @@ const newUser = reactive({
   isAdmin: false,
 });
 
+const message = ref("");
+
 if (!localStorage.getItem("token")) {
   location.href = "/";
 }
@@ -158,10 +163,10 @@ const addUser = async () => {
   const user = await response.json();
 
   if (user["hydra:description"]) {
-    alert(user["hydra:description"]);
+    message.value = user["hydra:description"];
   }
   if (response.status === 201) {
-    alert("User created");
+    message.value = "L'utilisateur a bien été créé."
     const higherId = users.reduce((prev, current) =>
       prev.id > current.id ? prev : current
     );

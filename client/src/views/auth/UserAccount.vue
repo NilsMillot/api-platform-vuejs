@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="container">
+    <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
     <div class="card card-account shadow-sm">
       <div>
         <h3 class="pt-3">
@@ -56,9 +59,10 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const user = reactive({});
+const message = ref("");
 
 if (!localStorage.getItem("token")) {
   location.href = "/";
@@ -99,9 +103,9 @@ const handleSubmitForm = () => {
   fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, requestOptions).then(
     (response) => {
       if (response.status === 200) {
-        alert("Account updated");
+        message.value = "Votre compte a bien été modifié."
       } else {
-        alert("An error occured");
+        message.value = "Une erreur est survenue."
       }
     }
   );
