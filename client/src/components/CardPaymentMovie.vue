@@ -15,7 +15,6 @@ watch(props.price, (newPrice) => {
 });
 
 watch(props.items, (newItems) => {
-  console.log(newItems)
   items.value = newItems;
 });
 
@@ -79,7 +78,6 @@ function handlePay() {
   fetch(request)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       modeLoading.value = false;
       if (data.message === "success") {
         isSending.value = false;

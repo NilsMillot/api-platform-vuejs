@@ -44,8 +44,12 @@ class EditQuizzSubscriber implements EventSubscriberInterface
             return;
         }
         $previousData = $event->getRequest()->attributes->get('previous_data');
+
+
+        $dateTimestamp1 = strtotime(date_format($previousData->getEndDate(),'Y-m-d'));
+        $dateTimestamp2 = strtotime(date('Y-m-d'));
       
-        if (date_format($previousData->getEndDate(),'Y-m-d')  < date('Y-m-d') ){
+        if ($dateTimestamp1  < $dateTimestamp2 ){
             throw new \Exception('Vous ne pouvez pas modifier ce quizz.');
         }
 

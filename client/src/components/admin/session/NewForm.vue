@@ -61,11 +61,19 @@
                 />
               </div>
               <div class="d-flex justify-content-center">
+
                 <button
                   class="btn btn-sm btn-cinemax-primary mt-4"
                   type="submit"
+                  :disabled="isSending"
                 >
-                  <span>Enregistrer</span>
+                  <span v-show="!isSending">Enregistrer</span>
+                  <span
+                    v-show="isSending"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                 </button>
               </div>
             </form>
@@ -115,6 +123,7 @@ const price = ref();
 const room = ref(1);
 
 const message = ref("");
+const isSending = ref(false);
 
 onMounted(async () => {
   await fetchCinema();
@@ -172,6 +181,7 @@ watch(search, async (newSearch) => {
 });
 
 const handleSubmit = async () => {
+  isSending.value = true;
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
@@ -196,10 +206,17 @@ const handleSubmit = async () => {
     );
     if (!response.ok) {
       const data = await response.json();
-      message.value = data["hydra:description"];
+      message.value = data.message || "Une erreur est survenue.";
+      isSending.value = false;
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
       message.value = "La séance a bien été créée.";
+      isSending.value = false;
+      price.value = "";
+      date.value = "";
+      time.value = "";
+      resultSearch.id = "";
+      resultSearch.title = "";
     }
   } catch (error) {
     console.log(error);

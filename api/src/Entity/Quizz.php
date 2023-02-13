@@ -26,6 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_ADMIN")',
         denormalizationContext: ['groups' => ['quizz-publish:put']]
     ),
+
+    new Put(
+        uriTemplate: '/quizz/dispublish/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        denormalizationContext: ['groups' => ['quizz-dispublish:put']]
+    ),
+
     new Put(
         security: 'is_granted("ROLE_ADMIN")',
     ),
@@ -71,7 +78,7 @@ class Quizz
 
     #[ORM\Column]
 
-    #[Groups(['quizz:read','quizz-list:read','quizz-publish:put'])]
+    #[Groups(['quizz:read','quizz-list:read','quizz-publish:put','quizz-dispublish:put'])]
     private ?int $status = 0;
 
     public function __construct()

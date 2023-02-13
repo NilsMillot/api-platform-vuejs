@@ -5,6 +5,9 @@
       img="../../../src/assets/cinema.jpeg"
     />
     <div class="container mt-5">
+         <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
         <div class="d-flex justify-content-end p-5">
           <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
         </div>
@@ -70,6 +73,7 @@ import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const shouldOfuscate = ref(true);
 const currentUser = inject("currentUser");
+const message = ref("");
 
 if (!localStorage.getItem("token")) {
   location.href = "/";
@@ -129,21 +133,31 @@ const fetchSession = async (id) => {
   );
 };
 
-const handleSubmit = () => {
-  const requestOptions = {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({
-      sessionDatetime: new Date(new Date(session.date + " " + session.time)),
-    }),
-  };
-  fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/session/edit/${session.id}`,
-    requestOptions
-  ).then((response) => console.log(response.json()));
+const handleSubmit = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/session/edit/${session.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          sessionDatetime: new Date(new Date(session.date + " " + session.time)),
+        }),
+      }
+    );
+    if (!response.ok) {
+      const data = await response.json();
+      message.value = data.message;
+      throw new Error("Une erreur est survenue dans le formulaire.");
+    } else {
+      message.value = "La séance a bien été modifiée.";
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 

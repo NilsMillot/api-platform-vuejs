@@ -54,6 +54,10 @@ class CreateSessionController extends AbstractController
                 return $this->json(['message' => "Vous n'avez pas les droits"], 400);
             }
 
+            if ($parameters['price'] <= 0) {
+                return $this->json(['message' => "Le prix doit être supérieur à 0"], 400);
+            }
+
             $errors = $validator->validate($movieScreening);
             if (count($errors) > 0) {
                 return $this->json(['message' => "Erreur au niveau du formulaire"], 400);
