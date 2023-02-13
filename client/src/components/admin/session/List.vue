@@ -18,7 +18,7 @@
               <td>{{ session.movie_title }}</td>
               <td>{{ session.session_datetime.split("T")[0] }}</td>
               <td>
-                 <router-link to="/admin/session/new" class="btn btn-sm btn-cinemax-primary">Modifier</router-link>
+                 <router-link :to="'/admin/session/edit/'+ session.id" class="btn btn-sm btn-cinemax-primary">Modifier</router-link>
                 <button
                   class="btn btn-cinemax-primary btn-sm mx-2"
                   @click="handleDelete(session.id)"
