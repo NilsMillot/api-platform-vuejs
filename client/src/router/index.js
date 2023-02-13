@@ -19,7 +19,6 @@ import EditSessionCinema from "../views/cinema/admin/Edit.vue";
 import BookingView from "../views/cinema/BookingView.vue";
 import BookingSessionCinemaView from "../views/cinema/admin/BookingView.vue";
 
-import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
@@ -150,11 +149,6 @@ const router = createRouter({
       name: "admin-session-edit",
       query: { id: Number },
       component: EditSessionAdmin,
-    },
-    {
-      path: "/admin/cinema/confirm",
-      name: "admin-cinema-confirm",
-      component: ConfirmCinemaAdmin,
     },
 
     {
