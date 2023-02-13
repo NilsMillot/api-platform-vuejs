@@ -1,14 +1,16 @@
 <template>
   <div>
+    <HeaderBanner
+      title="Les places réservés"
+      img="../../../src/assets/cinema.jpeg"
+    />
     <div class="container mt-5">
       <div class="row">
         <div class="col-md-9">
           <div class="card card-booking d-flex justify-content-center">
-            <div>
-              <h3 class="m-3 d-flex justify-content-center">
-                Les places réservées
-              </h3>
-              <hr />
+            <div class="mt-5">
+              <h3 class="text-center">{{ session?.movie_title }}</h3>
+             <hr>
             </div>
             <div class="d-flex justify-content-center">
               <table class="m-4">
@@ -87,6 +89,7 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const $route = useRoute();
 const session = ref(null);
