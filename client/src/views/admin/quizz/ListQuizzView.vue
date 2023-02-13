@@ -45,6 +45,13 @@
             >
               Publier
             </button>
+             <button
+              v-if="value.status == 1"
+              class="btn btn-cinemax btn-sm"
+              @click="handleDispublish(value.id)"
+            >
+              Dépublier
+            </button>
           </td>
         </tr>
       </tbody>
@@ -124,6 +131,33 @@ const handlePublish = async (id) => {
     if (response.ok) {
       let found = quizz.value.findIndex((e) => e.id == id);
       quizz.value[found].status = 1;
+    } else {
+      const data = await response.json();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+const handleDispublish = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/quizz/dispublish/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          status: 0,
+        }),
+      }
+    );
+    if (response.ok) {
+      let found = quizz.value.findIndex((e) => e.id == id);
+      quizz.value[found].status = 0;
     } else {
       const data = await response.json();
     }
