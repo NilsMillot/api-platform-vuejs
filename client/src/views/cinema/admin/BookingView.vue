@@ -1,13 +1,16 @@
 <template>
-  <div v-if="!shouldOfuscate">
+  <div>
+    <HeaderBanner
+      title="Les places réservés"
+      img="../../../src/assets/cinema.jpeg"
+      v-if="!shouldOfuscate"
+    />
     <div class="container mt-5">
       <div class="row">
         <div class="col-md-9">
           <div class="card card-booking d-flex justify-content-center">
-            <div>
-              <h3 class="m-3 d-flex justify-content-center">
-                Les places réservées
-              </h3>
+            <div class="mt-5">
+              <h3 class="text-center">{{ session?.movie_title }}</h3>
               <hr />
             </div>
             <div class="d-flex justify-content-center">
@@ -87,6 +90,7 @@
 <script setup>
 import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const shouldOfuscate = ref(true);
 const currentUser = inject("currentUser");

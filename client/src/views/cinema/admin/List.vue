@@ -1,48 +1,52 @@
 <template>
-  <div class="container m-5" v-if="!shouldOfuscate">
-    <table class="table p-5 tab">
-      <thead>
-        <tr>
-          <th scope="col">SEANCE</th>
-          <th scope="col">DATE</th>
-          <th scope="col">ACTIONS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(session, index) in sessions.value" :key="index">
-          <td>{{ session.movie_title }}</td>
-          <td>{{ session.session_datetime.split("T")[0] }}</td>
-          <td>
-            <button
-              class="btn btn-cinemax-primary btn-sm"
-              @click="
-                () =>
-                  this.$router.push({
-                    path: '/cinema/session/edit/' + session.id,
-                  })
-              "
-            >
-              Modifier
-            </button>
-            <button
-              class="btn btn-cinemax-primary btn-sm mx-2"
-              @click="handleDelete(session.id)"
-            >
-              Supprimer
-            </button>
-            <router-link
-              :to="`/cinema/session/booking/` + session.id"
-              class="btn btn-cinemax-primary btn-sm"
-              >Voir</router-link
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="!shouldOfuscate">
+    <HeaderBanner title="Mes séances" img="../../../src/assets/cinema.jpeg" />
+    <div class="container m-5">
+      <table class="table p-5 tab">
+        <thead>
+          <tr>
+            <th scope="col">SEANCE</th>
+            <th scope="col">DATE</th>
+            <th scope="col">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(session, index) in sessions.value" :key="index">
+            <td>{{ session.movie_title }}</td>
+            <td>{{ session.session_datetime.split("T")[0] }}</td>
+            <td>
+              <button
+                class="btn btn-cinemax-primary btn-sm"
+                @click="
+                  () =>
+                    this.$router.push({
+                      path: '/cinema/session/edit/' + session.id,
+                    })
+                "
+              >
+                Modifier
+              </button>
+              <button
+                class="btn btn-cinemax-primary btn-sm mx-2"
+                @click="handleDelete(session.id)"
+              >
+                Supprimer
+              </button>
+              <router-link
+                :to="`/cinema/session/booking/` + session.id"
+                class="btn btn-cinemax-primary btn-sm"
+                >Voir</router-link
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script setup>
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 
 const shouldOfuscate = ref(true);

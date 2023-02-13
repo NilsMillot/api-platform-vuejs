@@ -4,16 +4,12 @@
     <button
       class="navbar-toggler"
       type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
+      @click="showMenu"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div v-show="showMenu" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <router-link class="nav-link" to="/">Découvrir</router-link>
@@ -59,7 +55,7 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, ref } from "vue";
 
 const currentUser = inject("currentUser");
 
@@ -68,6 +64,12 @@ const handleDisconnect = () => {
   currentUser.roles = null;
   location.href = "/login";
 };
+
+const showMenu = () => {
+  const menu = document.getElementById("navbarSupportedContent");
+  menu.classList.toggle("show");
+};
+
 </script>
 
 <style scoped>

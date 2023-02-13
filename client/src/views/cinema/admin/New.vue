@@ -1,85 +1,91 @@
 <template>
-  <div class="container" v-if="shouldOfuscate">
-    <div class="row">
-      <div class="d-flex justify-content-end p-5">
-        <button class="btn btn-cinemax-dark">Mes séances</button>
-      </div>
+  <div v-if="shouldOfuscate">
+    <HeaderBanner
+      title="Nouvelle séance"
+      img="../../../src/assets/cinema.jpeg"
+    />
+    <div class="container">
+      <div class="row">
+        <div class="d-flex justify-content-end p-5">
+          <button class="btn btn-cinemax-dark">Mes séances</button>
+        </div>
 
-      <div class="col-md-6">
-        <div class="card card-session shadow-sm">
-          <div>
-            <h3 class="pt-3">Séance</h3>
-            <hr />
-          </div>
-          <div class="card-body">
-            <div class="form-group mt-3">
-              <input
-                type="text"
-                class="form-control"
-                :value="resultSearch.title"
-                required
-                autofocus
-                disabled
-              />
+        <div class="col-md-6">
+          <div class="card card-session shadow-sm">
+            <div>
+              <h3 class="pt-3">Séance</h3>
+              <hr />
             </div>
-            <div class="form-group mt-3">
-              <input
-                type="date"
-                class="form-control"
-                v-model="date"
-                required
-                autofocus
-              />
-            </div>
-            <div class="form-group mt-3">
-              <input
-                type="time"
-                class="form-control"
-                v-model="time"
-                required
-                autofocus
-              />
-            </div>
-            <div class="form-group mt-3">
-              <input
-                type="number"
-                placeholder="12,30 €"
-                v-model="price"
-                class="form-control"
-                required
-                autofocus
-              />
-            </div>
+            <div class="card-body">
+              <div class="form-group mt-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="resultSearch.title"
+                  required
+                  autofocus
+                  disabled
+                />
+              </div>
+              <div class="form-group mt-3">
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="date"
+                  required
+                  autofocus
+                />
+              </div>
+              <div class="form-group mt-3">
+                <input
+                  type="time"
+                  class="form-control"
+                  v-model="time"
+                  required
+                  autofocus
+                />
+              </div>
+              <div class="form-group mt-3">
+                <input
+                  type="number"
+                  placeholder="12,30 €"
+                  v-model="price"
+                  class="form-control"
+                  required
+                  autofocus
+                />
+              </div>
 
-            <div class="d-flex justify-content-center">
-              <button
-                class="btn btn-danger mt-4"
-                type="submit"
-                @click.prevent="handleSubmit"
-              >
-                <span>Enregistrer</span>
-              </button>
+              <div class="d-flex justify-content-center">
+                <button
+                  class="btn btn-danger mt-4"
+                  type="submit"
+                  @click.prevent="handleSubmit"
+                >
+                  <span>Enregistrer</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <SearchBar
-          @customEvent="updateSearch"
-          placeholder="Choisissez un film..."
-        />
+        <div class="col-md-6">
+          <SearchBar
+            @customEvent="updateSearch"
+            placeholder="Choisissez un film..."
+          />
 
-        <div>
-          <div class="row mt-5">
-            <div class="list">
-              <div v-for="(item, index) in result.value" :key="index">
-                <div @click="handleChange(item)" class="block">
-                  <img
-                    class="listElements"
-                    :src="`${getImageFromSrc(
-                      item.backdrop_path || item.poster_path
-                    )}`"
-                  />
+          <div>
+            <div class="row mt-5">
+              <div class="list">
+                <div v-for="(item, index) in result.value" :key="index">
+                  <div @click="handleChange(item)" class="block">
+                    <img
+                      class="listElements"
+                      :src="`${getImageFromSrc(
+                        item.backdrop_path || item.poster_path
+                      )}`"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,6 +101,7 @@ import { inject, watchEffect, watch, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getImageFromSrc } from "../../../utils/tmdbCalls";
 import SearchBar from "../../../components/SearchBar.vue";
+import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const shouldOfuscate = ref(true);
 const currentUser = inject("currentUser");
