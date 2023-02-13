@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\EnableAccountController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ResetPasswordRequestController;
+use App\Controller\UpdateUserController;
 use App\Dto\EnableAccountDto;
 use App\Dto\ResetPasswordDto;
 use App\Dto\ResetPasswordRequestDto;
@@ -23,11 +24,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Patch;
 use App\Controller\SignupController;
 use App\Controller\SignupAdminController;
 use App\Controller\DeleteUserController;
-use App\Controller\UpdateUserController;
 use App\Controller\CurrentUserController;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -48,15 +47,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
     ),
-
-
     new GetCollection(
         uriTemplate: '/getUsers',
         security: 'is_granted("ROLE_USER")',
         normalizationContext: ['groups' => ['getCollection:read']]
     ),
-
-
     new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,
@@ -84,11 +79,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: DeleteUserController::class,
         openapiContext: ['description' => 'Delete an account'],
     ),
-    // Everyone can call this route but only admins can update roles and totalCredits for another user
     new Put(
         uriTemplate: '/users/{id}',
+        security: 'is_granted("ROLE_ADMIN")',
+        openapiContext: ['description' => 'Update an account when you are an admin'],
+    ),
+    new Put(
+        uriTemplate: '/me',
         controller: UpdateUserController::class,
-        openapiContext: ['description' => 'Update an account'],
+        openapiContext: ['description' => 'Update current user'],
         input: UpdateUserDto::class
     ),
     // Call this route when you want to get the current user
