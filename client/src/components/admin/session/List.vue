@@ -52,15 +52,27 @@ onMounted(async () => {
 });
 
 const fetchSessions = async () => {
-  return fetch(`${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`)
-    .then((response) => response.json())
-    .then(
-      (data) =>
-        (sessions.value = data["hydra:member"].filter(
-          (x) => new Date(x.session_datetime) > new Date() && 
-                x.status != -1
-        ))
-    );
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  await fetch(
+    `${import.meta.env.VITE_API_SERVER_URL}/movie_screenings`,
+    requestOptions
+  ).then((response) =>
+    response
+      .json()
+      .then(
+        (data) =>
+          (sessions.value = data["hydra:member"].filter(
+            (x) =>
+              new Date(x.session_datetime) > new Date() &&
+              x.status == 1
+          ))
+      )
+  );
 };
 
 

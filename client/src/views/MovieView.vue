@@ -167,7 +167,14 @@ watch(itemCount, () => {
         <p v-if="price.value !== null" class="movie-view__price">
           Prix : {{ price.value }} €
         </p>
-        <div class="bg-dark p-4" v-if="isCurrentUserAdmin">
+        <div
+          v-if="isCurrentUserUser && stock === 0"
+          class="alert movie-view__alert-danger-dark"
+          role="alert"
+        >
+          <span class="text-center">Le film n'est pas en stock</span>
+        </div>
+        <div class="bg-dark p-4 rounded" v-if="isCurrentUserAdmin">
           <h3>Gestion du Stock</h3>
           <p>Quantité en stock : {{ stock }}</p>
           <form
@@ -200,9 +207,6 @@ watch(itemCount, () => {
               value="Valider"
             />
           </form>
-        </div>
-
-        <div class="bg-dark mt-4 p-4" v-if="isCurrentUserUser && stock > 0">
           <div
             v-for="msg in successMsg"
             :key="msg"
@@ -220,6 +224,12 @@ watch(itemCount, () => {
               {{ violation.propertyPath }} : {{ violation.message }}
             </li>
           </ul>
+        </div>
+
+        <div
+          class="bg-dark mt-4 p-4 rounded"
+          v-if="isCurrentUserUser && stock > 0"
+        >
           <div class="container" v-if="isCurrentUserUser && stock > 0">
             <h3 class="text-center">Acheter</h3>
             <div class="form-group">
@@ -248,13 +258,6 @@ watch(itemCount, () => {
               :price="price"
               url="/movie_instances/buy"
             />
-          </div>
-          <div
-            v-if="isCurrentUserUser && stock === 0"
-            class="alert movie-view__alert-danger-dark"
-            role="alert"
-          >
-            <span class="text-center">Rupture de stock</span>
           </div>
         </div>
       </div>

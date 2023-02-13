@@ -31,7 +31,7 @@
         </li>
 
         <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_CINEMA')">
-          <router-link class="nav-link" to="#">Mes projections</router-link>
+          <router-link class="nav-link" to="/cinema/session/list">Mes projections</router-link>
         </li>
       </ul>
 
