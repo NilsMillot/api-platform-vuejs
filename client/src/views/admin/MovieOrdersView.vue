@@ -20,7 +20,7 @@
             <td>{{ movieOrder.buyer.email }}</td>
             <td>{{ movieOrder.movieName }}</td>
             <td>{{ movieOrder.quantity }}</td>
-            <td>{{ movieOrder.price }}</td>
+            <td>{{ movieOrder.price }} €</td>
           </tr>
           </tbody>
         </table>
