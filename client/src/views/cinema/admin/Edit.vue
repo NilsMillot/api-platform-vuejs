@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!shouldOfuscate">
     <HeaderBanner
       title="Modifier une séance"
       img="../../../src/assets/cinema.jpeg"
@@ -61,9 +61,31 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "@vue/runtime-core";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import HeaderBanner from "../../../components/HeaderBanner.vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const session = reactive({
   id: "",
