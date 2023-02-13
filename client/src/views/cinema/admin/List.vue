@@ -14,7 +14,7 @@
           <td>{{ session.session_datetime.split("T")[0] }}</td>
           <td>
             <button
-              class="btn btn-danger btn-sm"
+              class="btn btn-cinemax-primary btn-sm"
               @click="
                 () =>
                   this.$router.push({
@@ -25,11 +25,12 @@
               Modifier
             </button>
             <button
-              class="btn btn-danger btn-sm mx-2"
+              class="btn btn-cinemax-primary btn-sm mx-2"
               @click="handleDelete(session.id)"
             >
               Supprimer
             </button>
+             <router-link :to="`/cinema/session/booking/` + session.id" class="btn btn-cinemax-primary btn-sm">Voir</router-link>
           </td>
         </tr>
       </tbody>
