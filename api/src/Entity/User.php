@@ -50,7 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(
         uriTemplate: '/getUsers',
         security: 'is_granted("ROLE_USER")',
-        normalizationContext: ['groups' => ['getCollection:read']]
+        normalizationContext: ['groups' => ['getCollectionForAllUsers:read']]
     ),
     new Put(
         uriTemplate: '/enable_account/{id}',
@@ -114,15 +114,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['session:read', 'getCollection:read', 'user:read'])]
+    #[Groups(['session:read', 'getCollection:read', 'user:read', 'getCollectionForAllUsers:read'])]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'getCollection:read', 'session:read','quizz-result:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'session:read','quizz-result:read', 'getCollectionForAllUsers:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
 
-    #[Groups(['user:read', 'getCollection:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     #[ORM\Column]
     private array $roles = ['ROLE_USER'];
 
@@ -149,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $movieInstances;
 
     #[ORM\Column]
-    #[Groups(['user:read', 'getCollection:read'])]
+    #[Groups(['user:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     private ?bool $enabled = false;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -160,7 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read','session:read', 'getCollection:read'])]
+    #[Groups(['user:read','session:read', 'getCollection:read', 'getCollectionForAllUsers:read'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'buyer_id', targetEntity: Booking::class)]
