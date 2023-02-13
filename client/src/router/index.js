@@ -200,6 +200,7 @@ const router = createRouter({
       path: "/quizz/:id",
       name: "quizz",
       component: QuizzView,
+      query: { id: Number }
     },
     {
       path: "/:catchAll(.*)",

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref, inject, watch } from "vue";
+import CardPayment from "@/components/CardPayment.vue";
 import CardPaymentMovie from "@/components/CardPaymentMovie.vue";
 
 const movie = reactive({ value: {} });
@@ -15,11 +16,23 @@ const items = reactive({ value: [] });
 const price = reactive({ price: null, value: null });
 const currentUser = inject("currentUser");
 const orderPrice = ref(null);
+const orderPriceFinal = ref(null);
+const reduction = ref(0);
 
 // TODO: Michael you can get totalCredits like this and display the reduction with it in the template (security is in back as you did ;))
 watch(currentUser, () => {
   console.log(currentUser?.totalCredits);
 });
+
+const updateOrderPrice = () => {
+  if (currentUser.totalCredits >= orderPrice.value - 1) {
+    reduction.value = orderPrice.value - 1;
+    orderPriceFinal.value = 1;
+  } else {
+    reduction.value = currentUser.totalCredits;
+    orderPriceFinal.value = orderPrice.value - currentUser.totalCredits;
+  }
+}
 
 const getPrice = async () => {
   const id = new URLSearchParams(location.search).get("id");
@@ -83,6 +96,11 @@ onMounted(async () => {
   }
 });
 
+// TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
+const handleBuyMovie = () => {
+  console.log("buy movie with this id", movie.value.id);
+};
+
 const handleSubmitChangeStock = async () => {
   const response = await fetch(
     `${import.meta.env.VITE_API_SERVER_URL}/movie_instances`,
@@ -133,6 +151,11 @@ watch(itemCount, () => {
     orderPrice.value = price.value * itemCount.value;
   }
 });
+
+const onOrderQuantityChange = () => {
+  setItems();
+  updateOrderPrice();
+};
 </script>
 
 <template>
@@ -227,16 +250,16 @@ watch(itemCount, () => {
 
         <div
           class="bg-dark mt-4 p-4 rounded"
-          v-if="isCurrentUserUser && stock > 0"
+          v-if="isCurrentUserUser && !isCurrentUserAdmin && stock > 0"
         >
-          <div class="container" v-if="isCurrentUserUser && stock > 0">
+          <div class="container">
             <h3 class="text-center">Acheter</h3>
             <div class="form-group">
               <span>En stock : {{ stock }}</span
               ><br />
               <label for="item-count">Quantité à acheter</label>
               <input
-                @input="setItems"
+                @input="onOrderQuantityChange"
                 type="number"
                 class="item-count ml-2"
                 min="1"
@@ -245,12 +268,16 @@ watch(itemCount, () => {
                 v-model="itemCount"
               />
             </div>
+            <span v-if="orderPrice !== null" class="mb-5"
+            >Vos crédits : {{ currentUser.totalCredits }}<br></span>
+            <span v-if="orderPrice !== null"
+              >Prix Total : {{ orderPrice }} €<br></span
+            >
             <span v-if="orderPrice !== null" class="font-weight-bold"
-              >Prix de la commande : {{ orderPrice }} €</span
-            ><br />
-            <p v-if="orderPrice !== null" class="mb-4">
-              Une réduction sera automatiquement ajouté si vous avez gagnés des
-              crédits sur votre compte
+            >Prix Final : {{ orderPriceFinal }} €<br></span
+            >
+            <p v-if="orderPrice !== null" class="mb-4 mt-4">
+              1 crédit = 1 € de réduction.<br>Vous économisez {{ reduction }} € sur votre commande grâce à vos crédits.
             </p>
             <CardPaymentMovie
               :items="items.value"
