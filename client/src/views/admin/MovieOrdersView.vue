@@ -74,46 +74,8 @@ onMounted(async () => {
 
   const movieOrdersFetched = await response.json();
   movieOrders.value = movieOrdersFetched["hydra:member"];
-  console.log(movieOrders.value);
 });
 
-const addUser = async () => {
-  const response = await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/signupadmin`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(newUser),
-      }
-  );
-  const user = await response.json();
-
-  if (user["hydra:description"]) {
-    alert(user["hydra:description"]);
-  }
-  if (response.status === 201) {
-    alert("User created");
-    const higherId = users.reduce((prev, current) =>
-        prev.id > current.id ? prev : current
-    );
-    newUser.id = higherId?.id + 1;
-
-    if (user?.id) {
-      newUser.id = higherId?.id + 1;
-    }
-    if (newUser.isCinema) {
-      newUser.roles = ["ROLE_CINEMA", "ROLE_USER"];
-    } else if (newUser.isAdmin) {
-      newUser.roles = ["ROLE_ADMIN", "ROLE_USER"];
-    } else {
-      newUser.roles = ["ROLE_USER"];
-    }
-    users.push(newUser);
-  }
-};
 </script>
 
 <style scoped>
