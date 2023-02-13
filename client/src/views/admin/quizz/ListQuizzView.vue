@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-5" v-if="!shouldOfuscate">
     <table class="table table-dark table-striped">
       <thead>
         <tr>
@@ -24,17 +24,18 @@
               >Question</router-link
             >
 
-             <router-link
+            <router-link
               :to="{ path: '/admin/quizz/' + value.id + '/visualisation' }"
               class="btn btn-cinemax btn-sm me-2"
               >Voir</router-link
             >
-             <router-link
+            <router-link
               :to="{ path: '/admin/quizz/' + value.id + '/results' }"
               class="btn btn-cinemax btn-sm me-2"
               >Résultats</router-link
             >
-            <button v-if="value.status == 0"
+            <button
+              v-if="value.status == 0"
               class="btn btn-cinemax btn-sm"
               @click="handlePublish(value.id)"
             >
@@ -48,11 +49,31 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
-import HeaderBanner from "../../../components/HeaderBanner.vue";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const quizz = reactive({ value: [] });
-
 
 onMounted(async () => {
   await fetchQuizz();
@@ -97,7 +118,7 @@ const handlePublish = async (id) => {
       }
     );
     if (response.ok) {
-      let found = quizz.value.findIndex( (e) => e.id == id );
+      let found = quizz.value.findIndex((e) => e.id == id);
       quizz.value[found].status = 1;
     } else {
       const data = await response.json();

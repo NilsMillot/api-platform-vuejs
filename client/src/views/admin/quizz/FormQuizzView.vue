@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="!shouldOfuscate">
     <div class="row">
       <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
         {{ message }}
@@ -65,9 +65,31 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject, watchEffect } from "vue";
 import ListQuestion from "../../../components/admin/quizz/ListQuestionForm.vue";
 import { useRoute, useRouter } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const question = reactive({
   name: "",
@@ -75,7 +97,6 @@ const question = reactive({
   secondAnswer: "",
   correctAnswer: 1,
 });
-
 
 const $route = useRoute();
 const router = useRouter();
@@ -100,7 +121,9 @@ const fetchQuestions = async () => {
     );
     if (response.ok) {
       const data = await response.json();
-      questions.value = data["hydra:member"].filter( (x) => x.quizz.id == $route.params.id);
+      questions.value = data["hydra:member"].filter(
+        (x) => x.quizz.id == $route.params.id
+      );
     } else {
       const data = await response.json();
       console.log(data);
@@ -124,8 +147,8 @@ const deleteQuestion = async (id) => {
     );
     if (response.ok) {
       message.value = "La question a bien été supprimée.";
-      let found = questions.value.findIndex( (e) => e.id == id )
-      questions.value.splice(found,1);
+      let found = questions.value.findIndex((e) => e.id == id);
+      questions.value.splice(found, 1);
     } else {
       const data = await response.json();
       message.value = data["hydra:description"];

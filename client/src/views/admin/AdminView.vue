@@ -31,8 +31,17 @@ if (!localStorage.getItem("token")) {
 }
 
 watchEffect(() => {
-  if (currentUser?.roles?.includes("ROLE_ADMIN")) {
-    shouldOfuscate.value = false;
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
   }
 });
 </script>
