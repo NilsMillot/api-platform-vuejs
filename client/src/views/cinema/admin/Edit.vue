@@ -5,6 +5,9 @@
       img="../../../src/assets/cinema.jpeg"
     />
     <div class="container mt-5">
+        <div class="d-flex justify-content-end p-5">
+          <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
+        </div>
       <div class="card card-session shadow-sm">
         <div>
           <h3 class="pt-3">Modifier une séance</h3>
@@ -47,7 +50,7 @@
           </div>
           <div class="d-flex justify-content-center">
             <button
-              class="btn btn-danger mt-4"
+              class="btn btn-sm btn-cinemax-primary mt-4"
               type="submit"
               @click.prevent="handleSubmit"
             >

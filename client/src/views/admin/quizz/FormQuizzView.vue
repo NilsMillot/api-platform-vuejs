@@ -4,6 +4,15 @@
       <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
         {{ message }}
       </div>
+
+      <div class="d-flex justify-content-end p-3">
+      <router-link
+        to="/admin/quizz/list"
+        class="btn btn-sm btn-cinemax-primary"
+      >
+        Mes quiz
+      </router-link>
+      </div>
       <div class="col-md-6">
         <div class="card card-form shadow-sm">
           <form @submit.prevent="handleSubmit">
