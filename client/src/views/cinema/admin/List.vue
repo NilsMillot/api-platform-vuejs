@@ -2,6 +2,10 @@
   <div v-if="!shouldOfuscate">
     <HeaderBanner title="Mes séances" img="../../../src/assets/cinema.jpeg" />
     <div class="container m-5">
+
+      <div class="d-flex justify-content-end mb-5">
+        <router-link to="/cinema/session/new" class="btn btn-sm btn-cinemax-primary">Ajouter une séance</router-link>
+      </div>
       <table class="table p-5 tab">
         <thead>
           <tr>

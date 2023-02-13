@@ -1,6 +1,9 @@
 <template>
   <div class="container mt-5" v-if="!shouldOfuscate">
     <h1>Résultats pour le quizz</h1>
+      <div class="d-flex justify-content-end p-5">
+      <router-link to="/admin/quizz/list" class="btn btn-sm btn-cinemax-primary">Mes quiz</router-link>
+      </div>
     <table class="table table-dark table-striped">
       <thead>
         <tr>
