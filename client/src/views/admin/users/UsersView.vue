@@ -93,7 +93,8 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, inject, reactive, ref, watchEffect } from "vue";
+const currentUser = inject("currentUser");
 const shouldOfuscate = ref(true);
 const users = reactive([]);
 const newUser = reactive({
@@ -102,6 +103,25 @@ const newUser = reactive({
   adress: "",
   isCinema: false,
   isAdmin: false,
+});
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
 });
 
 onMounted(async () => {

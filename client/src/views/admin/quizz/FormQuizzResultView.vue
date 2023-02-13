@@ -1,6 +1,5 @@
 <template>
-  <div class="container mt-5">
-
+  <div class="container mt-5" v-if="!shouldOfuscate">
     <h1>Résultats pour le quizz</h1>
     <table class="table table-dark table-striped">
       <thead>
@@ -12,7 +11,7 @@
       <tbody>
         <tr v-for="(value, index) in results.value" :key="index">
           <td>{{ value.participant.email }}</td>
-          <td>{{ value.score }} / {{ questions.value.length}}</td>
+          <td>{{ value.score }} / {{ questions.value.length }}</td>
         </tr>
       </tbody>
     </table>
@@ -20,8 +19,30 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref, onMounted } from "vue";
+import { inject, watchEffect, ref, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const $route = useRoute();
 const router = useRouter();
@@ -73,7 +94,9 @@ const fetchResults = async () => {
     );
     if (response.ok) {
       const data = await response.json();
-      results.value = data["hydra:member"].filter((x) => x.quizz.id == $route.params.id);
+      results.value = data["hydra:member"].filter(
+        (x) => x.quizz.id == $route.params.id
+      );
     } else {
       const data = await response.json();
       throw new Error("Erreur");
@@ -84,9 +107,8 @@ const fetchResults = async () => {
 };
 </script>
 
-
 <style scoped>
-h1{
-    color: white;
+h1 {
+  color: white;
 }
 </style>

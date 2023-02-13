@@ -25,9 +25,7 @@ import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
 
-
-
-import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue"
+import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue";
 import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
 import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
 import AdminFormQuizzView from "../views/admin/quizz/FormQuizzView.vue";
@@ -127,7 +125,6 @@ const router = createRouter({
       component: AdminUsersView,
     },
 
-    // admin users with id
     {
       path: "/admin/users/:id",
       name: "admin-users-id",

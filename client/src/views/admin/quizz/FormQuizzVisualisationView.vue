@@ -1,6 +1,8 @@
 <template>
-  <div class="container mt-5">
-    <h1 class="text-center text-white mb-5">Votre Quiz : {{ quizz.value.name }}</h1>
+  <div class="container mt-5" v-if="!shouldOfuscate">
+    <h1 class="text-center text-white mb-5">
+      Votre Quiz : {{ quizz.value.name }}
+    </h1>
     <div
       v-for="question in questions.value"
       :key="question.id"
@@ -45,8 +47,30 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref, onMounted } from "vue";
+import { inject, watchEffect, ref, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_ADMIN")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_CINEMA")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const $route = useRoute();
 const router = useRouter();
@@ -56,20 +80,17 @@ const quizz = reactive({ value: [] });
 onMounted(async () => {
   await fetchQuestions();
   await getQuizz();
- 
 });
-
-
 
 const getQuizz = async () => {
   const response = await fetch(
-      `${import.meta.env.VITE_API_SERVER_URL}/quizzs/${$route.params.id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+    `${import.meta.env.VITE_API_SERVER_URL}/quizzs/${$route.params.id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
   );
   const data = await response.json();
   quizz.value = data;
