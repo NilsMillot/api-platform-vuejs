@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Dto\UpdateUserDto;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,17 +12,12 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 class UpdateUserController extends AbstractController
 {
-  public function __invoke(UpdateUserDto $updateUserDto, User $user, EntityManagerInterface $em): JsonResponse
+  public function __invoke(UpdateUserDto $updateUserDto, EntityManagerInterface $em): JsonResponse
   {
-    if($user && $this->getUser() && ($this->getUser()->getRoles() === ['ROLE_ADMIN'] || $this->getUser()->getId() === $user->getId())) {
-      if ($updateUserDto->getName()) $user->setName($updateUserDto->getName());
-      if ($updateUserDto->getAdress()) $user->setAdress($updateUserDto->getAdress());
-      if ($updateUserDto->getStatus()) $user->setStatus($updateUserDto->getStatus());
-      
-      if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-        if ($updateUserDto->getRoles()) $user->setRoles($updateUserDto->getRoles());
-        if ($updateUserDto->getTotalCredits()) $user->setTotalCredits($updateUserDto->getTotalCredits());
-      }
+    if($this->getUser()) {
+      if ($updateUserDto->getName()) $this->getUser()->setName($updateUserDto->getName());
+      if ($updateUserDto->getAdress()) $this->getUser()->setAdress($updateUserDto->getAdress());
+      if ($updateUserDto->getStatus()) $this->getUser()->setStatus($updateUserDto->getStatus());
 
       $em->flush();
 

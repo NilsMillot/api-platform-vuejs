@@ -2,7 +2,11 @@
   <div>
     <div class="card card-account shadow-sm">
       <div>
-        <h3 class="pt-3">Mon compte</h3>
+        <h3 class="pt-3">
+          Mon compte ({{
+            user?.roles?.includes("ROLE_CINEMA") ? "cinéma" : "client"
+          }})
+        </h3>
         <hr />
       </div>
       <div class="d-flex">
@@ -69,6 +73,7 @@ onMounted(async () => {
     user.id = currentUser.id;
     user.name = currentUser.name;
     user.adress = currentUser.adress;
+    user.roles = currentUser.roles;
     user.isCinema = currentUser.status === "cinemaRoleRequested" ? true : false;
   }
 });
@@ -86,11 +91,15 @@ const handleSubmitForm = () => {
       status: user?.isCinema ? "cinemaRoleRequested" : "",
     }),
   };
-  fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/users/${user.id}`,
-    requestOptions
-  ).then((response) => console.log(response.json()));
-  console.log("%cUserAccount.vue line:89 user", "color: #007acc;", user);
+  fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, requestOptions).then(
+    (response) => {
+      if (response.status === 200) {
+        alert("Account updated");
+      } else {
+        alert("An error occured");
+      }
+    }
+  );
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="container m-5">
+  <div class="container">
     <div>
       <h2 class="pt-2">Utilisateurs</h2>
       <hr class="pb-5" />
@@ -13,8 +13,8 @@
               <th scope="col">NOM</th>
               <th scope="col">EMAIL</th>
               <th scope="col">ROLE</th>
+              <th scope="col">DEMANDES</th>
               <th scope="col">ACTIONS</th>
-              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -22,7 +22,8 @@
               <td>{{ user.id }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
-              <td>{{ user.roles }}</td>
+              <td>{{ user.roles.join(", ") }}</td>
+              <td>{{ user.status }}</td>
               <td>
                 <div class="actionsButtons">
                   <router-link
@@ -30,13 +31,6 @@
                     class="btn btn-sm me-2 btn-cinemax"
                     >Modifier</router-link
                   >
-                  <button
-                    v-if="user.enabled"
-                    class="btn btn-sm btn-cinemax"
-                    @click="deleteUser(user.id)"
-                  >
-                    Supprimer
-                  </button>
                 </div>
               </td>
               <td></td>
@@ -184,24 +178,6 @@ const addUser = async () => {
       newUser.roles = ["ROLE_USER"];
     }
     users.push(newUser);
-  }
-};
-
-const deleteUser = async (userId) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/users/${userId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
-  if (response.status === 204) {
-    alert("User deleted");
-    const index = users.findIndex((user) => user.id === userId);
-    users.splice(index, 1);
   }
 };
 </script>
