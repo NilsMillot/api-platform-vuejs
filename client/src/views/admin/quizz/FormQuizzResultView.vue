@@ -76,7 +76,6 @@ const fetchQuestions = async () => {
       );
     } else {
       const data = await response.json();
-      console.log(data);
       throw new Error("Erreur");
     }
   } catch (error) {

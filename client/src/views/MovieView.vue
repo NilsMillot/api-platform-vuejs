@@ -19,11 +19,6 @@ const orderPrice = ref(null);
 const orderPriceFinal = ref(null);
 const reduction = ref(0);
 
-// TODO: Michael you can get totalCredits like this and display the reduction with it in the template (security is in back as you did ;))
-watch(currentUser, () => {
-  console.log(currentUser?.totalCredits);
-});
-
 const updateOrderPrice = () => {
   if (currentUser.totalCredits >= orderPrice.value - 1) {
     reduction.value = orderPrice.value - 1;
@@ -95,11 +90,6 @@ onMounted(async () => {
     isCurrentUserUser.value = true;
   }
 });
-
-// TODO: Buy movie (move_instances table in database with buyer_id) (but before pay with stripe)
-const handleBuyMovie = () => {
-  console.log("buy movie with this id", movie.value.id);
-};
 
 const handleSubmitChangeStock = async () => {
   const response = await fetch(

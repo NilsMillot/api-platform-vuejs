@@ -6,6 +6,9 @@
     />
     <div class="container">
       <div class="row">
+         <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+        {{ message }}
+      </div>
         <div class="d-flex justify-content-end p-5">
           <router-link
             to="/cinema/session/list"
@@ -109,6 +112,7 @@ import HeaderBanner from "../../../components/HeaderBanner.vue";
 
 const shouldOfuscate = ref(true);
 const currentUser = inject("currentUser");
+const message = ref("");
 
 if (!localStorage.getItem("token")) {
   location.href = "/";
@@ -131,37 +135,53 @@ watchEffect(() => {
 
 const router = useRouter();
 const search = ref("");
-const date = ref();
-const time = ref();
-const price = ref();
+let date = ref();
+let time = ref();
+let price = ref();
 const result = reactive({ value: [] });
-const resultSearch = reactive({ id: "", title: "" });
+let resultSearch = reactive({ id: "", title: "" });
 const session = ref(null);
 const updateSearch = (e) => {
   search.value = e.target.value;
 };
 
 const handleSubmit = async () => {
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({
-      sessionDatetime: new Date(
-        new Date(date.value.toString() + " " + time.value)
-      ),
-      price: price.value,
-      room: 1,
-      movieId: resultSearch.id,
-      movieTitle: resultSearch.title,
-    }),
-  };
-  await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
-    requestOptions
-  ).then((response) => response.json().then((data) => console.log(data)));
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          sessionDatetime: new Date(
+            new Date(date.value.toString() + " " + time.value)
+          ),
+          price: price.value,
+          room: 1,
+          movieId: resultSearch.id,
+          movieTitle: resultSearch.title,
+        }),
+      }
+    );
+    if (!response.ok) {
+      const data = await response.json();
+     
+      message.value = data.message;
+      throw new Error("Une erreur est survenue dans le formulaire.");
+    } else {
+      message.value = "La séance a bien été créée.";
+      price.value = "";
+      date.value = "";
+      time.value = "";
+      resultSearch.id = "";
+      resultSearch.title = "";
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const handleChange = (item) => {
