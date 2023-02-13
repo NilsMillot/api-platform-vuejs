@@ -3,6 +3,7 @@
     <HeaderBanner
       title="Les places réservés"
       img="../../../src/assets/cinema.jpeg"
+      v-if="!shouldOfuscate"
     />
     <div class="container mt-5">
         <div class="d-flex justify-content-end p-5">
@@ -13,7 +14,7 @@
           <div class="card card-booking d-flex justify-content-center">
             <div class="mt-5">
               <h3 class="text-center">{{ session?.movie_title }}</h3>
-             <hr>
+              <hr />
             </div>
             <div class="d-flex justify-content-center">
               <table class="m-4">
@@ -90,9 +91,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import HeaderBanner from "../../../components/HeaderBanner.vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const $route = useRoute();
 const session = ref(null);

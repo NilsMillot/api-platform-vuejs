@@ -7,24 +7,25 @@ import NewPasswordView from "../views/auth/NewPassword.vue";
 import UserAccountView from "../views/auth/UserAccount.vue";
 import EnableAccountView from "../views/auth/EnableAccount.vue";
 import MovieView from "../views/MovieView.vue";
+import SuccessView from "../views/payment/Success.vue";
+import NotFoundView from "../views/NotFoundView.vue";
+import QuizzListView from "../views/quizz/QuizzList.vue";
+import QuizzView from "../views/quizz/Quizz.vue";
+
 import SessionView from "../views/cinema/SessionView.vue";
 import New from "../views/cinema/admin/New.vue";
 import List from "../views/cinema/admin/List.vue";
 import EditSessionCinema from "../views/cinema/admin/Edit.vue";
 import BookingView from "../views/cinema/BookingView.vue";
-import SuccessView from "../views/payment/Success.vue";
-import NotFoundView from "../views/NotFoundView.vue";
+import BookingSessionCinemaView from "../views/cinema/admin/BookingView.vue";
+
 import ConfirmCinemaAdmin from "../views/cinema/admin/ConfirmCinema.vue";
-import QuizzListView from "../views/quizz/QuizzList.vue";
-import QuizzView from "../views/quizz/Quizz.vue";
 import NewSessionAdmin from "../views/admin/session/New.vue";
 import ListSessionAdmin from "../views/admin/session/List.vue";
 import EditSessionAdmin from "../views/admin/session/Edit.vue";
-import BookingSessionCinemaView from "../views/cinema/admin/BookingView.vue";
 import AdminView from "../views/admin/AdminView.vue";
 import AdminUsersView from "../views/admin/users/UsersView.vue";
 import AdminUserView from "../views/admin/users/UserView.vue";
-
 import AdminNewQuizzView from "../views/admin/quizz/NewQuizzView.vue";
 import AdminListQuizzView from "../views/admin/quizz/ListQuizzView.vue";
 import AdminEditQuizzView from "../views/admin/quizz/EditQuizzView.vue";
@@ -200,7 +201,7 @@ const router = createRouter({
       path: "/quizz/:id",
       name: "quizz",
       component: QuizzView,
-      query: { id: Number }
+      query: { id: Number },
     },
     {
       path: "/:catchAll(.*)",

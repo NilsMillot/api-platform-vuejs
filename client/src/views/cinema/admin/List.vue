@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <HeaderBanner
-      title="Mes séances"
-      img="../../../src/assets/cinema.jpeg"
-    />
+  <div v-if="!shouldOfuscate">
+    <HeaderBanner title="Mes séances" img="../../../src/assets/cinema.jpeg" />
     <div class="container m-5">
 
       <div class="d-flex justify-content-end mb-5">
@@ -53,8 +50,30 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
 import HeaderBanner from "../../../components/HeaderBanner.vue";
+import { inject, watchEffect, reactive, onMounted, ref } from "vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const sessions = reactive({ value: [] });
 

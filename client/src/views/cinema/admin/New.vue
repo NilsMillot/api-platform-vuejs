@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="shouldOfuscate">
     <HeaderBanner
       title="Nouvelle séance"
       img="../../../src/assets/cinema.jpeg"
@@ -97,11 +97,33 @@
 </template>
 
 <script setup>
-import { watch, reactive, ref } from "vue";
+import { inject, watchEffect, watch, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getImageFromSrc } from "../../../utils/tmdbCalls";
 import SearchBar from "../../../components/SearchBar.vue";
 import HeaderBanner from "../../../components/HeaderBanner.vue";
+
+const shouldOfuscate = ref(true);
+const currentUser = inject("currentUser");
+
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
+watchEffect(() => {
+  if (currentUser) {
+    if (currentUser.roles?.includes("ROLE_CINEMA")) {
+      shouldOfuscate.value = false;
+    } else if (
+      currentUser.roles?.includes("ROLE_USER") ||
+      currentUser.roles?.includes("ROLE_ADMIN")
+    ) {
+      location.href = "/";
+    }
+  } else {
+    location.href = "/";
+  }
+});
 
 const router = useRouter();
 const search = ref("");
