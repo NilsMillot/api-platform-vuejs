@@ -42,7 +42,7 @@
         </div>
         <div class="d-flex justify-content-center">
           <button
-            class="btn btn-danger mt-4"
+            class="btn btn-sm btn-cinemax-primary mt-4"
             type="submit"
             @click.prevent="handleSubmit"
           >

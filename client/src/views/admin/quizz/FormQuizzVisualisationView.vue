@@ -3,6 +3,14 @@
     <h1 class="text-center text-white mb-5">
       Votre Quiz : {{ quizz.value.name }}
     </h1>
+    <div class="d-flex justify-content-end p-5">
+      <router-link
+        to="/admin/quizz/list"
+        class="btn btn-sm btn-cinemax-primary"
+      >
+        Mes quiz
+      </router-link>
+      </div>
     <div
       v-for="question in questions.value"
       :key="question.id"

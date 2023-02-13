@@ -1,5 +1,8 @@
 <template>
   <div class="container m-5">
+      <div class="d-flex justify-content-end mb-5">
+        <router-link to="/admin/session/new" class="btn btn-sm btn-cinemax-primary">Ajouter une séance</router-link>
+      </div>
         <table class="table p-5 tab">
           <thead>
             <tr>
@@ -15,9 +18,9 @@
               <td>{{ session.movie_title }}</td>
               <td>{{ session.session_datetime.split("T")[0] }}</td>
               <td>
-                <button class="btn btn-danger btn-sm" @click="() => this.$router.push({path: '/admin/session/edit/' + session.id})">Modifier</button>
+                 <router-link to="/admin/session/new" class="btn btn-sm btn-cinemax-primary">Modifier</router-link>
                 <button
-                  class="btn btn-danger btn-sm mx-2"
+                  class="btn btn-cinemax-primary btn-sm mx-2"
                   @click="handleDelete(session.id)"
                 >
                   Supprimer

@@ -30,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         security: 'is_granted("ROLE_ADMIN")',
     ),
     new Post(
+        denormalizationContext: ['groups' => ['quizz:create']],
         security: 'is_granted("ROLE_ADMIN")',
     ),
     new Get(
@@ -53,19 +54,19 @@ class Quizz
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['quizz-list:read', 'quizz:read'])]
+    #[Groups(['quizz-list:read', 'quizz:read', 'quizz:create'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\GreaterThan("today", message:"La date doit être supérieure à la date d'aujourd'hui")]
-    #[Groups(['quizz-list:read'])]
+    #[Groups(['quizz-list:read', 'quizz:create'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\OneToMany(mappedBy: 'quizz', targetEntity: Question::class, orphanRemoval: true)]
     #[Groups(['quizz:read'])]
     private Collection $questions;
 
-    #[ORM\OneToMany(mappedBy: 'Quizz', targetEntity: QuizzResult::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'quizz', targetEntity: QuizzResult::class, orphanRemoval: true)]
     private Collection $quizzResults;
 
     #[ORM\Column]
