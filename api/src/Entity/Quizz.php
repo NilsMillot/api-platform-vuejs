@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new GetCollection(
         uriTemplate: '/quizzs',
+        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("CINEMA")',
         normalizationContext: ['groups' => ['quizz-list:read']]
     ),
     new Put(
