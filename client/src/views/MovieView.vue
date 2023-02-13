@@ -194,8 +194,8 @@ watch(itemCount, () => {
           </ul>
         </div>
 
-        <div class="bg-dark mt-4 p-4 rounded" v-if="isCurrentUserUser && stock > 0">
-        <div class="container" v-if="isCurrentUserUser && stock > 0">
+        <div class="bg-dark mt-4 p-4 rounded" v-if="isCurrentUserUser && !isCurrentUserAdmin && stock > 0">
+        <div class="container">
           <h3 class="text-center">Acheter</h3>
           <div class="form-group">
             <span>En stock : {{ stock }}</span><br>
