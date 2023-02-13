@@ -45,9 +45,18 @@ use Symfony\Component\Validator\Constraints as Assert;
         normalizationContext: ['groups' => ['user:read']]
     ),
     new GetCollection(
-        // security: 'is_granted("ROLE_ADMIN")',
+        security: 'is_granted("ROLE_ADMIN")',
         normalizationContext: ['groups' => ['getCollection:read']]
     ),
+
+
+    new GetCollection(
+        uriTemplate: '/getUsers',
+        security: 'is_granted("ROLE_USER")',
+        normalizationContext: ['groups' => ['getCollection:read']]
+    ),
+
+
     new Put(
         uriTemplate: '/enable_account/{id}',
         controller: EnableAccountController::class,

@@ -72,7 +72,7 @@ const fetchCinema = async () => {
     },
   };
   await fetch(
-    `${import.meta.env.VITE_API_SERVER_URL}/users`,
+    `${import.meta.env.VITE_API_SERVER_URL}/getUsers`,
     requestOptions
   ).then((response) =>
     response
@@ -90,7 +90,7 @@ watch(search, async (newSearch) => {
   await fetchSessions();
 
   result.value = result.value.filter(
-    (i) => new Date(i.session_datetime) > new Date()
+    (i) => new Date(i.session_datetime) > new Date() && i.status == 1
   );
 
   result.value = result.value.filter((i) => i.creator.id == newSearch);

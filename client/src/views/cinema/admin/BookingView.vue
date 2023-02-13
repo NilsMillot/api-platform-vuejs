@@ -103,9 +103,6 @@ onMounted(async () => {
     location.href = "/";
   }
   await fetchBookings($route.params.id);
-  bookings.value = bookings.value.filter(
-    (e, i) => e.session_id == `/movie_screenings/${id}`
-  );
 });
 
 const fetchSession = async (id) => {

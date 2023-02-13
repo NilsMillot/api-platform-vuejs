@@ -91,7 +91,7 @@ const fetchSessions = async () => {
           (sessions.value = data["hydra:member"].filter(
             (x) =>
               new Date(x.session_datetime) > new Date() &&
-              x.creator.email == email.value
+              x.creator.email == email.value && x.status == 1
           ))
       )
   );
