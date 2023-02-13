@@ -6,9 +6,9 @@
     />
     <div class="container">
       <div class="row">
-         <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
-        {{ message }}
-      </div>
+        <div v-if="message != ''" class="alert alert-dark mt-2" role="alert">
+          {{ message }}
+        </div>
         <div class="d-flex justify-content-end p-5">
           <router-link
             to="/cinema/session/list"
@@ -24,54 +24,62 @@
               <hr />
             </div>
             <div class="card-body">
-              <div class="form-group mt-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="resultSearch.title"
-                  required
-                  autofocus
-                  disabled
-                />
-              </div>
-              <div class="form-group mt-3">
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="date"
-                  required
-                  autofocus
-                />
-              </div>
-              <div class="form-group mt-3">
-                <input
-                  type="time"
-                  class="form-control"
-                  v-model="time"
-                  required
-                  autofocus
-                />
-              </div>
-              <div class="form-group mt-3">
-                <input
-                  type="number"
-                  placeholder="12,30 €"
-                  v-model="price"
-                  class="form-control"
-                  required
-                  autofocus
-                />
-              </div>
+              <form @submit.prevent="handleSubmit">
+                <div class="form-group mt-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    :value="resultSearch.title"
+                    required
+                    autofocus
+                    disabled
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="date"
+                    required
+                    autofocus
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="time"
+                    class="form-control"
+                    v-model="time"
+                    required
+                    autofocus
+                  />
+                </div>
+                <div class="form-group mt-3">
+                  <input
+                    type="number"
+                    placeholder="12,30 €"
+                    v-model="price"
+                    class="form-control"
+                    required
+                    autofocus
+                  />
+                </div>
 
-              <div class="d-flex justify-content-center">
-                <button
-                  class="btn btn-sm btn-cinemax-primary mt-4"
-                  type="submit"
-                  @click.prevent="handleSubmit"
-                >
-                  <span>Enregistrer</span>
-                </button>
-              </div>
+                <div class="d-flex justify-content-center">
+                  <button
+                    class="btn btn-sm btn-cinemax-primary mt-4"
+                    type="submit"
+                    :disabled="isSending"
+                  >
+                    <span v-show="!isSending">Enregistrer</span>
+                    <span
+                      v-show="isSending"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -113,6 +121,7 @@ import HeaderBanner from "../../../components/HeaderBanner.vue";
 const shouldOfuscate = ref(true);
 const currentUser = inject("currentUser");
 const message = ref("");
+const isSending = ref(false);
 
 if (!localStorage.getItem("token")) {
   location.href = "/";
@@ -146,6 +155,7 @@ const updateSearch = (e) => {
 };
 
 const handleSubmit = async () => {
+  isSending.value = true;
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_SERVER_URL}/session/new`,
@@ -168,10 +178,11 @@ const handleSubmit = async () => {
     );
     if (!response.ok) {
       const data = await response.json();
-     
-      message.value = data.message;
+      isSending.value = false;
+      message.value = data.message || "Une erreur est survenue.";
       throw new Error("Une erreur est survenue dans le formulaire.");
     } else {
+      isSending.value = false;
       message.value = "La séance a bien été créée.";
       price.value = "";
       date.value = "";
