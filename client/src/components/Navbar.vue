@@ -1,21 +1,26 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark px-5">
     <router-link class="navbar-brand logo" to="/">CINEMAX</router-link>
-    <button
-      class="navbar-toggler"
-      type="button"
-      @click="showMenu"
-    >
+    <button class="navbar-toggler" type="button" @click="showMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div v-show="showMenu" class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div
+      v-show="showMenu"
+      class="collapse navbar-collapse"
+      id="navbarSupportedContent"
+    >
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <router-link class="nav-link" to="/">Découvrir</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/session">Cinéma</router-link>
+          <router-link
+            class="nav-link"
+            to="/session"
+            v-if="currentUser?.roles?.includes('ROLE_USER')"
+            >Cinéma</router-link
+          >
         </li>
 
         <li class="nav-item" v-if="currentUser?.roles">
@@ -27,7 +32,9 @@
         </li>
 
         <li class="nav-item" v-if="currentUser?.roles?.includes('ROLE_CINEMA')">
-          <router-link class="nav-link" to="/cinema/session/list">Mes projections</router-link>
+          <router-link class="nav-link" to="/cinema/session/list"
+            >Mes projections</router-link
+          >
         </li>
       </ul>
 
@@ -69,7 +76,6 @@ const showMenu = () => {
   const menu = document.getElementById("navbarSupportedContent");
   menu.classList.toggle("show");
 };
-
 </script>
 
 <style scoped>

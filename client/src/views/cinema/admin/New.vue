@@ -1,5 +1,5 @@
 <template>
-  <div v-if="shouldOfuscate">
+  <div v-if="!shouldOfuscate">
     <HeaderBanner
       title="Nouvelle séance"
       img="../../../src/assets/cinema.jpeg"
@@ -7,7 +7,11 @@
     <div class="container">
       <div class="row">
         <div class="d-flex justify-content-end p-5">
-          <router-link to="/cinema/session/list" class="btn btn-sm btn-cinemax-primary">Mes séances</router-link>
+          <router-link
+            to="/cinema/session/list"
+            class="btn btn-sm btn-cinemax-primary"
+            >Mes séances</router-link
+          >
         </div>
 
         <div class="col-md-6">

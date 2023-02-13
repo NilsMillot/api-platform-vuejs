@@ -60,6 +60,10 @@ import { onMounted, reactive } from "vue";
 
 const user = reactive({});
 
+if (!localStorage.getItem("token")) {
+  location.href = "/";
+}
+
 onMounted(async () => {
   if (localStorage.getItem("token")) {
     const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/me`, {
