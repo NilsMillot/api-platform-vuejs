@@ -269,13 +269,13 @@ const onOrderQuantityChange = () => {
               />
             </div>
             <span v-if="orderPrice !== null" class="mb-5"
-            >Vos crédits : {{ currentUser.totalCredits }}</span><br>
+            >Vos crédits : {{ currentUser.totalCredits }}<br></span>
             <span v-if="orderPrice !== null"
-              >Prix Total : {{ orderPrice }} €</span
-            ><br />
+              >Prix Total : {{ orderPrice }} €<br></span
+            >
             <span v-if="orderPrice !== null" class="font-weight-bold"
-            >Prix Final : {{ orderPriceFinal }} €</span
-            ><br />
+            >Prix Final : {{ orderPriceFinal }} €<br></span
+            >
             <p v-if="orderPrice !== null" class="mb-4 mt-4">
               1 crédit = 1 € de réduction.<br>Vous économisez {{ reduction }} € sur votre commande grâce à vos crédits.
             </p>
