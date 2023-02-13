@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(operations: [
     new Post(
         controller: QuizzResultController::class,
-        security: 'is_granted("ROLE_USER") or is_granted("ROLE_ADMIN") or is_granted("ROLE_CINEMA")',
+        security: 'is_granted("ROLE_USER") and not is_granted("ROLE_ADMIN")',
         input: QuizzResultDto::class,
     ),
     new GetCollection(

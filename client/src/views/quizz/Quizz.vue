@@ -57,7 +57,10 @@ const sendAnswers = async () => {
 
   if (response.status === 400 && data["hydra:description"] === "The input data is misformatted.") {
     message.value = "Vos réponses ne sont pas valides, vérifiez les avant de pouvoir envoyer";
-  } else {
+  } if (response.status === 403) {
+    message.value = "Vous n'avez pas le droit de participer à ce quizz";
+  }
+  else {
     message.value = data.message;
   }
 };
